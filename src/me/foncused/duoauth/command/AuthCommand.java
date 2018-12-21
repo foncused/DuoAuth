@@ -272,7 +272,7 @@ public class AuthCommand implements CommandExecutor {
 		if(player.hasPermission("duoauth.admin")) {
 			player.sendMessage(ChatColor.RED + "    /auth reset <player>" + ChatColor.GRAY + " - resets player's credentials");
 		}
-		player.sendMessage(ChatColor.RED + "    /auth <password> <pin>" + ChatColor.GRAY + " - attempt authentication");
+		player.sendMessage(ChatColor.RED + "    /auth <password> <pin>" + ChatColor.GRAY + " - setup or attempt authentication");
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
 	}
 
