@@ -54,7 +54,7 @@ public class DuoAuth extends JavaPlugin {
 			DuoAuthUtilities.consoleWarning("Database option set to " + database + " is not safe, reverting...");
 			option = DatabaseOption.JSON;
 		}
-		DuoAuthUtilities.console("Database option set to " + option.name());
+		DuoAuthUtilities.console("Database option set to " + option.toString());
 		this.db = new Database(this, this.players, option);
 	}
 
@@ -109,7 +109,7 @@ public class DuoAuth extends JavaPlugin {
 		}
 		DuoAuthUtilities.console("Maximum authentication attempts set to " + commandAttempts);
 		final boolean deauthAddressChanges = this.config.getBoolean("deauth.ip-changes");
-		DuoAuthUtilities.console("Changing IP address deauth check set to " + deauthAddressChanges);
+		DuoAuthUtilities.console(deauthAddressChanges ? "Deauth timeout IP address change mode activated" : "Deauth timeout IP address change mode deactivated");
 		final AsyncPlayerPreLogin appl = new AsyncPlayerPreLogin(this.db, commandAttempts, deauthAddressChanges);
 		pm.registerEvents(appl, this);
 		pm.registerEvents(new Auth(this.players), this);
@@ -119,6 +119,7 @@ public class DuoAuth extends JavaPlugin {
 					chain.setTaskData("password", this.config.getString("password.default"));
 					String pin = this.config.getString("pin.default");
 					if(!(pin.matches("^[0-9]+$"))) {
+						DuoAuthUtilities.consoleWarning("Default PIN set to " + pin + " is not numeric, reverting to default...");
 						pin = "1234";
 					}
 					chain.setTaskData("pin", pin);
