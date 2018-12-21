@@ -23,15 +23,15 @@ public class AuthRunnable {
 	private DuoAuth plugin;
 	private AuthDatabase db;
 	private int deauthTimeout;
-	private int deauthTimeoutCheckInterval;
+	private int deauthTimeoutCheckHeartbeat;
 	private boolean deauthTimeoutOnline;
 
-	public AuthRunnable(final Map<String, Boolean> players, final DuoAuth plugin, final AuthDatabase db, final int deauthTimeout, final int deauthTimeoutCheckInterval, final boolean deauthTimeoutOnline) {
+	public AuthRunnable(final Map<String, Boolean> players, final DuoAuth plugin, final AuthDatabase db, final int deauthTimeout, final int deauthTimeoutCheckHeartbeat, final boolean deauthTimeoutOnline) {
 		this.players = players;
 		this.plugin = plugin;
 		this.db = db;
 		this.deauthTimeout = deauthTimeout;
-		this.deauthTimeoutCheckInterval = deauthTimeoutCheckInterval;
+		this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
 		this.deauthTimeoutOnline = deauthTimeoutOnline;
 	}
 
@@ -63,7 +63,7 @@ public class AuthRunnable {
 					});
 				}
 			}
-		}.runTaskTimerAsynchronously(this.plugin, 0,  this.deauthTimeoutCheckInterval * 60 * 20);
+		}.runTaskTimerAsynchronously(this.plugin, 0,  this.deauthTimeoutCheckHeartbeat * 60 * 20);
 	}
 
 	private double getTimeDifference(final String date, final String format, final double divide) {

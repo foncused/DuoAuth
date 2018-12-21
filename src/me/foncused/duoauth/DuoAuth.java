@@ -82,12 +82,12 @@ public class DuoAuth extends JavaPlugin {
 			deauthTimeout = 48;
 		}
 		AuthUtilities.console("Deauth timeout set to " + deauthTimeout + " hours");
-		int deauthTimeoutCheckInterval = this.config.getInt("deauth.timeout-check-interval");
-		if(deauthTimeoutCheckInterval <= 0) {
-			AuthUtilities.consoleWarning("Deauth timeout check interval set to " + deauthTimeoutCheckInterval + " minutes is not safe, reverting to default...");
-			deauthTimeoutCheckInterval = 5;
+		int deauthTimeoutCheckHeartbeat = this.config.getInt("deauth.timeout-check-heartbeat");
+		if(deauthTimeoutCheckHeartbeat <= 0) {
+			AuthUtilities.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
+			deauthTimeoutCheckHeartbeat = 5;
 		}
-		AuthUtilities.console("Deauth timeout check interval set to " + deauthTimeoutCheckInterval + " minutes");
+		AuthUtilities.console("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes");
 		final boolean timeoutOnline = this.config.getBoolean("deauth.timeout-online");
 		AuthUtilities.console(timeoutOnline ? "Deauth timeout online mode enabled" : "Deauth timeout online mode disabled");
 		new AuthRunnable(
@@ -95,7 +95,7 @@ public class DuoAuth extends JavaPlugin {
 				this,
 				this.db,
 				deauthTimeout,
-				deauthTimeoutCheckInterval,
+				deauthTimeoutCheckHeartbeat,
 				timeoutOnline
 		).runTimeoutTask();
 		// Events

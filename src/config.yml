@@ -62,10 +62,10 @@ deauth:
   ip-changes: true
 
   # Time in hours to deauthenticate players after the last successful authentication
-  timeout: 48
-
-  # Heartbeat in minutes to check if players should be deauthenticated
-  timeout-check-interval: 10
+  timeout: 72
 
   # true to deauthenticate players even if they are online (can be annoying), false if not
   timeout-online: false
+
+  # Heartbeat in minutes to check if players should be deauthenticated
+  timeout-check-heartbeat: 10
