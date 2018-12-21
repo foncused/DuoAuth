@@ -170,7 +170,7 @@ public class AuthCommand implements CommandExecutor {
 																return null;
 															} else {
 																final int attempts = this.db.readAttempts(uuid);
-																if(attempts >= commandAttempts) {
+																if(this.commandAttempts != 0 && attempts >= this.commandAttempts) {
 																	AuthUtilities.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
 																	AuthUtilities.notify("User " + uuid + " (" + name + ") has failed authentication " + attempts + " times");
 																	TaskChainManager.newChain()

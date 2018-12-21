@@ -89,7 +89,7 @@ public class DuoAuth extends JavaPlugin {
 		}
 		AuthUtilities.console("Deauth timeout check interval set to " + deauthTimeoutCheckInterval + " minutes");
 		final boolean timeoutOnline = this.config.getBoolean("deauth.timeout-online");
-		AuthUtilities.console(timeoutOnline ? "Deauth timeout online mode activated" : "Deauth timeout online mode deactivated");
+		AuthUtilities.console(timeoutOnline ? "Deauth timeout online mode enabled" : "Deauth timeout online mode disabled");
 		new AuthRunnable(
 				this.players,
 				this,
@@ -103,13 +103,13 @@ public class DuoAuth extends JavaPlugin {
 		final PlayerLogin pl = new PlayerLogin(true);
 		pm.registerEvents(pl, this);
 		int commandAttempts = this.config.getInt("command.attempts");
-		if(commandAttempts <= 0) {
+		if(commandAttempts < 0) {
 			AuthUtilities.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default...");
 			commandAttempts = 5;
 		}
-		AuthUtilities.console("Maximum authentication attempts set to " + commandAttempts);
+		AuthUtilities.console(commandAttempts != 0 ? "Maximum authentication attempts set to " + commandAttempts + " attempts" : "Maximum authentication attempts check disabled");
 		final boolean deauthAddressChanges = this.config.getBoolean("deauth.ip-changes");
-		AuthUtilities.console(deauthAddressChanges ? "Deauth timeout IP address change mode activated" : "Deauth timeout IP address change mode deactivated");
+		AuthUtilities.console(deauthAddressChanges ? "Deauth timeout IP address change mode enabled" : "Deauth timeout IP address change mode disabled");
 		final AsyncPlayerPreLogin appl = new AsyncPlayerPreLogin(this.db, commandAttempts, deauthAddressChanges);
 		pm.registerEvents(appl, this);
 		pm.registerEvents(new Auth(this.players), this);
