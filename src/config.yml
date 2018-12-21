@@ -65,7 +65,7 @@ deauth:
   timeout: 48
 
   # Heartbeat in minutes to check if players should be deauthenticated
-  timeout-check-interval: 5
+  timeout-check-interval: 10
 
   # true to deauthenticate players even if they are online (can be annoying), false if not
   timeout-online: false
