@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -174,7 +176,7 @@ public class Database {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.TIMESTAMP;
 		if(object != null) {
-			object.addProperty(property.toString(), DuoAuthUtilities.getFormattedTime(this.DATE_FORMAT));
+			object.addProperty(property.toString(), this.getFormattedTime(this.DATE_FORMAT));
 			return this.write(uuid, object);
 		}
 		this.writeError(uuid, property);
@@ -251,7 +253,7 @@ public class Database {
 		object.addProperty(Property.AUTHED.toString(), this.players.getOrDefault(uuid, false));
 		object.addProperty(Property.ATTEMPTS.toString(), attempts);
 		object.addProperty(Property.IP.toString(), ip);
-		object.addProperty(Property.TIMESTAMP.toString(), DuoAuthUtilities.getFormattedTime(this.DATE_FORMAT));
+		object.addProperty(Property.TIMESTAMP.toString(), this.getFormattedTime(this.DATE_FORMAT));
 		return this.write(uuid, object);
 	}
 
@@ -292,6 +294,10 @@ public class Database {
 
 	public String getDateFormat() {
 		return this.DATE_FORMAT;
+	}
+
+	private String getFormattedTime(final String format) {
+		return new SimpleDateFormat(format).format(new Date());
 	}
 
 }

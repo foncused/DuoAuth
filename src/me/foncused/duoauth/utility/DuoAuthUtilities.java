@@ -5,11 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class DuoAuthUtilities {
 
 	private static int costFactor = 14;
@@ -59,19 +54,6 @@ public class DuoAuthUtilities {
 
 	public static String getPlayerAddress(final Player player) {
 		return player.getAddress().toString().replaceAll("/", "").split(":")[0];
-	}
-
-	public static String getFormattedTime(final String format) {
-		return new SimpleDateFormat(format).format(new Date());
-	}
-
-	public static double getTimeDifference(final String date, final String format, final double divide) {
-		final DateFormat formatter = new SimpleDateFormat(format);
-		try {
-			return ((formatter.parse(formatter.format(new Date())).getTime() - formatter.parse(date).getTime()) / divide);
-		} catch(final ParseException e) {
-			return 0;
-		}
 	}
 
 }
