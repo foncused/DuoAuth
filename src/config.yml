@@ -2,67 +2,70 @@
 # @version 1.0.0
 # @author foncused
 
-# --- Cost Factor ---
 # The cost factor of the bcrypt algorithm
 # For best security measures, it is recommended to set this value in respect to the maximum amount of
 # time you are willing to have your players wait to be authenticated (normally between 12 and 20),
 # which will be dependent on your individual system and CPU throughput
 cost-factor: 14
 
-# --- Command Options ---
-# The options regarding the /auth command
-# cooldown -> The cooldown time in seconds for using the /auth command (bypassed by 'duoauth.bypass')
-# attempts -> The maximum number of incorrect authentication attempts before the player is locked out
-# -----------------------
+# Command options for /auth command
 command:
+
+  # The cooldown time in seconds for using the /auth command (bypassed by 'duoauth.bypass')
   cooldown: 20
+
+  # The maximum number of incorrect authentication attempts before the players are locked out
   attempts: 5
 
-# --- Password Requirements ---
-# The password is the primary key entered before the PIN
-# default -> The default password to be used when a player joins with permission 'duoauth.enforced'
-# min-length -> The minimum length of a password provided by a player
-# both-cases -> true to enforce at least one uppercase and one lowercase letter, false if not
-# numbers -> true to enforce at least one number, false if not
-# special-chars -> true to enforce at least one special character, false if not
-# -----------------------------
+# Password options
 # For best security measures, set a min-length of at least 8, both-cases to true,
 # numbers to true, special-chars to true, and change default (Password1234#) as
 # this default config.yml is public on GitHub; be advised the default password
 # WILL NOT WORK if it does not meet the other requirements
 password:
+
+  # The default password to be used when players join with permission 'duoauth.enforced'
   default: "Password1234#"
+
+  # The minimum length of a provided password
   min-length: 8
+
+  # true to enforce at least one uppercase and one lowercase letter, false if not
   both-cases: true
+
+  # true to enforce at least one number, false if not
   numbers: true
+
+  # true to enforce at least one special character, false if not
   special-chars: true
 
-# --- PIN Requirements ---
-# The PIN is a second numeric key following the password
-# default -> The default PIN to be used when a player joins with permission 'duoauth.enforced'
-# min-length -> The minimum length of a PIN provided by a player
-# ------------------------
+# PIN options
 # For best security measures, change default (1234) as this config.yml is public on GitHub;
 # be advised the default PIN WILL NOT WORK if it does not meet the length requirement
 pin:
+
+  # The default PIN to be used when players join with permission 'duoauth.enforced'
   default: "1234"
+
+  # The minimum length of a provided PIN
   min-length: 4
 
-# --- Database Options ---
-# "json" -> stores hashes in .json files
-# SQLite will be supported in a future version
-# ------------------------
+# Database options
+# json is currently the only supported method of storing the hashes
 database: "json"
 
-# --- Deauthentication Options ---
-# ip-changes -> true to immediately deauthenticate whenever the player's IP changes
-# timeout -> Time in hours to deauthenticate the player after any previous successful authentication
-# timeout-check-interval -> Heartbeat in minutes to check all player authentication timestamps and deauthenticate if needed
-# timeout-online -> Deauthenticate players currently online
-# --------------------------------
+# Deauthentication options
 # For best security measures, set ip-changes to true
 deauth:
+
+  # true to immediately deauthenticate players whenever their IP addresses change, false if not
   ip-changes: true
+
+  # Time in hours to deauthenticate players after the last successful authentication
   timeout: 48
+
+  # Heartbeat in minutes to check if players should be deauthenticated
   timeout-check-interval: 5
+
+  # true to deauthenticate players even if they are online (can be annoying), false if not
   timeout-online: false
