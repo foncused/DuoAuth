@@ -113,15 +113,21 @@ public class DuoAuth extends JavaPlugin {
 		final AsyncPlayerPreLogin appl = new AsyncPlayerPreLogin(this.db, commandAttempts, deauthAddressChanges);
 		pm.registerEvents(appl, this);
 		pm.registerEvents(new Auth(this.players), this);
-		final String password = this.config.getString("password.default");
-		final String pin = this.config.getString("pin.default");
 		final TaskChain chain = TaskChainManager.newChain();
 		chain
+				.sync(() -> {
+					chain.setTaskData("password", this.config.getString("password.default"));
+					String pin = this.config.getString("pin.default");
+					if(!(pin.matches("^[0-9]+$"))) {
+						pin = "1234";
+					}
+					chain.setTaskData("pin", pin);
+				})
 				.async(() -> {
-					final String pwhash = DuoAuthUtilities.getSecureBCryptHash(password);
+					final String pwhash = DuoAuthUtilities.getSecureBCryptHash((String) chain.getTaskData("password"));
 					DuoAuthUtilities.console("Default password hash for 'duoauth.enforced' is " + pwhash);
 					chain.setTaskData("pwhash", pwhash);
-					final String pinhash = DuoAuthUtilities.getSecureBCryptHash(pin);
+					final String pinhash = DuoAuthUtilities.getSecureBCryptHash((String) chain.getTaskData("pin"));
 					DuoAuthUtilities.console("Default PIN hash for 'duoauth.enforced' is " + pinhash);
 					chain.setTaskData("pinhash", pinhash);
 				})
