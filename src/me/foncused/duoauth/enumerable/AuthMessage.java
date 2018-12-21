@@ -2,7 +2,7 @@ package me.foncused.duoauth.enumerable;
 
 import org.bukkit.ChatColor;
 
-public enum DuoAuthMessage {
+public enum AuthMessage {
 
 	PLAYER_NOT_AUTHED(ChatColor.RED + "You need to authenticate with /auth <password> <pin> before you can chat, move, or play."),
 	PLAYER_NOT_DATABASED(ChatColor.RED + "You have not set up authentication. To enable authentication, please use the /auth command."),
@@ -12,7 +12,7 @@ public enum DuoAuthMessage {
 
 	private final String message;
 
-	DuoAuthMessage(final String message) { this.message = message; }
+	AuthMessage(final String message) { this.message = message; }
 
 	@Override
 	public String toString() { return this.message; }

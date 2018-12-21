@@ -1,8 +1,8 @@
 package me.foncused.duoauth.event.player;
 
-import me.foncused.duoauth.database.Database;
+import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
-import me.foncused.duoauth.utility.DuoAuthUtilities;
+import me.foncused.duoauth.utility.AuthUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,11 +14,11 @@ import java.util.Map;
 public class PlayerJoin implements Listener {
 
 	private Map<String, Boolean> players;
-	private Database db;
+	private AuthDatabase db;
 	private String password;
 	private String pin;
 
-	public PlayerJoin(final Map<String, Boolean> players, final Database db, final String password, final String pin) {
+	public PlayerJoin(final Map<String, Boolean> players, final AuthDatabase db, final String password, final String pin) {
 		this.players = players;
 		this.db = db;
 		this.password = password;
@@ -39,7 +39,7 @@ public class PlayerJoin implements Listener {
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
 						this.players.put(uuid, false);
-						final String ip = DuoAuthUtilities.getPlayerAddress(player);
+						final String ip = AuthUtilities.getPlayerAddress(player);
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
 										uuid,
@@ -49,12 +49,12 @@ public class PlayerJoin implements Listener {
 										ip
 								))
 								.syncLast(written -> {
-									DuoAuthUtilities.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
+									AuthUtilities.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
 									final String name = player.getName();
 									if(written) {
-										DuoAuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
+										AuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
 									} else {
-										DuoAuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
+										AuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
 									}
 								})
 								.execute();

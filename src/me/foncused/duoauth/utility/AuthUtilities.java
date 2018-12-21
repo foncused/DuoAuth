@@ -5,13 +5,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class DuoAuthUtilities {
+public class AuthUtilities {
 
 	private static int costFactor = 14;
 	private static final String PREFIX = "[DuoAuth] ";
 
-	public DuoAuthUtilities(final int costFactor) {
-		DuoAuthUtilities.costFactor = costFactor;
+	public AuthUtilities(final int costFactor) {
+		AuthUtilities.costFactor = costFactor;
 	}
 
 	public static void alert(final String message) {

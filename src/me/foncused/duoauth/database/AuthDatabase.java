@@ -4,7 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.enumerable.DatabaseOption;
-import me.foncused.duoauth.utility.DuoAuthUtilities;
+import me.foncused.duoauth.utility.AuthUtilities;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Database {
+public class AuthDatabase {
 
 	private DuoAuth plugin;
 	private Map<String, Boolean> players;
@@ -45,7 +45,7 @@ public class Database {
 
 	}
 
-	public Database(final DuoAuth plugin, final Map<String, Boolean> players, final DatabaseOption option) {
+	public AuthDatabase(final DuoAuth plugin, final Map<String, Boolean> players, final DatabaseOption option) {
 		this.plugin = plugin;
 		this.players = players;
 		this.option = option;
@@ -204,11 +204,11 @@ public class Database {
 	}*/
 
 	private void readError(final String uuid, final Property property) {
-		DuoAuthUtilities.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
+		AuthUtilities.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
 	}
 
 	private void writeError(final String uuid, final Property property) {
-		DuoAuthUtilities.consoleSevere("Unable to write property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
+		AuthUtilities.consoleSevere("Unable to write property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
 	}
 
 	public synchronized boolean contains(final String uuid) {
@@ -262,14 +262,14 @@ public class Database {
 			final String dataPath = this.getDataFolder();
 			final File data = new File(dataPath);
 			if(!(data.exists()) && (!(data.mkdirs()))) {
-				DuoAuthUtilities.consoleSevere("Unable to create directory " + dataPath);
+				AuthUtilities.consoleSevere("Unable to create directory " + dataPath);
 				return false;
 			}
 			if(data.exists()) {
 				final String jsonPath = this.getJsonPath(uuid);
 				final File json = new File(jsonPath);
 				if(!(json.exists()) && (!(json.createNewFile()))) {
-					DuoAuthUtilities.consoleSevere("Unable to create file " + jsonPath);
+					AuthUtilities.consoleSevere("Unable to create file " + jsonPath);
 					return false;
 				}
 				final FileWriter writer = new FileWriter(json);
