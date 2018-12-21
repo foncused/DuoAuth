@@ -79,7 +79,7 @@ public class AuthCommand implements CommandExecutor {
 																		if(player.isOnline()) {
 																			players.put(uuid, true);
 																		}
-																		AuthUtilities.alertOne(player, ChatColor.GREEN + "Your password has been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
+																		AuthUtilities.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
 																		AuthUtilities.notify("Reset authentication for user " + uuid + " (" + name + ")");
 																	} else {
 																		AuthUtilities.alertOne(player, ChatColor.RED + "Failed to reset authentication. Please contact the server administrators if you are receiving this message.");
@@ -159,7 +159,7 @@ public class AuthCommand implements CommandExecutor {
 																				if(player.isOnline()) {
 																					players.put(uuid, true);
 																				}
-																				AuthUtilities.alertOne(player, ChatColor.GREEN + "Your password and PIN have been set!");
+																				AuthUtilities.alertOne(player, ChatColor.GREEN + "Your credentials have been set!");
 																				AuthUtilities.notify("User " + uuid + " (" + name + ") successfully set up authentication");
 																			} else {
 																				AuthUtilities.alertOne(player, ChatColor.RED + "Failed to set up authentication. Please contact the server administrators if you are receiving this message.");
