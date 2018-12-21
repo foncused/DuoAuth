@@ -24,12 +24,12 @@ public class AsyncPlayerPreLogin implements Listener {
 	public void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
 		final String uuid = event.getUniqueId().toString();
 		if(this.db.contains(uuid)) {
-			if(this.db.readAttempts(uuid) >= this.commandAttempts) {
+			if(this.commandAttempts != 0 && this.db.readAttempts(uuid) >= this.commandAttempts) {
 				event.disallow(KICK_OTHER, AuthMessage.LOCKED.toString());
 				return;
 			}
 			final String ip = event.getAddress().getHostAddress();
-			if(deauthAddressChanges && (!(this.db.readAddress(uuid).equals(ip)))) {
+			if(this.deauthAddressChanges && (!(this.db.readAddress(uuid).equals(ip)))) {
 				this.db.writeAuthed(uuid, false);
 			}
 		}
