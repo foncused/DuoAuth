@@ -105,7 +105,7 @@ public class DuoAuth extends JavaPlugin {
 		int commandAttempts = this.config.getInt("command.attempts");
 		if(commandAttempts < 0) {
 			AuthUtilities.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default...");
-			commandAttempts = 5;
+			commandAttempts = 10;
 		}
 		AuthUtilities.console(commandAttempts != 0 ? "Maximum authentication attempts set to " + commandAttempts + " attempts" : "Maximum authentication attempts check disabled");
 		final boolean deauthAddressChanges = this.config.getBoolean("deauth.ip-changes");
