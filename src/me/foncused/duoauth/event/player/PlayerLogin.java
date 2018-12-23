@@ -12,7 +12,7 @@ public class PlayerLogin implements Listener {
 	private boolean loading = true;
 
 	public PlayerLogin(final boolean loading) {
-		this.setLoading(loading);
+		this.loading = loading;
 	}
 
 	public void setLoading(final boolean loading) {

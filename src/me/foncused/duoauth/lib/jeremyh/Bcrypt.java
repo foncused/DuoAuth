@@ -555,7 +555,7 @@ public class Bcrypt {
 			rs.append("0");
 		}
 		if(rounds > 30) {
-			throw new IllegalArgumentException("rounds exceeds maximum (30)");
+			throw new IllegalArgumentException("Rounds exceeds maximum (30)");
 		}
 		rs.append(rounds);
 		rs.append("$");
@@ -575,8 +575,9 @@ public class Bcrypt {
 		byte[] hashedBytes, tryBytes;
 		try {
 			final String try_pw = hashpw(plaintext, hashed);
-			hashedBytes = hashed.getBytes("UTF-8");
-			tryBytes = try_pw.getBytes("UTF-8");
+			final String charset = "UTF-8";;
+			hashedBytes = hashed.getBytes(charset);
+			tryBytes = try_pw.getBytes(charset);
 		} catch(UnsupportedEncodingException uee) {
 			return false;
 		}
