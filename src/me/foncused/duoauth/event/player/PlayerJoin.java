@@ -1,5 +1,6 @@
 package me.foncused.duoauth.event.player;
 
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.utility.AuthUtilities;
@@ -14,15 +15,13 @@ import java.util.Map;
 public class PlayerJoin implements Listener {
 
 	private Map<String, Boolean> players;
+	private ConfigManager cm;
 	private AuthDatabase db;
-	private String password;
-	private String pin;
 
-	public PlayerJoin(final Map<String, Boolean> players, final AuthDatabase db, final String password, final String pin) {
+	public PlayerJoin(final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
 		this.players = players;
+		this.cm = cm;
 		this.db = db;
-		this.password = password;
-		this.pin = pin;
 	}
 
 	@EventHandler
@@ -43,8 +42,8 @@ public class PlayerJoin implements Listener {
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
 										uuid,
-										this.password,
-										this.pin,
+										this.cm.getPasswordDefault(),
+										this.cm.getPinDefault(),
 										0,
 										ip
 								))

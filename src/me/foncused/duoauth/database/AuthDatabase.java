@@ -3,7 +3,7 @@ package me.foncused.duoauth.database;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.foncused.duoauth.DuoAuth;
-import me.foncused.duoauth.enumerable.DatabaseOption;
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.utility.AuthUtilities;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public class AuthDatabase {
 
 	private DuoAuth plugin;
 	private Map<String, Boolean> players;
-	private DatabaseOption option;
+	private ConfigManager cm;
 	private final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	private enum Property {
@@ -45,10 +45,10 @@ public class AuthDatabase {
 
 	}
 
-	public AuthDatabase(final DuoAuth plugin, final Map<String, Boolean> players, final DatabaseOption option) {
+	public AuthDatabase(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm) {
 		this.plugin = plugin;
 		this.players = players;
-		this.option = option;
+		this.cm = cm;
 	}
 
 	public synchronized String readPassword(final String uuid) {

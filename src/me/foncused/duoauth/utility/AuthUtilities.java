@@ -7,12 +7,7 @@ import org.bukkit.entity.Player;
 
 public class AuthUtilities {
 
-	private static int costFactor = 14;
 	private static final String PREFIX = "[DuoAuth] ";
-
-	public AuthUtilities(final int costFactor) {
-		AuthUtilities.costFactor = costFactor;
-	}
 
 	public static void alert(final String message) {
 		Bukkit.broadcastMessage(ChatColor.DARK_AQUA + "ALERT " + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + message);
@@ -48,7 +43,7 @@ public class AuthUtilities {
 		Bukkit.getLogger().severe(ChatColor.stripColor(PREFIX + message));
 	}
 
-	public static String getSecureBCryptHash(final String password) {
+	public static String getSecureBCryptHash(final String password, final int costFactor) {
 		return Bcrypt.hashpw(password, Bcrypt.gensalt(costFactor));
 	}
 

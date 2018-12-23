@@ -1,6 +1,7 @@
 package me.foncused.duoauth.command;
 
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
@@ -24,28 +25,16 @@ public class AuthCommand implements CommandExecutor {
 
 	private DuoAuth plugin;
 	private Map<String, Boolean> players;
+	private ConfigManager cm;
 	private AuthDatabase db;
-	private int commandCooldown;
-	private int commandAttempts;
-	private int passwordMinLength;
-	private boolean passwordBothCases;
-	private boolean passwordNumbers;
-	private boolean passwordSpecialChars;
-	private int pinMinLength;
 	private Set<String> auths;
 	private Set<String> cooldowns;
 
-	public AuthCommand(final DuoAuth plugin, final Map<String, Boolean> players, final AuthDatabase db, final int commandCooldown, final int commandAttempts, final int passwordMinLength, final boolean passwordBothCases, final boolean passwordNumbers, final boolean passwordSpecialChars, final int pinMinLength) {
+	public AuthCommand(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
 		this.plugin = plugin;
 		this.players = players;
 		this.db = db;
-		this.commandCooldown = commandCooldown;
-		this.commandAttempts = commandAttempts;
-		this.passwordMinLength = passwordMinLength;
-		this.passwordBothCases = passwordBothCases;
-		this.passwordNumbers = passwordNumbers;
-		this.passwordSpecialChars = passwordSpecialChars;
-		this.pinMinLength = pinMinLength;
+		this.cm = cm;
 		this.auths = new HashSet<>();
 		this.cooldowns = new HashSet<>();
 	}
@@ -57,6 +46,7 @@ public class AuthCommand implements CommandExecutor {
 				if(player.hasPermission("duoauth.auth")) {
 					final String uuid = player.getUniqueId().toString();
 					final String name = player.getName();
+					final int commandCooldown = this.cm.getCommandCooldown();
 					switch(args.length) {
 						case 1:
 							if(args[0].equalsIgnoreCase("reset")) {
@@ -71,7 +61,7 @@ public class AuthCommand implements CommandExecutor {
 															public void run() {
 																cooldowns.remove(uuid);
 															}
-														}.runTaskLater(this.plugin, this.commandCooldown * 20);
+														}.runTaskLater(this.plugin, commandCooldown * 20);
 														TaskChainManager.newChain()
 																.asyncFirst(() -> this.db.delete(uuid))
 																.syncLast(deleted -> {
@@ -128,9 +118,14 @@ public class AuthCommand implements CommandExecutor {
 								}
 							} else {
 								final String password = args[0];
-								if(password.length() >= this.passwordMinLength && password.matches((this.passwordBothCases ? "(?=.*[A-Z])(?=.*[a-z])" : "(?=.*[A-Za-z])") + (this.passwordNumbers ? "(?=.*[0-9])" : "") + (this.passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") + "(?=\\S+$).*$")) {
+								final int passwordMinLength = this.cm.getPasswordMinLength();
+								final boolean passwordBothCases = this.cm.isPasswordBothCases();
+								final boolean passwordNumbers = this.cm.isPasswordNumbers();
+								final boolean passwordSpecialChars = this.cm.isPasswordSpecialChars();
+								if(password.length() >= passwordMinLength && password.matches((passwordBothCases ? "(?=.*[A-Z])(?=.*[a-z])" : "(?=.*[A-Za-z])") + (passwordNumbers ? "(?=.*[0-9])" : "") + (passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") + "(?=\\S+$).*$")) {
 									final String pin = args[1];
-									if(pin.length() >= this.pinMinLength && pin.matches("^[0-9]+$")) {
+									final int pinMinLength = this.cm.getPinMinLength();
+									if(pin.length() >= pinMinLength && pin.matches("^[0-9]+$")) {
 										if(player.hasPermission("duoauth.bypass") || (!(this.cooldowns.contains(uuid)))) {
 											if(!(this.auths.contains(uuid))) {
 												this.cooldowns.add(uuid);
@@ -138,9 +133,11 @@ public class AuthCommand implements CommandExecutor {
 													public void run() {
 														cooldowns.remove(uuid);
 													}
-												}.runTaskLater(this.plugin, this.commandCooldown * 20);
+												}.runTaskLater(this.plugin, commandCooldown * 20);
 												this.auths.add(uuid);
 												final String address = AuthUtilities.getPlayerAddress(player);
+												final int commandAttempts = this.cm.getCommandAttempts();
+												final int costFactor = this.cm.getCostFactor();
 												TaskChainManager.newChain()
 														.asyncFirst(() -> {
 															if(!(this.db.contains(uuid))) {
@@ -150,8 +147,8 @@ public class AuthCommand implements CommandExecutor {
 																			AuthUtilities.notify("Setting up authentication for user " + uuid + " (" + name + ")...");
 																		})
 																		.execute();
-																final String pwhash = AuthUtilities.getSecureBCryptHash(password);
-																final String pinhash = AuthUtilities.getSecureBCryptHash(pin);
+																final String pwhash = AuthUtilities.getSecureBCryptHash(password, costFactor);
+																final String pinhash = AuthUtilities.getSecureBCryptHash(pin, costFactor);
 																final boolean written = this.db.write(uuid, pwhash, pinhash, 0, address);
 																TaskChainManager.newChain()
 																		.sync(() -> {
@@ -170,7 +167,7 @@ public class AuthCommand implements CommandExecutor {
 																return null;
 															} else {
 																final int attempts = this.db.readAttempts(uuid);
-																if(this.commandAttempts != 0 && attempts >= this.commandAttempts) {
+																if(commandAttempts != 0 && attempts >= commandAttempts) {
 																	AuthUtilities.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
 																	AuthUtilities.notify("User " + uuid + " (" + name + ") has failed authentication " + attempts + " times");
 																	TaskChainManager.newChain()
@@ -185,9 +182,9 @@ public class AuthCommand implements CommandExecutor {
 																				AuthUtilities.notify("Authenticating user " + uuid + " (" + name + ")...");
 																			})
 																			.execute();
-																	final String dbhash = this.db.readPassword(uuid);
+																	final String dbpassword = this.db.readPassword(uuid);
 																	final String dbpin = this.db.readPIN(uuid);
-																	return (Bcrypt.checkpw(password, dbhash) && (Bcrypt.checkpw(pin, dbpin))) ? ChatColor.GREEN + "Authentication successful. Have fun!" : ChatColor.RED + "Authentication failed. Please ensure your password and PIN are correct. Please contact the server administrators if you believe that this is in error.";
+																	return (Bcrypt.checkpw(password, dbpassword) && (Bcrypt.checkpw(pin, dbpin))) ? ChatColor.GREEN + "Authentication successful. Have fun!" : ChatColor.RED + "Authentication failed. Please ensure your password and PIN are correct. Please contact the server administrators if you believe that this is in error.";
 																}
 															}
 														})
@@ -213,7 +210,7 @@ public class AuthCommand implements CommandExecutor {
 																			.async(() -> {
 																				this.db.writeAuthed(uuid, false);
 																				final int attempts = this.db.readAttempts(uuid);
-																				if(attempts < this.commandAttempts) {
+																				if(attempts < commandAttempts) {
 																					this.db.writeAttempts(uuid, attempts + 1);
 																				}
 																			})
@@ -236,16 +233,16 @@ public class AuthCommand implements CommandExecutor {
 									} else {
 										AuthUtilities.alertOne(
 												player,
-												ChatColor.RED + "The PIN you entered is invalid. Your PIN must contain at least " + this.pinMinLength + " digits and must be numeric."
+												ChatColor.RED + "The PIN you entered is invalid. Your PIN must contain at least " + pinMinLength + " digits and must be numeric."
 										);
 									}
 								} else {
 									AuthUtilities.alertOne(
 											player,
-											ChatColor.RED + "The password you entered is invalid. Your password must contain at least " + this.passwordMinLength + " characters" +
-													(this.passwordBothCases ? ", 1 uppercase letter (A-Z), 1 lowercase letter (a-z)" : "") +
-													(this.passwordNumbers ? ", 1 number (0-9)" : "") +
-													(this.passwordSpecialChars ? ", 1 special character (@#$%^&+=)." : ".")
+											ChatColor.RED + "The password you entered is invalid. Your password must contain at least " + passwordMinLength + " characters" +
+													(passwordBothCases ? ", 1 uppercase letter (A-Z), 1 lowercase letter (a-z)" : "") +
+													(passwordNumbers ? ", 1 number (0-9)" : "") +
+													(passwordSpecialChars ? ", 1 special character (@#$%^&+=)." : ".")
 									);
 								}
 							}

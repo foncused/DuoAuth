@@ -1,6 +1,7 @@
 package me.foncused.duoauth.runnable;
 
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.utility.AuthUtilities;
 import org.bukkit.Bukkit;
@@ -19,20 +20,16 @@ import java.util.UUID;
 
 public class AuthRunnable {
 
-	private Map<String, Boolean> players;
 	private DuoAuth plugin;
+	private Map<String, Boolean> players;
+	private ConfigManager cm;
 	private AuthDatabase db;
-	private int deauthTimeout;
-	private int deauthTimeoutCheckHeartbeat;
-	private boolean deauthTimeoutOnline;
 
-	public AuthRunnable(final Map<String, Boolean> players, final DuoAuth plugin, final AuthDatabase db, final int deauthTimeout, final int deauthTimeoutCheckHeartbeat, final boolean deauthTimeoutOnline) {
-		this.players = players;
+	public AuthRunnable(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
 		this.plugin = plugin;
+		this.players = players;
+		this.cm = cm;
 		this.db = db;
-		this.deauthTimeout = deauthTimeout;
-		this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
-		this.deauthTimeoutOnline = deauthTimeoutOnline;
 	}
 
 	public void runTimeoutTask() {
@@ -43,14 +40,14 @@ public class AuthRunnable {
 					uuids.forEach(uuid -> {
 						final String timestamp = db.readTimestamp(uuid);
 						if(timestamp != null) {
-							final double days = deauthTimeout / 24.0;
+							final double days = cm.getDeauthTimeout() / 24.0;
 							if(db.readAuthed(uuid) && getTimeDifference(timestamp, db.getDateFormat(), days * 2073600000) >= days) {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
 								AuthUtilities.console(notify);
 								db.writeAuthed(uuid, false);
-								if(deauthTimeoutOnline && players.containsKey(uuid) && player.isOnline()) {
+								if(cm.isDeauthTimeoutOnline() && players.containsKey(uuid) && player.isOnline()) {
 									AuthUtilities.alertOne(
 											(Player) player,
 											ChatColor.RED + "Authentication has expired. Please use the /auth command to reauthenticate. Thank you!"
@@ -63,7 +60,7 @@ public class AuthRunnable {
 					});
 				}
 			}
-		}.runTaskTimerAsynchronously(this.plugin, 0,  this.deauthTimeoutCheckHeartbeat * 60 * 20);
+		}.runTaskTimerAsynchronously(this.plugin, 0,  this.cm.getDeauthTimeoutCheckHeartbeat() * 60 * 20);
 	}
 
 	private double getTimeDifference(final String date, final String format, final double divide) {
