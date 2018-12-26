@@ -73,7 +73,11 @@ public class DuoAuth extends JavaPlugin {
 	}
 
 	private void registerDatabase() {
-		this.db = new AuthDatabase(this, this.players, this.cm);
+		this.db = new AuthDatabase(
+				this,
+				this.players,
+				this.cm
+		);
 	}
 
 	private void registerEvents() {

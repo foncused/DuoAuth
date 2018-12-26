@@ -28,8 +28,7 @@ public class AsyncPlayerPreLogin implements Listener {
 				event.disallow(KICK_OTHER, AuthMessage.LOCKED.toString());
 				return;
 			}
-			final String ip = event.getAddress().getHostAddress();
-			if(this.cm.isDeauthAddressChanges() && (!(this.db.readAddress(uuid).equals(ip)))) {
+			if(this.cm.isDeauthAddressChanges() && (!(this.db.readAddress(uuid).equals(event.getAddress().getHostAddress())))) {
 				this.db.writeAuthed(uuid, false);
 			}
 		}

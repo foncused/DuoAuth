@@ -18,7 +18,7 @@ public class PlayerLogin implements Listener {
 
 	@EventHandler
 	public void onPlayerLogin(final PlayerLoginEvent event) {
-		if(this.cm.isLoading()) {
+		if(this.cm == null || this.cm.isLoading()) {
 			event.disallow(KICK_OTHER, ChatColor.RED + "DuoAuth is still loading. Please try again in a moment.");
 		}
 

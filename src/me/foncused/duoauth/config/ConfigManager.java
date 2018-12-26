@@ -246,4 +246,8 @@ public class ConfigManager {
 		return this.loading;
 	}
 
+	public void setLoading(final boolean loading) {
+		this.loading = loading;
+	}
+
 }
