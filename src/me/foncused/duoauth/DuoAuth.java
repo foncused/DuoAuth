@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class DuoAuth extends JavaPlugin {
 
-	private Map<String, Boolean> players = Collections.synchronizedMap(new HashMap<>());
+	private final Map<String, Boolean> players = Collections.synchronizedMap(new HashMap<>());
 	private ConfigManager cm;
 	private AuthDatabase db;
 
