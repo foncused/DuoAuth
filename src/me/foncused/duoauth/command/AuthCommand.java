@@ -23,18 +23,18 @@ import java.util.concurrent.TimeUnit;
 
 public class AuthCommand implements CommandExecutor {
 
-	private DuoAuth plugin;
-	private Map<String, Boolean> players;
-	private ConfigManager cm;
-	private AuthDatabase db;
-	private Set<String> auths;
-	private Set<String> cooldowns;
+	private final DuoAuth plugin;
+	private final Map<String, Boolean> players;
+	private final ConfigManager cm;
+	private final AuthDatabase db;
+	private final Set<String> auths;
+	private final Set<String> cooldowns;
 
-	public AuthCommand(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
+	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = players;
-		this.db = db;
-		this.cm = cm;
+		this.players = this.plugin.getPlayers();
+		this.cm = this.plugin.getConfigManager();
+		this.db = this.plugin.getDatabase();
 		this.auths = new HashSet<>();
 		this.cooldowns = new HashSet<>();
 	}

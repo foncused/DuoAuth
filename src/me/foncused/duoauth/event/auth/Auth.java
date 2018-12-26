@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class Auth implements Listener {
 
-	private Map<String, Boolean> players;
+	private final Map<String, Boolean> players;
 
 	public Auth(final Map<String, Boolean> players) {
 		this.players = players;

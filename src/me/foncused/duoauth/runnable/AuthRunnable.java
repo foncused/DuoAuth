@@ -20,16 +20,16 @@ import java.util.UUID;
 
 public class AuthRunnable {
 
-	private DuoAuth plugin;
-	private Map<String, Boolean> players;
-	private ConfigManager cm;
-	private AuthDatabase db;
+	private final DuoAuth plugin;
+	private final Map<String, Boolean> players;
+	private final ConfigManager cm;
+	private final AuthDatabase db;
 
-	public AuthRunnable(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
+	public AuthRunnable(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = players;
-		this.cm = cm;
-		this.db = db;
+		this.players = this.plugin.getPlayers();
+		this.cm = this.plugin.getConfigManager();
+		this.db = this.plugin.getDatabase();
 	}
 
 	public void runTimeoutTask() {

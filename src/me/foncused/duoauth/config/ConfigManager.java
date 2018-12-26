@@ -126,128 +126,64 @@ public class ConfigManager {
 		return this.costFactor;
 	}
 
-	public void setCostFactor(final int costFactor) {
-		this.costFactor = costFactor;
-	}
-
 	public int getCommandCooldown() {
 		return this.commandCooldown;
-	}
-
-	public void setCommandCooldown(final int commandCooldown) {
-		this.commandCooldown = commandCooldown;
 	}
 
 	public int getCommandAttempts() {
 		return this.commandAttempts;
 	}
 
-	public void setCommandAttempts(final int commandAttempts) {
-		this.commandAttempts = commandAttempts;
-	}
-
 	public String getPasswordDefault() {
 		return this.passwordDefault;
-	}
-
-	public void setPasswordDefault(final String passwordDefault) {
-		this.passwordDefault = passwordDefault;
 	}
 
 	public int getPasswordMinLength() {
 		return this.passwordMinLength;
 	}
 
-	public void setPasswordMinLength(final int passwordMinLength) {
-		this.passwordMinLength = passwordMinLength;
-	}
-
 	public boolean isPasswordBothCases() {
 		return this.passwordBothCases;
-	}
-
-	public void setPasswordBothCases(final boolean passwordBothCases) {
-		this.passwordBothCases = passwordBothCases;
 	}
 
 	public boolean isPasswordNumbers() {
 		return this.passwordNumbers;
 	}
 
-	public void setPasswordNumbers(final boolean passwordNumbers) {
-		this.passwordNumbers = passwordNumbers;
-	}
-
 	public boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
-	}
-
-	public void setPasswordSpecialChars(final boolean passwordSpecialChars) {
-		this.passwordSpecialChars = passwordSpecialChars;
 	}
 
 	public String getPinDefault() {
 		return this.pinDefault;
 	}
 
-	public void setPinDefault(final String pinDefault) {
-		this.pinDefault = pinDefault;
-	}
-
 	public int getPinMinLength() {
 		return this.pinMinLength;
-	}
-
-	public void setPinMinLength(final int pinMinLength) {
-		this.pinMinLength = pinMinLength;
 	}
 
 	public DatabaseOption getDatabaseOption() {
 		return this.databaseOption;
 	}
 
-	public void setDatabaseOption(final DatabaseOption databaseOption) {
-		this.databaseOption = databaseOption;
-	}
-
 	public boolean isDeauthAddressChanges() {
 		return this.deauthAddressChanges;
-	}
-
-	public void setDeauthAddressChanges(final boolean deauthAddressChanges) {
-		this.deauthAddressChanges = deauthAddressChanges;
 	}
 
 	public int getDeauthTimeout() {
 		return this.deauthTimeout;
 	}
 
-	public void setDeauthTimeout(final int deauthTimeout) {
-		this.deauthTimeout = deauthTimeout;
-	}
-
 	public boolean isDeauthTimeoutOnline() {
 		return this.deauthTimeoutOnline;
-	}
-
-	public void setDeauthTimeoutOnline(final boolean deauthTimeoutOnline) {
-		this.deauthTimeoutOnline = deauthTimeoutOnline;
 	}
 
 	public int getDeauthTimeoutCheckHeartbeat() {
 		return this.deauthTimeoutCheckHeartbeat;
 	}
 
-	public void setDeauthTimeoutCheckHeartbeat(final int deauthTimeoutCheckHeartbeat) {
-		this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
-	}
-
 	public boolean isLoading() {
 		return this.loading;
-	}
-
-	public void setLoading(final boolean loading) {
-		this.loading = loading;
 	}
 
 }

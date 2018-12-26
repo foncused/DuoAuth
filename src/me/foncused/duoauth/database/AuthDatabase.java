@@ -18,9 +18,9 @@ import java.util.Set;
 
 public class AuthDatabase {
 
-	private DuoAuth plugin;
-	private Map<String, Boolean> players;
-	private ConfigManager cm;
+	private final DuoAuth plugin;
+	private final Map<String, Boolean> players;
+	private final ConfigManager cm;
 	private final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	private enum Property {
@@ -45,10 +45,10 @@ public class AuthDatabase {
 
 	}
 
-	public AuthDatabase(final DuoAuth plugin, final Map<String, Boolean> players, final ConfigManager cm) {
+	public AuthDatabase(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = players;
-		this.cm = cm;
+		this.players = this.plugin.getPlayers();
+		this.cm = this.plugin.getConfigManager();
 	}
 
 	public synchronized String readPassword(final String uuid) {

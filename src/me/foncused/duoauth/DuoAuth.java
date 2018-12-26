@@ -62,40 +62,35 @@ public class DuoAuth extends JavaPlugin {
 	}
 
 	private void registerCommands() {
-		this.getCommand("auth").setExecutor(
-				new AuthCommand(
-						this,
-						this.players,
-						this.cm,
-						this.db
-				)
-		);
+		this.getCommand("auth").setExecutor(new AuthCommand(this));
 	}
 
 	private void registerDatabase() {
-		this.db = new AuthDatabase(
-				this,
-				this.players,
-				this.cm
-		);
+		this.db = new AuthDatabase(this);
 	}
 
 	private void registerEvents() {
 		final PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new AsyncPlayerPreLogin(this.cm, this.db), this);
-		pm.registerEvents(new Auth(this.players), this);
-		pm.registerEvents(new PlayerJoin(this.players, this.cm, this.db), this);
-		pm.registerEvents(new PlayerLogin(this.cm), this);
-		pm.registerEvents(new PlayerQuit(this.players), this);
+		pm.registerEvents(new AsyncPlayerPreLogin(this.getConfigManager(), this.getDatabase()), this);
+		pm.registerEvents(new Auth(this.getPlayers()), this);
+		pm.registerEvents(new PlayerJoin(this.getPlayers(), this.getConfigManager(), this.getDatabase()), this);
+		pm.registerEvents(new PlayerLogin(this.getConfigManager()), this);
+		pm.registerEvents(new PlayerQuit(this.getPlayers()), this);
 	}
 
 	private void registerRunnables() {
-		new AuthRunnable(
-				this,
-				this.players,
-				this.cm,
-				this.db
-		).runTimeoutTask();
+		new AuthRunnable(this).runTimeoutTask();
 	}
 
+	public Map<String, Boolean> getPlayers() {
+		return this.players;
+	}
+
+	public ConfigManager getConfigManager() {
+		return this.cm;
+	}
+
+	public AuthDatabase getDatabase() {
+		return this.db;
+	}
 }
