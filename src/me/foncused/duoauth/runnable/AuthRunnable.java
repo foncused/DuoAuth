@@ -50,7 +50,7 @@ public class AuthRunnable {
 								if(cm.isDeauthTimeoutOnline() && players.containsKey(uuid) && player.isOnline()) {
 									AuthUtilities.alertOne(
 											(Player) player,
-											ChatColor.RED + "Authentication has expired. Please use the /auth command to reauthenticate. Thank you!"
+											ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
 									);
 									AuthUtilities.notify(notify);
 									players.put(uuid, false);
