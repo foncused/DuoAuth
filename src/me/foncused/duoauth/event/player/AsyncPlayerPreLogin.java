@@ -7,12 +7,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 
+import java.util.UUID;
+
 import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER;
 
 public class AsyncPlayerPreLogin implements Listener {
 
-	private ConfigManager cm;
-	private AuthDatabase db;
+	private final ConfigManager cm;
+	private final AuthDatabase db;
 
 	public AsyncPlayerPreLogin(final ConfigManager cm, final AuthDatabase db) {
 		this.cm = cm;
@@ -21,7 +23,7 @@ public class AsyncPlayerPreLogin implements Listener {
 
 	@EventHandler
 	public void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
-		final String uuid = event.getUniqueId().toString();
+		final UUID uuid = event.getUniqueId();
 		if(this.db.contains(uuid)) {
 			final int commandAttempts = this.cm.getCommandAttempts();
 			if(commandAttempts != 0 && this.db.readAttempts(uuid) >= commandAttempts) {

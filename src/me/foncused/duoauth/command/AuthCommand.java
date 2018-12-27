@@ -19,16 +19,17 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class AuthCommand implements CommandExecutor {
 
 	private final DuoAuth plugin;
-	private final Map<String, Boolean> players;
+	private final Map<UUID, Boolean> players;
 	private final ConfigManager cm;
 	private final AuthDatabase db;
-	private final Set<String> auths;
-	private final Set<String> cooldowns;
+	private final Set<UUID> auths;
+	private final Set<UUID> cooldowns;
 
 	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
@@ -44,7 +45,8 @@ public class AuthCommand implements CommandExecutor {
 			if(sender instanceof Player) {
 				final Player player = (Player) sender;
 				if(player.hasPermission("duoauth.auth")) {
-					final String uuid = player.getUniqueId().toString();
+					final UUID uuid = player.getUniqueId();
+					final String u = uuid.toString();
 					final String name = player.getName();
 					final int commandCooldown = this.cm.getCommandCooldown();
 					switch(args.length) {
@@ -70,10 +72,10 @@ public class AuthCommand implements CommandExecutor {
 																			players.put(uuid, true);
 																		}
 																		AuthUtilities.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
-																		AuthUtilities.notify("Reset authentication for user " + uuid + " (" + name + ")");
+																		AuthUtilities.notify("Reset authentication for user " + u + " (" + name + ")");
 																	} else {
 																		AuthUtilities.alertOne(player, ChatColor.RED + "Failed to reset authentication. Please contact the server administrators if you are receiving this message.");
-																		AuthUtilities.notify("Failed to reset authentication for user " + uuid + " (" + name + ")");
+																		AuthUtilities.notify("Failed to reset authentication for user " + u + " (" + name + ")");
 																	}
 																})
 																.execute();
@@ -97,19 +99,20 @@ public class AuthCommand implements CommandExecutor {
 								if(player.hasPermission("duoauth.admin")) {
 									final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[1]);
 									final String target = targetOffline.getName();
-									final String u = targetOffline.getUniqueId().toString();
+									final UUID targetId = targetOffline.getUniqueId();
 									TaskChainManager.newChain()
-											.asyncFirst(() -> this.db.delete(u))
+											.asyncFirst(() -> this.db.delete(targetId))
 											.syncLast(deleted -> {
+												final String id = targetId.toString();
 												if(deleted) {
 													if(targetOffline.isOnline()) {
-														this.players.put(u, true);
+														this.players.put(targetId, true);
 													}
 													AuthUtilities.alertOne(player, ChatColor.GREEN + "Authentication for user " + target + " has been reset.");
-													AuthUtilities.notify("Reset authentication for user " + uuid + " (" + name + ")");
+													AuthUtilities.notify("Reset authentication for user " + id + " (" + target + ")");
 												} else {
 													AuthUtilities.alertOne(player, ChatColor.RED + "Failed to reset authentication for user " + target + ". Has this player set up authentication?");
-													AuthUtilities.notify("Failed to reset authentication for user " + uuid + " (" + name + ")");
+													AuthUtilities.notify("Failed to reset authentication for user " + id + " (" + target + ")");
 												}
 											})
 											.execute();
@@ -144,7 +147,7 @@ public class AuthCommand implements CommandExecutor {
 																TaskChainManager.newChain()
 																		.sync(() -> {
 																			AuthUtilities.alertOne(player, ChatColor.GOLD + "Setting up authentication...");
-																			AuthUtilities.notify("Setting up authentication for user " + uuid + " (" + name + ")...");
+																			AuthUtilities.notify("Setting up authentication for user " + u + " (" + name + ")...");
 																		})
 																		.execute();
 																final String pwhash = AuthUtilities.getSecureBCryptHash(password, costFactor);
@@ -157,10 +160,10 @@ public class AuthCommand implements CommandExecutor {
 																					players.put(uuid, true);
 																				}
 																				AuthUtilities.alertOne(player, ChatColor.GREEN + "Your credentials have been set!");
-																				AuthUtilities.notify("User " + uuid + " (" + name + ") successfully set up authentication");
+																				AuthUtilities.notify("User " + u + " (" + name + ") successfully set up authentication");
 																			} else {
 																				AuthUtilities.alertOne(player, ChatColor.RED + "Failed to set up authentication. Please contact the server administrators if you are receiving this message.");
-																				AuthUtilities.notify("User " + uuid + " (" + name + ") failed to set up authentication");
+																				AuthUtilities.notify("User " + u + " (" + name + ") failed to set up authentication");
 																			}
 																		})
 																		.execute();
@@ -169,7 +172,7 @@ public class AuthCommand implements CommandExecutor {
 																final int attempts = this.db.readAttempts(uuid);
 																if(commandAttempts != 0 && attempts >= commandAttempts) {
 																	AuthUtilities.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
-																	AuthUtilities.notify("User " + uuid + " (" + name + ") has failed authentication " + attempts + " times");
+																	AuthUtilities.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
 																	TaskChainManager.newChain()
 																			.delay(5, TimeUnit.SECONDS)
 																			.sync(() -> player.kickPlayer(AuthMessage.LOCKED.toString()))
@@ -179,7 +182,7 @@ public class AuthCommand implements CommandExecutor {
 																	TaskChainManager.newChain()
 																			.sync(() -> {
 																				AuthUtilities.alertOne(player, ChatColor.GOLD + "Authenticating...");
-																				AuthUtilities.notify("Authenticating user " + uuid + " (" + name + ")...");
+																				AuthUtilities.notify("Authenticating user " + u + " (" + name + ")...");
 																			})
 																			.execute();
 																	final String dbpassword = this.db.readPassword(uuid);
@@ -204,7 +207,7 @@ public class AuthCommand implements CommandExecutor {
 																	if(player.isOnline()) {
 																		this.players.put(uuid, true);
 																	}
-																	AuthUtilities.notify("User " + uuid + " (" + name + ") authenticated successfully");
+																	AuthUtilities.notify("User " + u + " (" + name + ") authenticated successfully");
 																} else {
 																	TaskChainManager.newChain()
 																			.async(() -> {
@@ -218,7 +221,7 @@ public class AuthCommand implements CommandExecutor {
 																	if(player.isOnline()) {
 																		this.players.put(uuid, false);
 																	}
-																	AuthUtilities.notify("User " + uuid + " (" + name + ") failed authentication");
+																	AuthUtilities.notify("User " + u + " (" + name + ") failed authentication");
 																}
 															}
 															this.auths.remove(uuid);

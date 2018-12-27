@@ -5,18 +5,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerQuit implements Listener {
 
-	private Map<String, Boolean> players;
+	private final Map<UUID, Boolean> players;
 
-	public PlayerQuit(final Map<String, Boolean> players) {
+	public PlayerQuit(final Map<UUID, Boolean> players) {
 		this.players = players;
 	}
 
 	@EventHandler
 	public void onPlayerQuit(final PlayerQuitEvent event) {
-		this.players.remove(event.getPlayer().getUniqueId().toString());
+		this.players.remove(event.getPlayer().getUniqueId());
 	}
 
 }

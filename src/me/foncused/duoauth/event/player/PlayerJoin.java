@@ -11,14 +11,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class PlayerJoin implements Listener {
 
-	private Map<String, Boolean> players;
-	private ConfigManager cm;
-	private AuthDatabase db;
+	private final Map<UUID, Boolean> players;
+	private final ConfigManager cm;
+	private final AuthDatabase db;
 
-	public PlayerJoin(final Map<String, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
+	public PlayerJoin(final Map<UUID, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
 		this.players = players;
 		this.cm = cm;
 		this.db = db;
@@ -27,7 +28,7 @@ public class PlayerJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
-		final String uuid = player.getUniqueId().toString();
+		final UUID uuid = player.getUniqueId();
 		TaskChainManager.newChain()
 				.asyncFirst(() -> this.db.contains(uuid))
 				.syncLast(contained -> {
@@ -50,11 +51,12 @@ public class PlayerJoin implements Listener {
 								.syncLast(written -> {
 									AuthUtilities.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
 									final String name = player.getName();
-									if(written) {
-										AuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
-									} else {
-										AuthUtilities.notify("User " + uuid + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
-									}
+									final String u = uuid.toString();
+									AuthUtilities.notify(
+											written ?
+													"User " + u + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful" :
+													"User " + u + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"
+									);
 								})
 								.execute();
 					} else {

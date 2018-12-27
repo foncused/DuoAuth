@@ -18,10 +18,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DuoAuth extends JavaPlugin {
 
-	private final Map<String, Boolean> players = Collections.synchronizedMap(new HashMap<>());
+	private final Map<UUID, Boolean> players = Collections.synchronizedMap(new HashMap<>());
 	private ConfigManager cm;
 	private AuthDatabase db;
 
@@ -82,7 +83,7 @@ public class DuoAuth extends JavaPlugin {
 		new AuthRunnable(this).runTimeoutTask();
 	}
 
-	public Map<String, Boolean> getPlayers() {
+	public Map<UUID, Boolean> getPlayers() {
 		return this.players;
 	}
 

@@ -21,7 +21,7 @@ import java.util.UUID;
 public class AuthRunnable {
 
 	private final DuoAuth plugin;
-	private final Map<String, Boolean> players;
+	private final Map<UUID, Boolean> players;
 	private final ConfigManager cm;
 	private final AuthDatabase db;
 
@@ -35,14 +35,14 @@ public class AuthRunnable {
 	public void runTimeoutTask() {
 		new BukkitRunnable() {
 			public void run() {
-				final Set<String> uuids = db.readAll();
+				final Set<UUID> uuids = db.readAll();
 				if(uuids != null && (!(uuids.isEmpty()))) {
 					uuids.forEach(uuid -> {
 						final String timestamp = db.readTimestamp(uuid);
 						if(timestamp != null) {
 							final double days = cm.getDeauthTimeout() / 24.0;
 							if(db.readAuthed(uuid) && getTimeDifference(timestamp, db.getDateFormat(), days * 2073600000) >= days) {
-								final OfflinePlayer player = Bukkit.getOfflinePlayer(UUID.fromString(uuid));
+								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
 								AuthUtilities.console(notify);

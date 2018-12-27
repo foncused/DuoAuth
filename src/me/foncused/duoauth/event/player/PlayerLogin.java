@@ -10,7 +10,7 @@ import static org.bukkit.event.player.PlayerLoginEvent.Result.KICK_OTHER;
 
 public class PlayerLogin implements Listener {
 
-	private ConfigManager cm;
+	private final ConfigManager cm;
 
 	public PlayerLogin(final ConfigManager cm) {
 		this.cm = cm;

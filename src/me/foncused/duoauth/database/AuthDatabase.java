@@ -11,15 +11,12 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class AuthDatabase {
 
 	private final DuoAuth plugin;
-	private final Map<String, Boolean> players;
+	private final Map<UUID, Boolean> players;
 	private final ConfigManager cm;
 	private final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
@@ -51,7 +48,7 @@ public class AuthDatabase {
 		this.cm = this.plugin.getConfigManager();
 	}
 
-	public synchronized String readPassword(final String uuid) {
+	public synchronized String readPassword(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.PASSWORD;
 		final String p = property.toString();
@@ -62,7 +59,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized boolean writePassword(final String uuid, final String password) {
+	public synchronized boolean writePassword(final UUID uuid, final String password) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.PASSWORD;
 		if(object != null) {
@@ -73,7 +70,7 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public synchronized String readPIN(final String uuid) {
+	public synchronized String readPIN(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.PIN;
 		final String p = property.toString();
@@ -84,7 +81,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized boolean writePIN(final String uuid, final String pin) {
+	public synchronized boolean writePIN(final UUID uuid, final String pin) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.PIN;
 		if(object != null) {
@@ -95,7 +92,7 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public synchronized boolean readAuthed(final String uuid) {
+	public synchronized boolean readAuthed(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.AUTHED;
 		final String p = property.toString();
@@ -106,7 +103,7 @@ public class AuthDatabase {
 		return true;
 	}
 
-	public synchronized boolean writeAuthed(final String uuid, final boolean authed) {
+	public synchronized boolean writeAuthed(final UUID uuid, final boolean authed) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.AUTHED;
 		if(object != null) {
@@ -117,7 +114,7 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public synchronized int readAttempts(final String uuid) {
+	public synchronized int readAttempts(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.ATTEMPTS;
 		final String p = property.toString();
@@ -128,7 +125,7 @@ public class AuthDatabase {
 		return -1;
 	}
 
-	public synchronized boolean writeAttempts(final String uuid, final int attempts) {
+	public synchronized boolean writeAttempts(final UUID uuid, final int attempts) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.ATTEMPTS;
 		if(object != null) {
@@ -139,7 +136,7 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public synchronized String readAddress(final String uuid) {
+	public synchronized String readAddress(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.IP;
 		final String p = property.toString();
@@ -150,7 +147,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized boolean writeAddress(final String uuid, final String ip) {
+	public synchronized boolean writeAddress(final UUID uuid, final String ip) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.IP;
 		if(object != null) {
@@ -161,7 +158,7 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public synchronized String readTimestamp(final String uuid) {
+	public synchronized String readTimestamp(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.TIMESTAMP;
 		final String p = property.toString();
@@ -172,7 +169,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized boolean writeTimestamp(final String uuid) {
+	public synchronized boolean writeTimestamp(final UUID uuid) {
 		final JsonObject object = this.read(uuid);
 		final Property property = Property.TIMESTAMP;
 		if(object != null) {
@@ -203,23 +200,23 @@ public class AuthDatabase {
 		return false;
 	}*/
 
-	private void readError(final String uuid, final Property property) {
+	private void readError(final UUID uuid, final Property property) {
 		AuthUtilities.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
 	}
 
-	private void writeError(final String uuid, final Property property) {
+	private void writeError(final UUID uuid, final Property property) {
 		AuthUtilities.consoleSevere("Unable to write property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
 	}
 
-	public synchronized boolean contains(final String uuid) {
+	public synchronized boolean contains(final UUID uuid) {
 		return new File(this.getJsonPath(uuid)).exists();
 	}
 
-	public synchronized boolean delete(final String uuid) {
+	public synchronized boolean delete(final UUID uuid) {
 		return new File(this.getJsonPath(uuid)).delete();
 	}
 
-	private synchronized JsonObject read(final String uuid) {
+	private synchronized JsonObject read(final UUID uuid) {
 		try {
 			final FileReader reader = new FileReader(new File(this.getJsonPath(uuid)));
 			final JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
@@ -231,14 +228,14 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized Set<String> readAll() {
+	public synchronized Set<UUID> readAll() {
 		final File[] files = new File(this.getDataFolder()).listFiles();
 		if(files != null) {
-			final Set<String> uuids = new HashSet<>();
+			final Set<UUID> uuids = new HashSet<>();
 			for(final File file : files) {
 				final String name = file.getName();
 				if(name.matches("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\\.json$")) {
-					uuids.add(name.split("\\.")[0]);
+					uuids.add(UUID.fromString(name.split("\\.")[0]));
 				}
 			}
 			return uuids;
@@ -246,7 +243,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public boolean write(final String uuid, final String password, final String pin, final int attempts, final String ip) {
+	public boolean write(final UUID uuid, final String password, final String pin, final int attempts, final String ip) {
 		final JsonObject object = new JsonObject();
 		object.addProperty(Property.PASSWORD.toString(), password);
 		object.addProperty(Property.PIN.toString(), pin);
@@ -257,7 +254,7 @@ public class AuthDatabase {
 		return this.write(uuid, object);
 	}
 
-	private synchronized boolean write(final String uuid, final JsonObject object) {
+	private synchronized boolean write(final UUID uuid, final JsonObject object) {
 		try {
 			final String dataPath = this.getDataFolder();
 			final File data = new File(dataPath);
@@ -284,8 +281,8 @@ public class AuthDatabase {
 		return false;
 	}
 
-	private String getJsonPath(final String uuid) {
-		return this.getDataFolder() + uuid + ".json";
+	private String getJsonPath(final UUID uuid) {
+		return this.getDataFolder() + uuid.toString() + ".json";
 	}
 
 	private String getDataFolder() {
