@@ -1,7 +1,7 @@
 package me.foncused.duoauth.event.auth;
 
 import me.foncused.duoauth.enumerable.AuthMessage;
-import me.foncused.duoauth.utility.AuthUtilities;
+import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -92,7 +92,7 @@ public class Auth implements Listener {
 	}
 
 	private void message(final Player player) {
-		AuthUtilities.alertOne(player, AuthMessage.PLAYER_NOT_AUTHED.toString());
+		AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_AUTHED.toString());
 	}
 
 }

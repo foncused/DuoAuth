@@ -3,7 +3,7 @@ package me.foncused.duoauth.runnable;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
-import me.foncused.duoauth.utility.AuthUtilities;
+import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -45,14 +45,14 @@ public class AuthRunnable {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
-								AuthUtilities.console(notify);
+								AuthUtil.console(notify);
 								db.writeAuthed(uuid, false);
 								if(cm.isDeauthTimeoutOnline() && players.containsKey(uuid) && player.isOnline()) {
-									AuthUtilities.alertOne(
+									AuthUtil.alertOne(
 											(Player) player,
 											ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
 									);
-									AuthUtilities.notify(notify);
+									AuthUtil.notify(notify);
 									players.put(uuid, false);
 								}
 							}

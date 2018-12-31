@@ -3,7 +3,7 @@ package me.foncused.duoauth.event.player;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
-import me.foncused.duoauth.utility.AuthUtilities;
+import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -39,7 +39,7 @@ public class PlayerJoin implements Listener {
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
 						this.players.put(uuid, false);
-						final String ip = AuthUtilities.getPlayerAddress(player);
+						final String ip = AuthUtil.getPlayerAddress(player);
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
 										uuid,
@@ -49,10 +49,10 @@ public class PlayerJoin implements Listener {
 										ip
 								))
 								.syncLast(written -> {
-									AuthUtilities.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
+									AuthUtil.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
 									final String name = player.getName();
 									final String u = uuid.toString();
-									AuthUtilities.notify(
+									AuthUtil.notify(
 											written ?
 													"User " + u + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful" :
 													"User " + u + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"

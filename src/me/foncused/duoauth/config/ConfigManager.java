@@ -3,7 +3,7 @@ package me.foncused.duoauth.config;
 import co.aikar.taskchain.TaskChain;
 import me.foncused.duoauth.enumerable.DatabaseOption;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
-import me.foncused.duoauth.utility.AuthUtilities;
+import me.foncused.duoauth.util.AuthUtil;
 
 public class ConfigManager {
 
@@ -28,75 +28,75 @@ public class ConfigManager {
 		this.loading = true;
 		if(costFactor < 12) {
 			this.costFactor = 12;
-			AuthUtilities.consoleWarning("Bcrypt cost factor set to " + costFactor + " is too low, reverting to minimum...");
+			AuthUtil.consoleWarning("Bcrypt cost factor set to " + costFactor + " is too low, reverting to minimum...");
 		} else if(costFactor > 30) {
 			this.costFactor = 30;
-			AuthUtilities.consoleWarning("Bycrypt cost factor set to " + costFactor + " is too high, reverting to maximum...");
+			AuthUtil.consoleWarning("Bycrypt cost factor set to " + costFactor + " is too high, reverting to maximum...");
 		} else {
 			this.costFactor = costFactor;
 		}
-		AuthUtilities.console("Bcrypt cost factor set to " + this.costFactor);
+		AuthUtil.console("Bcrypt cost factor set to " + this.costFactor);
 		if(commandCooldown <= 0) {
 			this.commandCooldown = 20;
-			AuthUtilities.consoleWarning("Command cooldown time set to " + commandCooldown + " seconds is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Command cooldown time set to " + commandCooldown + " seconds is not safe, reverting to default...");
 		} else {
 			this.commandCooldown = commandCooldown;
 		}
-		AuthUtilities.console("Command cooldown time set to " + this.commandCooldown + " seconds");
+		AuthUtil.console("Command cooldown time set to " + this.commandCooldown + " seconds");
 		if(commandAttempts < 0) {
 			this.commandAttempts = 10;
-			AuthUtilities.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default...");
 		} else {
 			this.commandAttempts = commandAttempts;
 		}
-		AuthUtilities.console(this.commandAttempts != 0 ? "Maximum authentication attempts set to " + this.commandAttempts + " attempts" : "Maximum authentication attempts check disabled");
+		AuthUtil.console(this.commandAttempts != 0 ? "Maximum authentication attempts set to " + this.commandAttempts + " attempts" : "Maximum authentication attempts check disabled");
 		if(passwordMinLength <= 0) {
 			this.passwordMinLength = 8;
-			AuthUtilities.consoleWarning("Minimum password length set to " + passwordMinLength + " is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Minimum password length set to " + passwordMinLength + " is not safe, reverting to default...");
 		} else {
 			this.passwordMinLength = passwordMinLength;
 		}
-		AuthUtilities.console("Minimum password length set to " + this.passwordMinLength);
+		AuthUtil.console("Minimum password length set to " + this.passwordMinLength);
 		this.passwordBothCases = passwordBothCases;
-		AuthUtilities.console(this.passwordBothCases ? "Both cases required" : "Both cases not required");
+		AuthUtil.console(this.passwordBothCases ? "Both cases required" : "Both cases not required");
 		this.passwordNumbers = passwordNumbers;
-		AuthUtilities.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
+		AuthUtil.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
 		this.passwordSpecialChars = passwordSpecialChars;
-		AuthUtilities.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
+		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
 		if(pinMinLength <= 0) {
 			this.pinMinLength = 4;
-			AuthUtilities.consoleWarning("Minimum PIN length set to " + pinMinLength + " is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Minimum PIN length set to " + pinMinLength + " is not safe, reverting to default...");
 		} else {
 			this.pinMinLength = pinMinLength;
 		}
-		AuthUtilities.console("Minimum PIN length set to " + this.pinMinLength);
+		AuthUtil.console("Minimum PIN length set to " + this.pinMinLength);
 		DatabaseOption databaseOption;
 		try {
 			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
 		} catch(final IllegalArgumentException e) {
 			databaseOption = DatabaseOption.JSON;
-			AuthUtilities.consoleWarning("Database option set to " + database + " is not safe, reverting...");
+			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting...");
 		}
 		this.databaseOption = databaseOption;
-		AuthUtilities.console("Database option set to " + this.databaseOption.toString());
+		AuthUtil.console("Database option set to " + this.databaseOption.toString());
 		this.deauthAddressChanges = deauthAddressChanges;
-		AuthUtilities.console(this.deauthAddressChanges ? "IP address check enabled" : "IP address check disabled");
+		AuthUtil.console(this.deauthAddressChanges ? "IP address check enabled" : "IP address check disabled");
 		if(deauthTimeout <= 0) {
 			this.deauthTimeout = 48;
-			AuthUtilities.consoleWarning("Deauth timeout set to " + deauthTimeout + " hours is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Deauth timeout set to " + deauthTimeout + " hours is not safe, reverting to default...");
 		} else {
 			this.deauthTimeout = deauthTimeout;
 		}
-		AuthUtilities.console("Deauth timeout set to " + this.deauthTimeout + " hours");
+		AuthUtil.console("Deauth timeout set to " + this.deauthTimeout + " hours");
 		this.deauthTimeoutOnline = deauthTimeoutOnline;
-		AuthUtilities.console(this.deauthTimeoutOnline ? "Deauth timeout online mode enabled" : "Deauth timeout online mode disabled");
+		AuthUtil.console(this.deauthTimeoutOnline ? "Deauth timeout online mode enabled" : "Deauth timeout online mode disabled");
 		if(deauthTimeoutCheckHeartbeat <= 0) {
 			this.deauthTimeoutCheckHeartbeat = 5;
-			AuthUtilities.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
 		} else {
 			this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
 		}
-		AuthUtilities.console("Deauth timeout check heartbeat set to " + this.deauthTimeoutCheckHeartbeat + " minutes");
+		AuthUtil.console("Deauth timeout check heartbeat set to " + this.deauthTimeoutCheckHeartbeat + " minutes");
 		final TaskChain chain = TaskChainManager.newChain();
 		chain
 				.sync(() -> {
@@ -105,18 +105,18 @@ public class ConfigManager {
 
 					} else {
 						chain.setTaskData("pin-default", "1234");
-						AuthUtilities.consoleWarning("Default PIN set to " + pinDefault + " is not numeric, reverting to default...");
+						AuthUtil.consoleWarning("Default PIN set to " + pinDefault + " is not numeric, reverting to default...");
 					}
 				})
 				.async(() -> {
-					chain.setTaskData("password", AuthUtilities.getSecureBCryptHash(passwordDefault, this.costFactor));
-					chain.setTaskData("pin", AuthUtilities.getSecureBCryptHash((String) chain.getTaskData("pin-default"), this.costFactor));
+					chain.setTaskData("password", AuthUtil.getSecureBCryptHash(passwordDefault, this.costFactor));
+					chain.setTaskData("pin", AuthUtil.getSecureBCryptHash((String) chain.getTaskData("pin-default"), this.costFactor));
 				})
 				.sync(() -> {
 					this.passwordDefault = (String) chain.getTaskData("password");
-					AuthUtilities.console("Default password hash for 'duoauth.enforced' is " + this.passwordDefault);
+					AuthUtil.console("Default password hash for 'duoauth.enforced' is " + this.passwordDefault);
 					this.pinDefault = (String) chain.getTaskData("pin");
-					AuthUtilities.console("Default PIN hash for 'duoauth.enforced' is " + this.pinDefault);
+					AuthUtil.console("Default PIN hash for 'duoauth.enforced' is " + this.pinDefault);
 					this.loading = false;
 				})
 				.execute();

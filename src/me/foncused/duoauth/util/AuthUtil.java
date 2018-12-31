@@ -1,11 +1,11 @@
-package me.foncused.duoauth.utility;
+package me.foncused.duoauth.util;
 
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class AuthUtilities {
+public class AuthUtil {
 
 	private static final String PREFIX = "[DuoAuth] ";
 

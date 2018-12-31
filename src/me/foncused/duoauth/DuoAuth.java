@@ -62,12 +62,12 @@ public class DuoAuth extends JavaPlugin {
 		);
 	}
 
-	private void registerCommands() {
-		this.getCommand("auth").setExecutor(new AuthCommand(this));
-	}
-
 	private void registerDatabase() {
 		this.db = new AuthDatabase(this);
+	}
+
+	private void registerCommands() {
+		this.getCommand("auth").setExecutor(new AuthCommand(this));
 	}
 
 	private void registerEvents() {
