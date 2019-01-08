@@ -286,7 +286,7 @@ public class AuthDatabase {
 	}
 
 	private String getDataFolder() {
-		return this.plugin.getDataFolder() + "/data/";
+		return this.plugin.getDataFolder().getPath() + "/data/";
 	}
 
 	public String getDateFormat() {
