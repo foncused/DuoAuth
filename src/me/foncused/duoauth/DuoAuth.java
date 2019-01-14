@@ -72,11 +72,11 @@ public class DuoAuth extends JavaPlugin {
 
 	private void registerEvents() {
 		final PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new AsyncPlayerPreLogin(this.getConfigManager(), this.getDatabase()), this);
-		pm.registerEvents(new Auth(this.getPlayers()), this);
-		pm.registerEvents(new PlayerJoin(this.getPlayers(), this.getConfigManager(), this.getDatabase()), this);
-		pm.registerEvents(new PlayerLogin(this.getConfigManager()), this);
-		pm.registerEvents(new PlayerQuit(this.getPlayers()), this);
+		pm.registerEvents(new AsyncPlayerPreLogin(this.cm, this.db), this);
+		pm.registerEvents(new Auth(this.players), this);
+		pm.registerEvents(new PlayerJoin(this.players, this.cm, this.db), this);
+		pm.registerEvents(new PlayerLogin(this.cm), this);
+		pm.registerEvents(new PlayerQuit(this.players), this);
 	}
 
 	private void registerRunnables() {
