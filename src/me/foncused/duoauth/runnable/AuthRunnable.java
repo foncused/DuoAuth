@@ -34,6 +34,7 @@ public class AuthRunnable {
 
 	public void runTimeoutTask() {
 		new BukkitRunnable() {
+			@Override
 			public void run() {
 				final Set<UUID> uuids = db.readAll();
 				if(uuids != null && (!(uuids.isEmpty()))) {

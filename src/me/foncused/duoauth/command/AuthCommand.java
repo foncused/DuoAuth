@@ -61,6 +61,7 @@ public class AuthCommand implements CommandExecutor {
 														if(!(this.cooldowns.contains(uuid))) {
 															this.cooldowns.add(uuid);
 															new BukkitRunnable() {
+																@Override
 																public void run() {
 																	cooldowns.remove(uuid);
 																}
@@ -101,6 +102,7 @@ public class AuthCommand implements CommandExecutor {
 														if(!(this.cooldowns.contains(uuid))) {
 															this.cooldowns.add(uuid);
 															new BukkitRunnable() {
+																@Override
 																public void run() {
 																	cooldowns.remove(uuid);
 																}
@@ -205,6 +207,7 @@ public class AuthCommand implements CommandExecutor {
 												if(!(this.auths.contains(uuid))) {
 													this.cooldowns.add(uuid);
 													new BukkitRunnable() {
+														@Override
 														public void run() {
 															cooldowns.remove(uuid);
 														}
