@@ -22,18 +22,23 @@ import java.util.UUID;
 
 public class DuoAuth extends JavaPlugin {
 
-	private final Map<UUID, Boolean> players = Collections.synchronizedMap(new HashMap<>());
+	private Map<UUID, Boolean> players;
 	private ConfigManager cm;
 	private AuthDatabase db;
 
 	@Override
 	public void onEnable() {
+		this.registerPlayers();
 		this.loadDependencies();
 		this.registerConfig();
 		this.registerDatabase();
 		this.registerCommands();
 		this.registerEvents();
 		this.registerRunnables();
+	}
+
+	private void registerPlayers() {
+		this.players = Collections.synchronizedMap(new HashMap<>());
 	}
 
 	private void loadDependencies() {
