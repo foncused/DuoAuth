@@ -3,7 +3,6 @@ package me.foncused.duoauth.database;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.foncused.duoauth.DuoAuth;
-import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.util.AuthUtil;
 
 import java.io.File;
@@ -11,13 +10,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class AuthDatabase {
 
 	private final DuoAuth plugin;
-	private final Map<UUID, Boolean> players;
-	private final ConfigManager cm;
 	private final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	private enum Property {
@@ -44,8 +44,6 @@ public class AuthDatabase {
 
 	public AuthDatabase(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = this.plugin.getPlayers();
-		this.cm = this.plugin.getConfigManager();
 	}
 
 	public synchronized String readPassword(final UUID uuid) {
@@ -247,7 +245,7 @@ public class AuthDatabase {
 		final JsonObject object = new JsonObject();
 		object.addProperty(Property.PASSWORD.toString(), password);
 		object.addProperty(Property.PIN.toString(), pin);
-		object.addProperty(Property.AUTHED.toString(), this.players.getOrDefault(uuid, false));
+		object.addProperty(Property.AUTHED.toString(), this.plugin.containsPlayer(uuid));
 		object.addProperty(Property.ATTEMPTS.toString(), attempts);
 		object.addProperty(Property.IP.toString(), ip);
 		object.addProperty(Property.TIMESTAMP.toString(), this.getFormattedTime(this.DATE_FORMAT));

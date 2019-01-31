@@ -1,5 +1,6 @@
 package me.foncused.duoauth.event.player;
 
+import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
@@ -10,19 +11,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.util.Map;
 import java.util.UUID;
 
 public class PlayerJoin implements Listener {
 
-	private final Map<UUID, Boolean> players;
+	private final DuoAuth plugin;
 	private final ConfigManager cm;
 	private final AuthDatabase db;
 
-	public PlayerJoin(final Map<UUID, Boolean> players, final ConfigManager cm, final AuthDatabase db) {
-		this.players = players;
-		this.cm = cm;
-		this.db = db;
+	public PlayerJoin(final DuoAuth plugin) {
+		this.plugin = plugin;
+		this.cm = this.plugin.getConfigManager();
+		this.db = this.plugin.getDatabase();
 	}
 
 	@EventHandler
@@ -35,10 +35,10 @@ public class PlayerJoin implements Listener {
 					if(contained) {
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.readAuthed(uuid))
-								.syncLast(authed -> this.players.put(uuid, authed))
+								.syncLast(authed -> this.plugin.setPlayer(uuid, authed))
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
-						this.players.put(uuid, false);
+						this.plugin.setPlayer(uuid, false);
 						final String ip = AuthUtil.getPlayerAddress(player);
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
@@ -60,7 +60,7 @@ public class PlayerJoin implements Listener {
 								})
 								.execute();
 					} else {
-						this.players.put(uuid, true);
+						this.plugin.setPlayer(uuid, true);
 					}
 				})
 				.execute();

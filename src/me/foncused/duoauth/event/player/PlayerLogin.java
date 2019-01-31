@@ -1,5 +1,6 @@
 package me.foncused.duoauth.event.player;
 
+import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -12,8 +13,8 @@ public class PlayerLogin implements Listener {
 
 	private final ConfigManager cm;
 
-	public PlayerLogin(final ConfigManager cm) {
-		this.cm = cm;
+	public PlayerLogin(final DuoAuth plugin) {
+		this.cm = plugin.getConfigManager();
 	}
 
 	@EventHandler

@@ -1,5 +1,6 @@
 package me.foncused.duoauth.event.player;
 
+import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.AuthMessage;
@@ -16,9 +17,9 @@ public class AsyncPlayerPreLogin implements Listener {
 	private final ConfigManager cm;
 	private final AuthDatabase db;
 
-	public AsyncPlayerPreLogin(final ConfigManager cm, final AuthDatabase db) {
-		this.cm = cm;
-		this.db = db;
+	public AsyncPlayerPreLogin(final DuoAuth plugin) {
+		this.cm = plugin.getConfigManager();
+		this.db = plugin.getDatabase();
 	}
 
 	@EventHandler

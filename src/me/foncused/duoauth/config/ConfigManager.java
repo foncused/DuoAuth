@@ -24,7 +24,23 @@ public class ConfigManager {
 	private int deauthTimeoutCheckHeartbeat;
 	private boolean loading;
 
-	public ConfigManager(final int costFactor, final int commandCooldown, final int commandAttempts, final String passwordDefault, final int passwordMinLength, final boolean passwordBothCases, final boolean passwordNumbers, final boolean passwordSpecialChars, final String pinDefault, final int pinMinLength, final String database, final boolean deauthAddressChanges, final int deauthTimeout, final boolean deauthTimeoutOnline, final int deauthTimeoutCheckHeartbeat) {
+	public ConfigManager(
+			final int costFactor,
+			final int commandCooldown,
+			final int commandAttempts,
+			final String passwordDefault,
+			final int passwordMinLength,
+			final boolean passwordBothCases,
+			final boolean passwordNumbers,
+			final boolean passwordSpecialChars,
+			final String pinDefault,
+			final int pinMinLength,
+			final String database,
+			final boolean deauthAddressChanges,
+			final int deauthTimeout,
+			final boolean deauthTimeoutOnline,
+			final int deauthTimeoutCheckHeartbeat
+	) {
 		this.loading = true;
 		if(costFactor < 12) {
 			this.costFactor = 12;

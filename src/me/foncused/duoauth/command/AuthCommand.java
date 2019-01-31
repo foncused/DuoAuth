@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -25,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 public class AuthCommand implements CommandExecutor {
 
 	private final DuoAuth plugin;
-	private final Map<UUID, Boolean> players;
 	private final ConfigManager cm;
 	private final AuthDatabase db;
 	private final Set<UUID> auths;
@@ -33,7 +31,6 @@ public class AuthCommand implements CommandExecutor {
 
 	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = this.plugin.getPlayers();
 		this.cm = this.plugin.getConfigManager();
 		this.db = this.plugin.getDatabase();
 		this.auths = new HashSet<>();
@@ -57,7 +54,7 @@ public class AuthCommand implements CommandExecutor {
 											.asyncFirst(() -> this.db.contains(uuid))
 											.syncLast(contained -> {
 												if(contained) {
-													if(this.players.get(uuid)) {
+													if(this.plugin.getPlayer(uuid)) {
 														if(!(this.cooldowns.contains(uuid))) {
 															this.cooldowns.add(uuid);
 															new BukkitRunnable() {
@@ -71,7 +68,7 @@ public class AuthCommand implements CommandExecutor {
 																	.syncLast(deauthed -> {
 																		if(deauthed) {
 																			if(player.isOnline()) {
-																				this.players.put(uuid, false);
+																				this.plugin.setPlayer(uuid, false);
 																			}
 																			AuthUtil.alertOne(player, ChatColor.GREEN + "Your have deauthenticated successfully. To continue playing, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
 																			AuthUtil.notify("Deauthenticated user " + u + " (" + name + ")");
@@ -98,7 +95,7 @@ public class AuthCommand implements CommandExecutor {
 											.asyncFirst(() -> this.db.contains(uuid))
 											.syncLast(contained -> {
 												if(contained) {
-													if(this.players.get(uuid)) {
+													if(this.plugin.getPlayer(uuid)) {
 														if(!(this.cooldowns.contains(uuid))) {
 															this.cooldowns.add(uuid);
 															new BukkitRunnable() {
@@ -112,7 +109,7 @@ public class AuthCommand implements CommandExecutor {
 																	.syncLast(deleted -> {
 																		if(deleted) {
 																			if(player.isOnline()) {
-																				this.players.put(uuid, true);
+																				this.plugin.setPlayer(uuid, true);
 																			}
 																			AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
 																			AuthUtil.notify("Reset authentication for user " + u + " (" + name + ")");
@@ -152,7 +149,7 @@ public class AuthCommand implements CommandExecutor {
 													final String id = targetId.toString();
 													if(deauthed) {
 														if(targetOffline.isOnline()) {
-															this.players.put(targetId, false);
+															this.plugin.setPlayer(targetId, false);
 															AuthUtil.alertOne((Player) targetOffline, ChatColor.RED + "You have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!");
 														}
 														AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
@@ -178,7 +175,7 @@ public class AuthCommand implements CommandExecutor {
 													final String id = targetId.toString();
 													if(deleted) {
 														if(targetOffline.isOnline()) {
-															this.players.put(targetId, true);
+															this.plugin.setPlayer(targetId, true);
 															AuthUtil.alertOne((Player) targetOffline, ChatColor.GREEN + "Your credentials have been reset by an administrator.");
 														}
 														AuthUtil.alertOne(player, ChatColor.GREEN + "Authentication for user " + target + " has been reset.");
@@ -232,7 +229,7 @@ public class AuthCommand implements CommandExecutor {
 																			.sync(() -> {
 																				if(written) {
 																					if(player.isOnline()) {
-																						this.players.put(uuid, true);
+																						this.plugin.setPlayer(uuid, true);
 																					}
 																					AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been set!");
 																					AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
@@ -280,7 +277,7 @@ public class AuthCommand implements CommandExecutor {
 																				})
 																				.execute();
 																		if(player.isOnline()) {
-																			this.players.put(uuid, true);
+																			this.plugin.setPlayer(uuid, true);
 																		}
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {
@@ -294,7 +291,7 @@ public class AuthCommand implements CommandExecutor {
 																				})
 																				.execute();
 																		if(player.isOnline()) {
-																			this.players.put(uuid, false);
+																			this.plugin.setPlayer(uuid, false);
 																		}
 																		AuthUtil.notify("User " + u + " (" + name + ") failed authentication");
 																	}

@@ -14,20 +14,17 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 public class AuthRunnable {
 
 	private final DuoAuth plugin;
-	private final Map<UUID, Boolean> players;
 	private final ConfigManager cm;
 	private final AuthDatabase db;
 
 	public AuthRunnable(final DuoAuth plugin) {
 		this.plugin = plugin;
-		this.players = this.plugin.getPlayers();
 		this.cm = this.plugin.getConfigManager();
 		this.db = this.plugin.getDatabase();
 	}
@@ -48,13 +45,13 @@ public class AuthRunnable {
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
 								AuthUtil.console(notify);
 								db.writeAuthed(uuid, false);
-								if(cm.isDeauthTimeoutOnline() && players.containsKey(uuid) && player.isOnline()) {
+								if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
 									AuthUtil.alertOne(
 											(Player) player,
 											ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
 									);
 									AuthUtil.notify(notify);
-									players.put(uuid, false);
+									plugin.setPlayer(uuid, false);
 								}
 							}
 						}
