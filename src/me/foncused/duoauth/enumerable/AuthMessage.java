@@ -14,9 +14,13 @@ public enum AuthMessage {
 
 	private final String message;
 
-	AuthMessage(final String message) { this.message = message; }
+	AuthMessage(final String message) {
+		this.message = message;
+	}
 
 	@Override
-	public String toString() { return this.message; }
+	public String toString() {
+		return this.message;
+	}
 
 }
