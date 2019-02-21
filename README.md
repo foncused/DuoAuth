@@ -2,7 +2,7 @@
 ![DuoAuth](https://i.imgur.com/nnYcoeV.png)
 
 ### Description:
-"DuoAuth" is an adaptive authentication plugin designed to safeguard your Spigot server against impersonation, by requiring a password and PIN combo, before players can chat, move, interact, or play on the server.
+"DuoAuth" is an adaptive authentication plugin designed to safeguard your Spigot server against impersonation by requiring a password and PIN combo before players can chat, move, interact, or play on the server.
 
 What do I mean by *adaptive*? DuoAuth uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) cryptographic hashing function to store credentials in 184-bit digests, allowing a configurable "cost factor" parameter to make the function **arbitrarily slow**.
 
