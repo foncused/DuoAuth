@@ -4,6 +4,7 @@ import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.AuthMessage;
+import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
 import me.foncused.duoauth.util.AuthUtil;
@@ -48,36 +49,40 @@ public class AuthCommand implements CommandExecutor {
 					final int commandCooldown = this.cm.getCommandCooldown();
 					switch(args.length) {
 						case 1:
-							switch(args[0]) {
+							switch(args[0].toLowerCase()) {
 								case "deauth":
 									TaskChainManager.newChain()
 											.asyncFirst(() -> this.db.contains(uuid))
 											.syncLast(contained -> {
 												if(contained) {
 													if(this.plugin.getPlayer(uuid)) {
-														if(!(this.cooldowns.contains(uuid))) {
-															this.cooldowns.add(uuid);
-															new BukkitRunnable() {
-																@Override
-																public void run() {
-																	cooldowns.remove(uuid);
-																}
-															}.runTaskLater(this.plugin, commandCooldown * 20);
-															TaskChainManager.newChain()
-																	.asyncFirst(() -> this.db.writeAuthed(uuid, false))
-																	.syncLast(deauthed -> {
-																		if(deauthed) {
-																			if(player.isOnline()) {
-																				this.plugin.setPlayer(uuid, false);
+														if(player.hasPermission("duoauth.bypass") || (!(this.cooldowns.contains(uuid)))) {
+															if(!(this.auths.contains(uuid))) {
+																this.cooldowns.add(uuid);
+																new BukkitRunnable() {
+																	@Override
+																	public void run() {
+																		cooldowns.remove(uuid);
+																	}
+																}.runTaskLater(this.plugin, commandCooldown * 20);
+																TaskChainManager.newChain()
+																		.asyncFirst(() -> this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false))
+																		.syncLast(deauthed -> {
+																			if(deauthed) {
+																				if(player.isOnline()) {
+																					this.plugin.setPlayer(uuid, false);
+																				}
+																				AuthUtil.alertOne(player, ChatColor.GREEN + "Your have deauthenticated successfully. To continue playing, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
+																				AuthUtil.notify("Deauthenticated user " + u + " (" + name + ")");
+																			} else {
+																				AuthUtil.alertOne(player, ChatColor.RED + "Deauthentication failed. Please contact the server administrators if you are receiving this message.");
+																				AuthUtil.notify("Failed to deauthenticate user " + u + " (" + name + ")");
 																			}
-																			AuthUtil.alertOne(player, ChatColor.GREEN + "Your have deauthenticated successfully. To continue playing, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
-																			AuthUtil.notify("Deauthenticated user " + u + " (" + name + ")");
-																		} else {
-																			AuthUtil.alertOne(player, ChatColor.RED + "Deauthentication failed. Please contact the server administrators if you are receiving this message.");
-																			AuthUtil.notify("Failed to deauthenticate user " + u + " (" + name + ")");
-																		}
-																	})
-																	.execute();
+																		})
+																		.execute();
+															} else {
+																AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS.toString());
+															}
 														} else {
 															player.sendMessage(AuthMessage.MUST_WAIT.toString());
 														}
@@ -96,29 +101,33 @@ public class AuthCommand implements CommandExecutor {
 											.syncLast(contained -> {
 												if(contained) {
 													if(this.plugin.getPlayer(uuid)) {
-														if(!(this.cooldowns.contains(uuid))) {
-															this.cooldowns.add(uuid);
-															new BukkitRunnable() {
-																@Override
-																public void run() {
-																	cooldowns.remove(uuid);
-																}
-															}.runTaskLater(this.plugin, commandCooldown * 20);
-															TaskChainManager.newChain()
-																	.asyncFirst(() -> this.db.delete(uuid))
-																	.syncLast(deleted -> {
-																		if(deleted) {
-																			if(player.isOnline()) {
-																				this.plugin.setPlayer(uuid, true);
+														if(player.hasPermission("duoauth.bypass") || (!(this.cooldowns.contains(uuid)))) {
+															if(!(this.auths.contains(uuid))) {
+																this.cooldowns.add(uuid);
+																new BukkitRunnable() {
+																	@Override
+																	public void run() {
+																		cooldowns.remove(uuid);
+																	}
+																}.runTaskLater(this.plugin, commandCooldown * 20);
+																TaskChainManager.newChain()
+																		.asyncFirst(() -> this.db.delete(uuid))
+																		.syncLast(deleted -> {
+																			if(deleted) {
+																				if(player.isOnline()) {
+																					this.plugin.setPlayer(uuid, true);
+																				}
+																				AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
+																				AuthUtil.notify("Reset authentication for user " + u + " (" + name + ")");
+																			} else {
+																				AuthUtil.alertOne(player, ChatColor.RED + "Failed to reset authentication. Please contact the server administrators if you are receiving this message.");
+																				AuthUtil.notify("Failed to reset authentication for user " + u + " (" + name + ")");
 																			}
-																			AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
-																			AuthUtil.notify("Reset authentication for user " + u + " (" + name + ")");
-																		} else {
-																			AuthUtil.alertOne(player, ChatColor.RED + "Failed to reset authentication. Please contact the server administrators if you are receiving this message.");
-																			AuthUtil.notify("Failed to reset authentication for user " + u + " (" + name + ")");
-																		}
-																	})
-																	.execute();
+																		})
+																		.execute();
+															} else {
+																AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS.toString());
+															}
 														} else {
 															player.sendMessage(AuthMessage.MUST_WAIT.toString());
 														}
@@ -137,58 +146,39 @@ public class AuthCommand implements CommandExecutor {
 							}
 							break;
 						case 2:
-							switch(args[0]) {
+							switch(args[0].toLowerCase()) {
 								case "deauth":
 									if(player.hasPermission("duoauth.admin")) {
 										final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[1]);
 										final String target = targetOffline.getName();
 										final UUID targetId = targetOffline.getUniqueId();
-										TaskChainManager.newChain()
-												.asyncFirst(() -> this.db.writeAuthed(uuid, false))
-												.syncLast(deauthed -> {
-													final String id = targetId.toString();
-													if(deauthed) {
-														if(targetOffline.isOnline()) {
-															this.plugin.setPlayer(targetId, false);
-															AuthUtil.alertOne((Player) targetOffline, ChatColor.RED + "You have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!");
+										if(!(this.auths.contains(targetId))) {
+											TaskChainManager.newChain()
+													.asyncFirst(() -> this.db.contains(uuid) && this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false))
+													.syncLast(deauthed -> {
+														final String id = targetId.toString();
+														if(deauthed) {
+															if(targetOffline.isOnline()) {
+																this.plugin.setPlayer(targetId, false);
+																AuthUtil.alertOne((Player) targetOffline, ChatColor.RED + "You have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!");
+															}
+															AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
+															AuthUtil.notify("Deauthentication of user " + id + " (" + target + ") was successful");
+														} else {
+															AuthUtil.alertOne(player, ChatColor.RED + "Failed to deauthenticate user " + target + ". Has this player set up authentication?");
+															AuthUtil.notify("Failed to deauthenticate user " + id + " (" + target + ")");
 														}
-														AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
-														AuthUtil.notify("Deauthentication of user " + id + " (" + target + ") was successful");
-													} else {
-														AuthUtil.alertOne(player, ChatColor.RED + "Failed to deauthenticate user " + target + ". Has this player set up authentication?");
-														AuthUtil.notify("Failed to deauthenticate user " + id + " (" + target + ")");
-													}
-												})
-												.execute();
+													})
+													.execute();
+										} else {
+											AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+										}
 									} else {
 										player.sendMessage(AuthMessage.NO_PERMISSION.toString());
 									}
 									break;
 								case "reset":
-									if(player.hasPermission("duoauth.admin")) {
-										final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[1]);
-										final String target = targetOffline.getName();
-										final UUID targetId = targetOffline.getUniqueId();
-										TaskChainManager.newChain()
-												.asyncFirst(() -> this.db.delete(targetId))
-												.syncLast(deleted -> {
-													final String id = targetId.toString();
-													if(deleted) {
-														if(targetOffline.isOnline()) {
-															this.plugin.setPlayer(targetId, true);
-															AuthUtil.alertOne((Player) targetOffline, ChatColor.GREEN + "Your credentials have been reset by an administrator.");
-														}
-														AuthUtil.alertOne(player, ChatColor.GREEN + "Authentication for user " + target + " has been reset.");
-														AuthUtil.notify("Reset authentication for user " + id + " (" + target + ")");
-													} else {
-														AuthUtil.alertOne(player, ChatColor.RED + "Failed to reset authentication for user " + target + ". Has this player set up authentication?");
-														AuthUtil.notify("Failed to reset authentication for user " + id + " (" + target + ")");
-													}
-												})
-												.execute();
-									} else {
-										player.sendMessage(AuthMessage.NO_PERMISSION.toString());
-									}
+									this.reset(player, args[1]);
 									break;
 								default:
 									final String password = args[0];
@@ -241,7 +231,7 @@ public class AuthCommand implements CommandExecutor {
 																			.execute();
 																	return null;
 																} else {
-																	final int attempts = this.db.readAttempts(uuid);
+																	final int attempts = this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
 																	if(commandAttempts != 0 && attempts >= commandAttempts) {
 																		AuthUtil.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
 																		AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
@@ -257,9 +247,9 @@ public class AuthCommand implements CommandExecutor {
 																					AuthUtil.notify("Authenticating user " + u + " (" + name + ")...");
 																				})
 																				.execute();
-																		final String dbpassword = this.db.readPassword(uuid);
-																		final String dbpin = this.db.readPIN(uuid);
-																		return (Bcrypt.checkpw(password, dbpassword) && (Bcrypt.checkpw(pin, dbpin))) ? ChatColor.GREEN + "Authentication successful. Have fun!" : ChatColor.RED + "Authentication failed. Please ensure your password and PIN are correct. Please contact the server administrators if you believe that this is in error.";
+																		return (Bcrypt.checkpw(password, this.db.readProperty(uuid, DatabaseProperty.PASSWORD).getAsString()) && (Bcrypt.checkpw(pin, this.db.readProperty(uuid, DatabaseProperty.PIN).getAsString())))
+																				? ChatColor.GREEN + "Authentication successful. Have fun!"
+																				: ChatColor.RED + "Authentication failed. Please ensure your password and PIN are correct. Please contact the server administrators if you believe that this is in error.";
 																	}
 																}
 															})
@@ -271,9 +261,9 @@ public class AuthCommand implements CommandExecutor {
 																	if(result.contains("successful")) {
 																		TaskChainManager.newChain()
 																				.async(() -> {
-																					this.db.writeAuthed(uuid, true);
-																					this.db.writeTimestamp(uuid);
-																					this.db.writeAttempts(uuid, 0);
+																					this.db.writeProperty(uuid, DatabaseProperty.AUTHED, true);
+																					this.db.writeProperty(uuid, DatabaseProperty.TIMESTAMP, AuthUtil.getFormattedTime(AuthUtil.getDateFormat()));
+																					this.db.writeProperty(uuid, DatabaseProperty.ATTEMPTS, 0);
 																				})
 																				.execute();
 																		if(player.isOnline()) {
@@ -283,10 +273,10 @@ public class AuthCommand implements CommandExecutor {
 																	} else {
 																		TaskChainManager.newChain()
 																				.async(() -> {
-																					this.db.writeAuthed(uuid, false);
-																					final int attempts = this.db.readAttempts(uuid);
+																					this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
+																					final int attempts = this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
 																					if(attempts < commandAttempts) {
-																						this.db.writeAttempts(uuid, attempts + 1);
+																						this.db.writeProperty(uuid, DatabaseProperty.ATTEMPTS, attempts + 1);
 																					}
 																				})
 																				.execute();
@@ -300,7 +290,7 @@ public class AuthCommand implements CommandExecutor {
 															})
 															.execute();
 												} else {
-													AuthUtil.alertOne(player, ChatColor.GOLD + "Authentication in progress - please be patient...");
+													AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS.toString());
 												}
 											} else {
 												player.sendMessage(AuthMessage.MUST_WAIT.toString());
@@ -315,9 +305,15 @@ public class AuthCommand implements CommandExecutor {
 										AuthUtil.alertOne(
 												player,
 												ChatColor.RED + "The password you entered is invalid. Your password must contain at least " + passwordMinLength + " characters" +
-														(passwordBothCases ? ", 1 uppercase letter (A-Z), 1 lowercase letter (a-z)" : "") +
-														(passwordNumbers ? ", 1 number (0-9)" : "") +
-														(passwordSpecialChars ? ", 1 special character (@#$%^&+=)." : ".")
+														(passwordBothCases
+																? ", 1 uppercase letter (A-Z), 1 lowercase letter (a-z)"
+																: "") +
+														(passwordNumbers
+																? ", 1 number (0-9)"
+																: "") +
+														(passwordSpecialChars
+																? ", 1 special character (@#$%^&+=)."
+																: ".")
 										);
 									}
 									break;
@@ -330,11 +326,55 @@ public class AuthCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage(AuthMessage.NO_PERMISSION.toString());
 				}
+			} else if(this.cm.isConsoleReset() && args.length == 2 && args[0].toLowerCase().equals("reset")) {
+				this.reset(sender, args[1]);
 			} else {
 				sender.sendMessage(ChatColor.RED + "You cannot do this from the console!");
 			}
 		}
 		return true;
+	}
+
+	private void reset(final CommandSender sender, final String args1) {
+		final boolean console = (!(sender instanceof Player));
+		if(console || sender.hasPermission("duoauth.admin")) {
+			final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args1);
+			final String target = targetOffline.getName();
+			final UUID targetId = targetOffline.getUniqueId();
+			if(!(this.auths.contains(targetId))) {
+				TaskChainManager.newChain()
+						.asyncFirst(() -> this.db.delete(targetId))
+						.syncLast(deleted -> {
+							final String id = targetId.toString();
+							String msg;
+							if(deleted) {
+								if(targetOffline.isOnline()) {
+									this.plugin.setPlayer(targetId, true);
+									AuthUtil.alertOne((Player) targetOffline, ChatColor.GREEN + "Your credentials have been reset by an administrator.");
+								}
+								msg = ChatColor.GREEN + "Authentication for user " + target + " has been reset.";
+								AuthUtil.notify("Reset authentication for user " + id + " (" + target + ")");
+							} else {
+								msg = ChatColor.RED + "Failed to reset authentication for user " + target + ". Has this player set up authentication?";
+								AuthUtil.notify("Failed to reset authentication for user " + id + " (" + target + ")");
+							}
+							if(console) {
+								AuthUtil.console(msg);
+							} else {
+								AuthUtil.alertOne((Player) sender, msg);
+							}
+						})
+						.execute();
+			} else {
+				if(console) {
+					AuthUtil.console(AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+				} else {
+					AuthUtil.alertOne((Player) sender, AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+				}
+			}
+		} else {
+			sender.sendMessage(AuthMessage.NO_PERMISSION.toString());
+		}
 	}
 
 	private void printUsage(final Player player) {

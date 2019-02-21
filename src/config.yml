@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.0.1
+# @version 1.0.2
 # @author foncused
 
 # The cost factor of the bcrypt algorithm
@@ -69,3 +69,6 @@ deauth:
 
   # Heartbeat in minutes to check if players should be deauthenticated
   timeout-check-heartbeat: 10
+
+# true to allow console access to /auth reset <player>, false if not
+console-reset: false

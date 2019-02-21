@@ -1,16 +1,17 @@
 package me.foncused.duoauth.database;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.util.AuthUtil;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -18,177 +19,22 @@ import java.util.UUID;
 public class AuthDatabase {
 
 	private final DuoAuth plugin;
-	private final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
-
-	private enum Property {
-
-		PASSWORD("Password"),
-		PIN("PIN"),
-		AUTHED("Authed"),
-		ATTEMPTS("Attempts"),
-		IP("IP"),
-		TIMESTAMP("Timestamp");
-
-		private final String property;
-
-		Property(final String property) {
-			this.property = property;
-		}
-
-		@Override
-		public String toString() {
-			return this.property;
-		}
-
-	}
 
 	public AuthDatabase(final DuoAuth plugin) {
 		this.plugin = plugin;
 	}
 
-	public synchronized String readPassword(final UUID uuid) {
+	public synchronized JsonElement readProperty(final UUID uuid, final DatabaseProperty property) {
 		final JsonObject object = this.read(uuid);
-		final Property property = Property.PASSWORD;
 		final String p = property.toString();
 		if(object != null && object.has(p)) {
-			return object.get(p).getAsString();
+			return object.get(p);
 		}
 		this.readError(uuid, property);
 		return null;
 	}
 
-	public synchronized boolean writePassword(final UUID uuid, final String password) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.PASSWORD;
-		if(object != null) {
-			object.addProperty(property.toString(), password);
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	public synchronized String readPIN(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.PIN;
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return object.get(p).getAsString();
-		}
-		this.readError(uuid, property);
-		return null;
-	}
-
-	public synchronized boolean writePIN(final UUID uuid, final String pin) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.PIN;
-		if(object != null) {
-			object.addProperty(property.toString(), pin);
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	public synchronized boolean readAuthed(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.AUTHED;
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return object.get(p).getAsBoolean();
-		}
-		this.readError(uuid, property);
-		return true;
-	}
-
-	public synchronized boolean writeAuthed(final UUID uuid, final boolean authed) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.AUTHED;
-		if(object != null) {
-			object.addProperty(property.toString(), authed);
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	public synchronized int readAttempts(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.ATTEMPTS;
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return object.get(p).getAsInt();
-		}
-		this.readError(uuid, property);
-		return -1;
-	}
-
-	public synchronized boolean writeAttempts(final UUID uuid, final int attempts) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.ATTEMPTS;
-		if(object != null) {
-			object.addProperty(property.toString(), attempts);
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	public synchronized String readAddress(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.IP;
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return object.get(p).getAsString();
-		}
-		this.readError(uuid, property);
-		return null;
-	}
-
-	public synchronized boolean writeAddress(final UUID uuid, final String ip) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.IP;
-		if(object != null) {
-			object.addProperty(property.toString(), ip);
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	public synchronized String readTimestamp(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.TIMESTAMP;
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return object.get(p).getAsString();
-		}
-		this.readError(uuid, property);
-		return null;
-	}
-
-	public synchronized boolean writeTimestamp(final UUID uuid) {
-		final JsonObject object = this.read(uuid);
-		final Property property = Property.TIMESTAMP;
-		if(object != null) {
-			object.addProperty(property.toString(), this.getFormattedTime(this.DATE_FORMAT));
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	/*public synchronized <O> O readProperty(final String uuid, final Property property) {
-		final JsonObject object = this.read(uuid);
-		final String p = property.toString();
-		if(object != null && object.has(p)) {
-			return (O) object.get(p).getAsJsonObject();
-		}
-		this.readError(uuid, property);
-		return null;
-	}
-
-	public synchronized <O> boolean writeProperty(final String uuid, final Property property, final O data) {
+	public synchronized <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
 		final JsonObject object = this.read(uuid);
 		if(object != null) {
 			object.add(property.toString(), new Gson().toJsonTree(data));
@@ -196,14 +42,14 @@ public class AuthDatabase {
 		}
 		this.writeError(uuid, property);
 		return false;
-	}*/
+	}
 
-	private void readError(final UUID uuid, final Property property) {
+	private void readError(final UUID uuid, final DatabaseProperty property) {
 		AuthUtil.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
 	}
 
-	private void writeError(final UUID uuid, final Property property) {
-		AuthUtil.consoleSevere("Unable to write property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
+	private void writeError(final UUID uuid, final DatabaseProperty property) {
+		AuthUtil.consoleSevere("Unable to write property '" + property.toString() + "' to file " + this.getJsonPath(uuid));
 	}
 
 	public synchronized boolean contains(final UUID uuid) {
@@ -243,12 +89,12 @@ public class AuthDatabase {
 
 	public boolean write(final UUID uuid, final String password, final String pin, final int attempts, final String ip) {
 		final JsonObject object = new JsonObject();
-		object.addProperty(Property.PASSWORD.toString(), password);
-		object.addProperty(Property.PIN.toString(), pin);
-		object.addProperty(Property.AUTHED.toString(), this.plugin.containsPlayer(uuid));
-		object.addProperty(Property.ATTEMPTS.toString(), attempts);
-		object.addProperty(Property.IP.toString(), ip);
-		object.addProperty(Property.TIMESTAMP.toString(), this.getFormattedTime(this.DATE_FORMAT));
+		object.addProperty(DatabaseProperty.PASSWORD.toString(), password);
+		object.addProperty(DatabaseProperty.PIN.toString(), pin);
+		object.addProperty(DatabaseProperty.AUTHED.toString(), this.plugin.containsPlayer(uuid));
+		object.addProperty(DatabaseProperty.ATTEMPTS.toString(), attempts);
+		object.addProperty(DatabaseProperty.IP.toString(), ip);
+		object.addProperty(DatabaseProperty.TIMESTAMP.toString(), AuthUtil.getFormattedTime(AuthUtil.getDateFormat()));
 		return this.write(uuid, object);
 	}
 
@@ -285,14 +131,6 @@ public class AuthDatabase {
 
 	private String getDataFolder() {
 		return this.plugin.getDataFolder().getPath() + "/data/";
-	}
-
-	public String getDateFormat() {
-		return this.DATE_FORMAT;
-	}
-
-	private String getFormattedTime(final String format) {
-		return new SimpleDateFormat(format).format(new Date());
 	}
 
 }

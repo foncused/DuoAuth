@@ -22,6 +22,7 @@ public class ConfigManager {
 	private int deauthTimeout;
 	private boolean deauthTimeoutOnline;
 	private int deauthTimeoutCheckHeartbeat;
+	private boolean consoleReset;
 	private boolean loading;
 
 	public ConfigManager(
@@ -39,7 +40,8 @@ public class ConfigManager {
 			final boolean deauthAddressChanges,
 			final int deauthTimeout,
 			final boolean deauthTimeoutOnline,
-			final int deauthTimeoutCheckHeartbeat
+			final int deauthTimeoutCheckHeartbeat,
+			final boolean consoleReset
 	) {
 		this.loading = true;
 		if(costFactor < 12) {
@@ -113,6 +115,8 @@ public class ConfigManager {
 			this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
 		}
 		AuthUtil.console("Deauth timeout check heartbeat set to " + this.deauthTimeoutCheckHeartbeat + " minutes");
+		this.consoleReset = consoleReset;
+		AuthUtil.console(this.consoleReset ? "Console access is enabled" : "Console access is disabled");
 		final TaskChain chain = TaskChainManager.newChain();
 		chain
 				.sync(() -> {
@@ -196,6 +200,10 @@ public class ConfigManager {
 
 	public int getDeauthTimeoutCheckHeartbeat() {
 		return this.deauthTimeoutCheckHeartbeat;
+	}
+
+	public boolean isConsoleReset() {
+		return this.consoleReset;
 	}
 
 	public boolean isLoading() {

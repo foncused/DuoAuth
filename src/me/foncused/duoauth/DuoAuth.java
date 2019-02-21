@@ -63,7 +63,8 @@ public class DuoAuth extends JavaPlugin {
 				config.getBoolean("deauth.ip-changes"),
 				config.getInt("deauth.timeout"),
 				config.getBoolean("deauth.timeout-online"),
-				config.getInt("deauth.timeout-check-heartbeat")
+				config.getInt("deauth.timeout-check-heartbeat"),
+				config.getBoolean("console-reset")
 		);
 	}
 

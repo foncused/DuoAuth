@@ -3,6 +3,7 @@ package me.foncused.duoauth.event.player;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
+import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.ChatColor;
@@ -34,7 +35,7 @@ public class PlayerJoin implements Listener {
 				.syncLast(contained -> {
 					if(contained) {
 						TaskChainManager.newChain()
-								.asyncFirst(() -> this.db.readAuthed(uuid))
+								.asyncFirst(() -> this.db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean())
 								.syncLast(authed -> this.plugin.setPlayer(uuid, authed))
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
@@ -53,9 +54,9 @@ public class PlayerJoin implements Listener {
 									final String name = player.getName();
 									final String u = uuid.toString();
 									AuthUtil.notify(
-											written ?
-													"User " + u + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful" :
-													"User " + u + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"
+											written
+													? "User " + u + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful"
+													: "User " + u + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"
 									);
 								})
 								.execute();

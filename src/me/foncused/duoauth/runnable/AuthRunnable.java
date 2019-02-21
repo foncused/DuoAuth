@@ -3,6 +3,7 @@ package me.foncused.duoauth.runnable;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
+import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,15 +37,16 @@ public class AuthRunnable {
 				final Set<UUID> uuids = db.readAll();
 				if(uuids != null && (!(uuids.isEmpty()))) {
 					uuids.forEach(uuid -> {
-						final String timestamp = db.readTimestamp(uuid);
+						final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
 						if(timestamp != null) {
 							final double days = cm.getDeauthTimeout() / 24.0;
-							if(db.readAuthed(uuid) && getTimeDifference(timestamp, db.getDateFormat(), days * 2073600000) >= days) {
+							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat(), days * 2073600000) >= days) {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
 								AuthUtil.console(notify);
-								db.writeAuthed(uuid, false);
+								//db.writeAuthed(uuid, false);
+								db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
 								if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
 									AuthUtil.alertOne(
 											(Player) player,
