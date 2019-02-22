@@ -45,7 +45,6 @@ public class AuthRunnable {
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
 								AuthUtil.console(notify);
-								//db.writeAuthed(uuid, false);
 								db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
 								if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
 									AuthUtil.alertOne(

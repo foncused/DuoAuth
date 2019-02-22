@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -32,32 +33,6 @@ public class AuthDatabase {
 		}
 		this.readError(uuid, property);
 		return null;
-	}
-
-	public synchronized <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
-		final JsonObject object = this.read(uuid);
-		if(object != null) {
-			object.add(property.toString(), new Gson().toJsonTree(data));
-			return this.write(uuid, object);
-		}
-		this.writeError(uuid, property);
-		return false;
-	}
-
-	private void readError(final UUID uuid, final DatabaseProperty property) {
-		AuthUtil.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
-	}
-
-	private void writeError(final UUID uuid, final DatabaseProperty property) {
-		AuthUtil.consoleSevere("Unable to write property '" + property.toString() + "' to file " + this.getJsonPath(uuid));
-	}
-
-	public synchronized boolean contains(final UUID uuid) {
-		return new File(this.getJsonPath(uuid)).exists();
-	}
-
-	public synchronized boolean delete(final UUID uuid) {
-		return new File(this.getJsonPath(uuid)).delete();
 	}
 
 	private synchronized JsonObject read(final UUID uuid) {
@@ -82,9 +57,23 @@ public class AuthDatabase {
 					uuids.add(UUID.fromString(name.split("\\.")[0]));
 				}
 			}
-			return uuids;
+			return Collections.unmodifiableSet(uuids);
 		}
 		return null;
+	}
+
+	private void readError(final UUID uuid, final DatabaseProperty property) {
+		AuthUtil.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
+	}
+
+	public synchronized <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
+		final JsonObject object = this.read(uuid);
+		if(object != null) {
+			object.add(property.toString(), new Gson().toJsonTree(data));
+			return this.write(uuid, object);
+		}
+		this.writeError(uuid, property);
+		return false;
 	}
 
 	public boolean write(final UUID uuid, final String password, final String pin, final int attempts, final String ip) {
@@ -123,6 +112,18 @@ public class AuthDatabase {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	private void writeError(final UUID uuid, final DatabaseProperty property) {
+		AuthUtil.consoleSevere("Unable to write property '" + property.toString() + "' to file " + this.getJsonPath(uuid));
+	}
+
+	public synchronized boolean contains(final UUID uuid) {
+		return new File(this.getJsonPath(uuid)).exists();
+	}
+
+	public synchronized boolean delete(final UUID uuid) {
+		return new File(this.getJsonPath(uuid)).delete();
 	}
 
 	private String getJsonPath(final UUID uuid) {
