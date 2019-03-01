@@ -52,7 +52,7 @@ public class PlayerJoin implements Listener {
 									}
 								})
 								.sync(() -> {
-									plugin.setAuthCache(
+									this.plugin.setAuthCache(
 											uuid,
 											new AuthCache(
 													(String) chain.getTaskData("password"),
@@ -66,16 +66,28 @@ public class PlayerJoin implements Listener {
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
 						final InetAddress ip = AuthUtil.getPlayerAddress(player);
+						final String password = this.cm.getPasswordDefault();
+						final String pin = this.cm.getPinDefault();
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
 										uuid,
-										this.cm.getPasswordDefault(),
-										this.cm.getPinDefault(),
+										password,
+										pin,
 										false,
 										0,
 										ip
 								))
 								.syncLast(written -> {
+									this.plugin.setAuthCache(
+											uuid,
+											new AuthCache(
+													password,
+													pin,
+													false,
+													0,
+													ip
+											)
+									);
 									AuthUtil.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
 									final String name = player.getName();
 									final String u = uuid.toString();

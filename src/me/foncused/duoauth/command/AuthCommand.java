@@ -134,7 +134,7 @@ public class AuthCommand implements CommandExecutor {
 										final UUID targetId = targetOffline.getUniqueId();
 										if(!(this.auths.contains(targetId))) {
 											TaskChainManager.newChain()
-													.asyncFirst(() -> this.db.contains(uuid) && this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false))
+													.asyncFirst(() -> this.db.contains(targetId) && this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean() && this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
 													.syncLast(deauthed -> {
 														final String id = targetId.toString();
 														if(deauthed) {
