@@ -47,12 +47,12 @@ public class AuthRunnable {
 								AuthUtil.console(notify);
 								db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
 								if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
+									plugin.getAuthCache(uuid).setAuthed(false);
 									AuthUtil.alertOne(
 											(Player) player,
 											ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
 									);
 									AuthUtil.notify(notify);
-									plugin.setPlayer(uuid, false);
 								}
 							}
 						}

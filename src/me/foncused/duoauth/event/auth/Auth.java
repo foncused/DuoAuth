@@ -1,6 +1,7 @@
 package me.foncused.duoauth.event.auth;
 
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Location;
@@ -25,7 +26,8 @@ public class Auth implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
 		final Player player = event.getPlayer();
-		if(!(this.plugin.getPlayer(player.getUniqueId()))) {
+		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+		if(cache != null && (!(cache.isAuthed()))) {
 			this.message(player);
 			event.setCancelled(true);
 		}
@@ -34,7 +36,8 @@ public class Auth implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final Player player = event.getPlayer();
-		if(!(this.plugin.getPlayer(player.getUniqueId())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*")))) {
+		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+		if(cache != null && (!(cache.isAuthed())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*")))) {
 			this.message(player);
 			event.setCancelled(true);
 		}
@@ -43,7 +46,8 @@ public class Auth implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerDropItem(final PlayerDropItemEvent event) {
 		final Player player = event.getPlayer();
-		if(!(this.plugin.getPlayer(player.getUniqueId()))) {
+		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+		if(cache != null && (!(cache.isAuthed()))) {
 			this.message(player);
 			event.setCancelled(true);
 			if(!(event.isCancelled())) {
@@ -55,7 +59,8 @@ public class Auth implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerInteract(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
-		if(!(this.plugin.getPlayer(player.getUniqueId()))) {
+		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+		if(cache != null && (!(cache.isAuthed()))) {
 			this.message(player);
 			event.setCancelled(true);
 		}
@@ -66,7 +71,8 @@ public class Auth implements Listener {
 		final Entity entity = event.getWhoClicked();
 		if(entity instanceof Player) {
 			final Player player = (Player) entity;
-			if(!(this.plugin.getPlayer(player.getUniqueId()))) {
+			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+			if(cache != null && (!(cache.isAuthed()))) {
 				this.message(player);
 				event.setCancelled(true);
 			}
@@ -76,7 +82,8 @@ public class Auth implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerMove(final PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
-		if(!(this.plugin.getPlayer(player.getUniqueId()))) {
+		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+		if(cache != null && (!(cache.isAuthed()))) {
 			final Location loc1 = event.getFrom();
 			final Location loc2 = event.getTo();
 			if((loc1.getBlockX() != loc2.getBlockX()) || (loc1.getBlockY() != loc2.getBlockY()) || (loc1.getBlockZ() != loc2.getBlockZ())) {

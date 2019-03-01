@@ -1,6 +1,8 @@
 package me.foncused.duoauth.event.player;
 
+import co.aikar.taskchain.TaskChain;
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
@@ -12,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.UUID;
 
 public class PlayerJoin implements Listener {
@@ -34,18 +38,40 @@ public class PlayerJoin implements Listener {
 				.asyncFirst(() -> this.db.contains(uuid))
 				.syncLast(contained -> {
 					if(contained) {
-						TaskChainManager.newChain()
-								.asyncFirst(() -> this.db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean())
-								.syncLast(authed -> this.plugin.setPlayer(uuid, authed))
+						final TaskChain chain = TaskChainManager.newChain();
+						chain
+								.async(() -> {
+									chain.setTaskData("password", db.readProperty(uuid, DatabaseProperty.PASSWORD).getAsString());
+									chain.setTaskData("pin", db.readProperty(uuid, DatabaseProperty.PIN).getAsString());
+									chain.setTaskData("authed", db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean());
+									chain.setTaskData("attempts", db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt());
+									try {
+										chain.setTaskData("ip", InetAddress.getByName(db.readProperty(uuid, DatabaseProperty.IP).getAsString()));
+									} catch(final UnknownHostException e) {
+										e.printStackTrace();
+									}
+								})
+								.sync(() -> {
+									plugin.setAuthCache(
+											uuid,
+											new AuthCache(
+													(String) chain.getTaskData("password"),
+													(String) chain.getTaskData("pin"),
+													(boolean) chain.getTaskData("authed"),
+													(int) chain.getTaskData("attempts"),
+													(InetAddress) chain.getTaskData("ip")
+											)
+									);
+								})
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
-						this.plugin.setPlayer(uuid, false);
-						final String ip = AuthUtil.getPlayerAddress(player);
+						final InetAddress ip = AuthUtil.getPlayerAddress(player);
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(
 										uuid,
 										this.cm.getPasswordDefault(),
 										this.cm.getPinDefault(),
+										false,
 										0,
 										ip
 								))
@@ -60,8 +86,6 @@ public class PlayerJoin implements Listener {
 									);
 								})
 								.execute();
-					} else {
-						this.plugin.setPlayer(uuid, true);
 					}
 				})
 				.execute();

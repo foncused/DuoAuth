@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -59,8 +60,9 @@ public class AuthUtil {
 		return Bcrypt.hashpw(password, Bcrypt.gensalt(costFactor));
 	}
 
-	public static String getPlayerAddress(final Player player) {
-		return player.getAddress().toString().replaceAll("/", "").split(":")[0];
+	public static InetAddress getPlayerAddress(final Player player) {
+		return player.getAddress().getAddress();
+		//return player.getAddress().toString().replaceAll("/", "").split(":")[0];
 	}
 
 }

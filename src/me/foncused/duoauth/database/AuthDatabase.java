@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -76,13 +77,13 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public boolean write(final UUID uuid, final String password, final String pin, final int attempts, final String ip) {
+	public boolean write(final UUID uuid, final String password, final String pin, final boolean authed, final int attempts, final InetAddress ip) {
 		final JsonObject object = new JsonObject();
 		object.addProperty(DatabaseProperty.PASSWORD.toString(), password);
 		object.addProperty(DatabaseProperty.PIN.toString(), pin);
-		object.addProperty(DatabaseProperty.AUTHED.toString(), this.plugin.containsPlayer(uuid));
+		object.addProperty(DatabaseProperty.AUTHED.toString(), authed);
 		object.addProperty(DatabaseProperty.ATTEMPTS.toString(), attempts);
-		object.addProperty(DatabaseProperty.IP.toString(), ip);
+		object.addProperty(DatabaseProperty.IP.toString(), ip.getHostAddress());
 		object.addProperty(DatabaseProperty.TIMESTAMP.toString(), AuthUtil.getFormattedTime(AuthUtil.getDateFormat()));
 		return this.write(uuid, object);
 	}

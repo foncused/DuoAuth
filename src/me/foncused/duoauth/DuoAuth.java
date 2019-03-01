@@ -1,5 +1,6 @@
 package me.foncused.duoauth;
 
+import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.command.AuthCommand;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
@@ -22,7 +23,7 @@ import java.util.UUID;
 
 public class DuoAuth extends JavaPlugin {
 
-	private Map<UUID, Boolean> players;
+	private Map<UUID, AuthCache> players;
 	private ConfigManager cm;
 	private AuthDatabase db;
 
@@ -89,12 +90,12 @@ public class DuoAuth extends JavaPlugin {
 		new AuthRunnable(this).runTimeoutTask();
 	}
 
-	public boolean getPlayer(final UUID uuid) {
-		return this.players.getOrDefault(uuid, false);
+	public AuthCache getAuthCache(final UUID uuid) {
+		return this.players.get(uuid);
 	}
 
-	public void setPlayer(final UUID uuid, final boolean authed) {
-		this.players.put(uuid, authed);
+	public void setAuthCache(final UUID uuid, final AuthCache cache) {
+		this.players.put(uuid, cache);
 	}
 
 	public boolean containsPlayer(final UUID uuid) {
