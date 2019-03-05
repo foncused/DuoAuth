@@ -4,6 +4,7 @@ import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
+import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,20 +41,24 @@ public class AuthRunnable {
 						final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
 						if(timestamp != null) {
 							final double days = cm.getDeauthTimeout() / 24.0;
-							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat(), days * 2073600000) >= days) {
+							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat(), 86400000) >= days) {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
-								AuthUtil.console(notify);
 								db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
-								if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
-									plugin.getAuthCache(uuid).setAuthed(false);
-									AuthUtil.alertOne(
-											(Player) player,
-											ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
-									);
-									AuthUtil.notify(notify);
-								}
+								TaskChainManager.newChain()
+										.sync(() -> {
+											AuthUtil.console(notify);
+											if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
+												plugin.getAuthCache(uuid).setAuthed(false);
+												AuthUtil.alertOne(
+														(Player) player,
+														ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
+												);
+												AuthUtil.notify(notify);
+											}
+										})
+										.execute();
 							}
 						}
 					});

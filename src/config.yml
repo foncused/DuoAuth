@@ -62,7 +62,7 @@ deauth:
   # true to immediately deauthenticate players whenever their IP addresses change, false if not
   ip-changes: true
 
-  # TherTime in hours to deauthenticate players after the last successful authentication
+  # The time in hours to deauthenticate players after the last successful authentication
   timeout: 72
 
   # true to deauthenticate players even if they are online (can be annoying), false if not
