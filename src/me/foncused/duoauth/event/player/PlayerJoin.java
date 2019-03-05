@@ -34,6 +34,7 @@ public class PlayerJoin implements Listener {
 	public void onPlayerJoin(final PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 		final UUID uuid = player.getUniqueId();
+		final String name = player.getName();
 		TaskChainManager.newChain()
 				.asyncFirst(() -> this.db.contains(uuid))
 				.syncLast(contained -> {
@@ -52,16 +53,16 @@ public class PlayerJoin implements Listener {
 									}
 								})
 								.sync(() -> {
-									this.plugin.setAuthCache(
-											uuid,
+									final AuthCache cache =
 											new AuthCache(
 													(String) chain.getTaskData("password"),
 													(String) chain.getTaskData("pin"),
 													(boolean) chain.getTaskData("authed"),
 													(int) chain.getTaskData("attempts"),
 													(InetAddress) chain.getTaskData("ip")
-											)
 									);
+									this.log(name, cache);
+									this.plugin.setAuthCache(uuid, cache);
 								})
 								.execute();
 					} else if(player.hasPermission("duoauth.enforced")) {
@@ -78,29 +79,36 @@ public class PlayerJoin implements Listener {
 										ip
 								))
 								.syncLast(written -> {
-									this.plugin.setAuthCache(
-											uuid,
-											new AuthCache(
-													password,
-													pin,
-													false,
-													0,
-													ip
-											)
+									final AuthCache cache = new AuthCache(
+											password,
+											pin,
+											false,
+											0,
+											ip
 									);
+									this.log(name, cache);
+									this.plugin.setAuthCache(uuid, cache);
 									AuthUtil.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
-									final String name = player.getName();
 									final String u = uuid.toString();
 									AuthUtil.notify(
 											written
-													? "User " + u + "(" + name + ") has 'duoauth.enforced' and setup of default authentication was successful"
-													: "User " + u + "(" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"
+													? "User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful"
+													: "User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed"
 									);
 								})
 								.execute();
 					}
 				})
 				.execute();
+	}
+
+	private void log(final String name, final AuthCache cache) {
+		AuthUtil.console(
+				ChatColor.GOLD + "Player: " + ChatColor.GRAY + name + ChatColor.GOLD + ", " +
+						"Authed: " + ChatColor.GRAY + cache.isAuthed() + ChatColor.GOLD + ", " +
+						"Attempts: " + ChatColor.GRAY + cache.getAttempts() + ChatColor.GOLD + ", " +
+						"IP: " + ChatColor.GRAY + cache.getIp().getHostAddress()
+		);
 	}
 
 }

@@ -50,22 +50,24 @@ public class DuoAuth extends JavaPlugin {
 		this.saveDefaultConfig();
 		final FileConfiguration config = this.getConfig();
 		this.cm = new ConfigManager(
-				config.getInt("cost-factor"),
-				config.getInt("command.cooldown"),
-				config.getInt("command.attempts"),
+				config.getInt("cost-factor", 14),
+				config.getInt("command.cooldown", 20),
+				config.getInt("command.attempts", 5),
 				config.getString("password.default"),
-				config.getInt("password.min-length"),
-				config.getBoolean("password.both-cases"),
-				config.getBoolean("password.numbers"),
-				config.getBoolean("password.special-chars"),
+				config.getInt("password.min-length", 8),
+				config.getBoolean("password.both-cases", true),
+				config.getBoolean("password.numbers", true),
+				config.getBoolean("password.special-chars", true),
 				config.getString("pin.default"),
-				config.getInt("pin.min-length"),
-				config.getString("database"),
-				config.getBoolean("deauth.ip-changes"),
-				config.getInt("deauth.timeout"),
-				config.getBoolean("deauth.timeout-online"),
-				config.getInt("deauth.timeout-check-heartbeat"),
-				config.getBoolean("console-reset")
+				config.getInt("pin.min-length", 4),
+				//config.getString("database", "json"),
+				"json",
+				config.getBoolean("deauth.ip-changes", true),
+				config.getInt("deauth.timeout", 72),
+				config.getBoolean("deauth.timeout-online", false),
+				config.getInt("deauth.timeout-check-heartbeat", 10),
+				config.getBoolean("console-reset", false),
+				config.getBoolean("chat", false)
 		);
 	}
 

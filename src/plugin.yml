@@ -1,6 +1,6 @@
 name: DuoAuth
 main: me.foncused.duoauth.DuoAuth
-version: 1.0.3
+version: 1.0.4
 author: foncused
 load: STARTUP
 api-version: 1.13
@@ -21,4 +21,6 @@ permissions:
   duoauth.notify:
     default: false
   duoauth.enforced:
+    default: false
+  duoauth.unlimited:
     default: false

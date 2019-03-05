@@ -11,7 +11,7 @@ import java.util.Date;
 
 public class AuthUtil {
 
-	private static final String PREFIX = "[DuoAuth] ";
+	private static final String PREFIX = "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	public static void alert(final String message) {
@@ -24,7 +24,7 @@ public class AuthUtil {
 		}
 	}
 
-	public static void notify(String message) {
+	public static void notify(final String message) {
 		final String m = ChatColor.RED + "ALERT " + ChatColor.DARK_GRAY + "» " + ChatColor.GRAY + ChatColor.ITALIC + message;
 		Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("duoauth.notify")).forEach(player -> player.sendMessage(m));
 		console(m);
@@ -37,15 +37,15 @@ public class AuthUtil {
 	}
 
 	public static void console(final String message) {
-		Bukkit.getLogger().info(ChatColor.stripColor(PREFIX + message));
+		Bukkit.getConsoleSender().sendMessage(PREFIX + message);
 	}
 
 	public static void consoleWarning(final String message) {
-		Bukkit.getLogger().warning(ChatColor.stripColor(PREFIX + message));
+		Bukkit.getConsoleSender().sendMessage(PREFIX + ChatColor.RED + "WARNING: " + message);
 	}
 
 	public static void consoleSevere(final String message) {
-		Bukkit.getLogger().severe(ChatColor.stripColor(PREFIX + message));
+		Bukkit.getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_RED + "SEVERE: " + message);
 	}
 
 	public static String getDateFormat() {
@@ -62,7 +62,6 @@ public class AuthUtil {
 
 	public static InetAddress getPlayerAddress(final Player player) {
 		return player.getAddress().getAddress();
-		//return player.getAddress().toString().replaceAll("/", "").split(":")[0];
 	}
 
 }

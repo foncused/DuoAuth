@@ -232,7 +232,7 @@ public class AuthCommand implements CommandExecutor {
 																	int attempts = (chain.hasTaskData("attempts"))
 																			? (int) chain.getTaskData("attempts")
 																			: this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
-																	if(commandAttempts != 0 && attempts >= commandAttempts) {
+																	if(commandAttempts != 0 && (!(player.hasPermission("duoauth.unlimited"))) && attempts >= commandAttempts) {
 																		AuthUtil.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
 																		AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
 																		TaskChainManager.newChain()
@@ -284,32 +284,37 @@ public class AuthCommand implements CommandExecutor {
 																		}
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {
-																		TaskChainManager.newChain()
-																				.syncFirst(() -> {
-																					if(cache != null && player.isOnline()) {
-																						cache.setAuthed(false);
-																						return cache.getAttempts();
-																					}
-																					if(chain.hasTaskData("attempts")) {
-																						return (int) chain.getTaskData("attempts");
-																					}
-																					return -1;
-																				})
-																				.asyncLast(attempts -> {
-																					this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
-																					if(attempts == -1) {
-																						attempts = this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
-																					}
-																					if(attempts < commandAttempts) {
-																						attempts++;
-																						if(cache != null) {
-																							cache.setAttempts(attempts);
+																		if(!(player.hasPermission("duoauth.unlimited"))) {
+																			TaskChainManager.newChain()
+																					.syncFirst(() -> {
+																						if(cache != null && player.isOnline()) {
+																							cache.setAuthed(false);
+																							return cache.getAttempts();
 																						}
-																						this.db.writeProperty(uuid, DatabaseProperty.ATTEMPTS, attempts);
-																					}
-																				})
-																				.execute();
-																		AuthUtil.notify("User " + u + " (" + name + ") failed authentication");
+																						if(chain.hasTaskData("attempts")) {
+																							return (int) chain.getTaskData("attempts");
+																						}
+																						return -1;
+																					})
+																					.async(attempts -> {
+																						this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
+																						if(attempts == -1) {
+																							attempts = this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
+																						}
+																						if(attempts < commandAttempts) {
+																							attempts++;
+																							if(cache != null) {
+																								cache.setAttempts(attempts);
+																							}
+																							this.db.writeProperty(uuid, DatabaseProperty.ATTEMPTS, attempts);
+																						}
+																						return attempts;
+																					})
+																					.syncLast(attempts -> AuthUtil.notify("User " + u + " (" + name + ") failed authentication (" + attempts + " attempts)"))
+																					.execute();
+																		} else {
+																			AuthUtil.notify("User " + u + " (" + name + ") failed authentication");
+																		}
 																	}
 																}
 																this.auths.remove(uuid);

@@ -23,6 +23,7 @@ public class ConfigManager {
 	private boolean deauthTimeoutOnline;
 	private int deauthTimeoutCheckHeartbeat;
 	private boolean consoleReset;
+	private boolean chat;
 	private boolean loading;
 
 	public ConfigManager(
@@ -41,7 +42,8 @@ public class ConfigManager {
 			final int deauthTimeout,
 			final boolean deauthTimeoutOnline,
 			final int deauthTimeoutCheckHeartbeat,
-			final boolean consoleReset
+			final boolean consoleReset,
+			final boolean chat
 	) {
 		this.loading = true;
 		if(costFactor < 12) {
@@ -117,6 +119,8 @@ public class ConfigManager {
 		AuthUtil.console("Deauth timeout check heartbeat set to " + this.deauthTimeoutCheckHeartbeat + " minutes");
 		this.consoleReset = consoleReset;
 		AuthUtil.console(this.consoleReset ? "Console access is enabled" : "Console access is disabled");
+		this.chat = chat;
+		AuthUtil.console(this.chat ? "Chat is enabled" : "Chat is disabled");
 		final TaskChain chain = TaskChainManager.newChain();
 		chain
 				.sync(() -> {
@@ -142,71 +146,75 @@ public class ConfigManager {
 				.execute();
 	}
 
-	public int getCostFactor() {
+	public synchronized int getCostFactor() {
 		return this.costFactor;
 	}
 
-	public int getCommandCooldown() {
+	public synchronized int getCommandCooldown() {
 		return this.commandCooldown;
 	}
 
-	public int getCommandAttempts() {
+	public synchronized int getCommandAttempts() {
 		return this.commandAttempts;
 	}
 
-	public String getPasswordDefault() {
+	public synchronized String getPasswordDefault() {
 		return this.passwordDefault;
 	}
 
-	public int getPasswordMinLength() {
+	public synchronized int getPasswordMinLength() {
 		return this.passwordMinLength;
 	}
 
-	public boolean isPasswordBothCases() {
+	public synchronized boolean isPasswordBothCases() {
 		return this.passwordBothCases;
 	}
 
-	public boolean isPasswordNumbers() {
+	public synchronized boolean isPasswordNumbers() {
 		return this.passwordNumbers;
 	}
 
-	public boolean isPasswordSpecialChars() {
+	public synchronized boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
 	}
 
-	public String getPinDefault() {
+	public synchronized String getPinDefault() {
 		return this.pinDefault;
 	}
 
-	public int getPinMinLength() {
+	public synchronized int getPinMinLength() {
 		return this.pinMinLength;
 	}
 
-	public DatabaseOption getDatabaseOption() {
+	public synchronized DatabaseOption getDatabaseOption() {
 		return this.databaseOption;
 	}
 
-	public boolean isDeauthAddressChanges() {
+	public synchronized boolean isDeauthAddressChanges() {
 		return this.deauthAddressChanges;
 	}
 
-	public int getDeauthTimeout() {
+	public synchronized int getDeauthTimeout() {
 		return this.deauthTimeout;
 	}
 
-	public boolean isDeauthTimeoutOnline() {
+	public synchronized boolean isDeauthTimeoutOnline() {
 		return this.deauthTimeoutOnline;
 	}
 
-	public int getDeauthTimeoutCheckHeartbeat() {
+	public synchronized int getDeauthTimeoutCheckHeartbeat() {
 		return this.deauthTimeoutCheckHeartbeat;
 	}
 
-	public boolean isConsoleReset() {
+	public synchronized boolean isConsoleReset() {
 		return this.consoleReset;
 	}
 
-	public boolean isLoading() {
+	public synchronized boolean isChat() {
+		return this.chat;
+	}
+
+	public synchronized boolean isLoading() {
 		return this.loading;
 	}
 

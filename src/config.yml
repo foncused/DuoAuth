@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.0.3
+# @version 1.0.4
 # @author foncused
 
 # The cost factor of the bcrypt algorithm
@@ -51,7 +51,8 @@ pin:
   min-length: 4
 
 # Database options
-# json is currently the only supported method of storing the hashes
+# The method used for storing the digests
+# Required (currently) to be "json"
 database: "json"
 
 # Deauthentication options
@@ -61,14 +62,17 @@ deauth:
   # true to immediately deauthenticate players whenever their IP addresses change, false if not
   ip-changes: true
 
-  # Time in hours to deauthenticate players after the last successful authentication
+  # TherTime in hours to deauthenticate players after the last successful authentication
   timeout: 72
 
   # true to deauthenticate players even if they are online (can be annoying), false if not
   timeout-online: false
 
-  # Heartbeat in minutes to check if players should be deauthenticated
+  # The heartbeat in minutes to check if players should be deauthenticated
   timeout-check-heartbeat: 10
 
 # true to allow console access to /auth reset <player>, false if not
 console-reset: false
+
+# true to allow chat before authentication, false if not
+chat: false

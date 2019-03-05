@@ -25,11 +25,13 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-		final Player player = event.getPlayer();
-		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache != null && (!(cache.isAuthed()))) {
-			this.message(player);
-			event.setCancelled(true);
+		if(!(this.plugin.getConfigManager().isChat())) {
+			final Player player = event.getPlayer();
+			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
+			if(cache != null && (!(cache.isAuthed()))) {
+				this.message(player);
+				event.setCancelled(true);
+			}
 		}
 	}
 
