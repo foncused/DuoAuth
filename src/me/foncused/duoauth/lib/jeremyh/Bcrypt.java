@@ -523,7 +523,7 @@ public class Bcrypt {
 		byte[] passwordb;
 		try {
 			passwordb = (password + (minor >= 'a' ? "\000" : "")).getBytes("UTF-8");
-		} catch(UnsupportedEncodingException uee) {
+		} catch(final UnsupportedEncodingException uee) {
 			throw new AssertionError("UTF-8 is not supported");
 		}
 		final StringBuilder rs = new StringBuilder().append("$2");
@@ -578,7 +578,7 @@ public class Bcrypt {
 			final String charset = "UTF-8";;
 			hashedBytes = hashed.getBytes(charset);
 			tryBytes = try_pw.getBytes(charset);
-		} catch(UnsupportedEncodingException uee) {
+		} catch(final UnsupportedEncodingException uee) {
 			return false;
 		}
 		if(hashedBytes.length != tryBytes.length) {
