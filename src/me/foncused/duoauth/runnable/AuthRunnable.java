@@ -2,6 +2,7 @@ package me.foncused.duoauth.runnable;
 
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
@@ -22,11 +23,13 @@ public class AuthRunnable {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
+	private final LangManager lm;
 	private final AuthDatabase db;
 
 	public AuthRunnable(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
+		this.lm = this.plugin.getLangManager();
 		this.db = this.plugin.getDatabase();
 	}
 
@@ -52,7 +55,7 @@ public class AuthRunnable {
 												plugin.getAuthCache(uuid).setAuthed(false);
 												AuthUtil.alertOne(
 														(Player) player,
-														plugin.getLangManager().getSessionExpired()
+														lm.getSessionExpired()
 												);
 												AuthUtil.notify(notify);
 											}

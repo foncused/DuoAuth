@@ -6,7 +6,6 @@ import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
-import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
@@ -97,10 +96,10 @@ public class AuthCommand implements CommandExecutor {
 																					if(player.isOnline()) {
 																						cache.setAuthed(true);
 																					}
-																					AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been reset! To re-enable authentication, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
+																					AuthUtil.alertOne(player, this.lm.getResetSuccess());
 																					AuthUtil.notify("Reset authentication for user " + u + " (" + name + ")");
 																				} else {
-																					AuthUtil.alertOne(player, ChatColor.RED + "Failed to reset authentication. Please contact the server administrators if you are receiving this message.");
+																					AuthUtil.alertOne(player, this.lm.getResetFailed());
 																					AuthUtil.notify("Failed to reset authentication for user " + u + " (" + name + ")");
 																				}
 																			})
@@ -111,19 +110,19 @@ public class AuthCommand implements CommandExecutor {
 																	break;
 															}
 														} else {
-															AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS.toString());
+															AuthUtil.alertOne(player, this.lm.getAuthInProgress());
 														}
 													} else {
-														player.sendMessage(AuthMessage.MUST_WAIT.toString());
+														player.sendMessage(this.lm.getMustWait());
 													}
 												} else {
-													AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_AUTHED.toString());
+													AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
 												}
 											} else {
-												AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DB.toString());
+												AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 											}
 										} else {
-											AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DB.toString());
+											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
 									})
 									.execute();
@@ -137,14 +136,16 @@ public class AuthCommand implements CommandExecutor {
 										final UUID targetId = targetOffline.getUniqueId();
 										if(!(this.auths.contains(targetId))) {
 											TaskChainManager.newChain()
-													.asyncFirst(() -> this.db.contains(targetId) && this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean() && this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
+													.asyncFirst(() -> this.db.contains(targetId)
+															&& this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean()
+															&& this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
 													.syncLast(deauthed -> {
 														final String id = targetId.toString();
 														if(deauthed) {
 															final AuthCache c = this.plugin.getAuthCache(targetId);
 															if(c != null && targetOffline.isOnline()) {
 																c.setAuthed(false);
-																AuthUtil.alertOne((Player) targetOffline, ChatColor.RED + "You have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!");
+																AuthUtil.alertOne((Player) targetOffline, this.lm.getDeauthAdminSuccess());
 															}
 															AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
 															AuthUtil.notify("Deauthentication of user " + id + " (" + target + ") was successful");
@@ -155,10 +156,10 @@ public class AuthCommand implements CommandExecutor {
 													})
 													.execute();
 										} else {
-											AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+											AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
 										}
 									} else {
-										player.sendMessage(AuthMessage.NO_PERMISSION.toString());
+										player.sendMessage(this.lm.getNoPermission());
 									}
 									break;
 								case "reset":
@@ -170,7 +171,13 @@ public class AuthCommand implements CommandExecutor {
 									final boolean passwordBothCases = this.cm.isPasswordBothCases();
 									final boolean passwordNumbers = this.cm.isPasswordNumbers();
 									final boolean passwordSpecialChars = this.cm.isPasswordSpecialChars();
-									if(password.length() >= passwordMinLength && password.matches((passwordBothCases ? "(?=.*[A-Z])(?=.*[a-z])" : "(?=.*[A-Za-z])") + (passwordNumbers ? "(?=.*[0-9])" : "") + (passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") + "(?=\\S+$).*$")) {
+									if(password.length() >= passwordMinLength
+											&& password.matches(
+													(passwordBothCases ? "(?=.*[A-Z])(?=.*[a-z])" : "(?=.*[A-Za-z])") +
+															(passwordNumbers ? "(?=.*[0-9])" : "") +
+															(passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") +
+															"(?=\\S+$).*$"
+									)) {
 										final String pin = args[1];
 										final int pinMinLength = this.cm.getPinMinLength();
 										if(pin.length() >= pinMinLength && pin.matches("^[0-9]+$")) {
@@ -200,7 +207,7 @@ public class AuthCommand implements CommandExecutor {
 																if(!(this.db.contains(uuid))) {
 																	TaskChainManager.newChain()
 																			.sync(() -> {
-																				AuthUtil.alertOne(player, ChatColor.GOLD + "Setting up authentication...");
+																				AuthUtil.alertOne(player, this.lm.getSettingUp());
 																				AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ")...");
 																			})
 																			.execute();
@@ -222,10 +229,10 @@ public class AuthCommand implements CommandExecutor {
 																								)
 																						);
 																					}
-																					AuthUtil.alertOne(player, ChatColor.GREEN + "Your credentials have been set!");
+																					AuthUtil.alertOne(player, this.lm.getSettingUpSuccess());
 																					AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
 																				} else {
-																					AuthUtil.alertOne(player, ChatColor.RED + "Failed to set up authentication. Please contact the server administrators if you are receiving this message.");
+																					AuthUtil.alertOne(player, this.lm.getSettingUpFailed());
 																					AuthUtil.notify("User " + u + " (" + name + ") failed to set up authentication");
 																				}
 																			})
@@ -240,13 +247,13 @@ public class AuthCommand implements CommandExecutor {
 																		AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
 																		TaskChainManager.newChain()
 																				.delay(5, TimeUnit.SECONDS)
-																				.sync(() -> player.kickPlayer(AuthMessage.LOCKED.toString()))
+																				.sync(() -> player.kickPlayer(this.lm.getLocked()))
 																				.execute();
 																		chain.setTaskData("result", "");
 																	} else {
 																		TaskChainManager.newChain()
 																				.sync(() -> {
-																					AuthUtil.alertOne(player, ChatColor.GOLD + "Authenticating...");
+																					AuthUtil.alertOne(player, this.lm.getAuthenticating());
 																					AuthUtil.notify("Authenticating user " + u + " (" + name + ")...");
 																				})
 																				.execute();
@@ -261,8 +268,8 @@ public class AuthCommand implements CommandExecutor {
 																		chain.setTaskData(
 																				"result",
 																				(Bcrypt.checkpw(password, pw) && Bcrypt.checkpw(pin, pi))
-																						? ChatColor.GREEN + "Authentication successful. Have fun!"
-																						: ChatColor.RED + "Authentication failed. Please ensure your password and PIN are correct. Please contact the server administrators if you believe that this is in error."
+																						? this.lm.getAuthenticatingSuccess()
+																						: this.lm.getAuthenticatingFailed()
 																		);
 																	}
 																}
@@ -324,10 +331,10 @@ public class AuthCommand implements CommandExecutor {
 															})
 															.execute();
 												} else {
-													AuthUtil.alertOne(player, AuthMessage.AUTH_IN_PROGRESS.toString());
+													AuthUtil.alertOne(player, this.lm.getAuthInProgress());
 												}
 											} else {
-												player.sendMessage(AuthMessage.MUST_WAIT.toString());
+												player.sendMessage(this.lm.getNoPermission());
 											}
 										} else {
 											AuthUtil.alertOne(
@@ -358,12 +365,12 @@ public class AuthCommand implements CommandExecutor {
 							break;
 					}
 				} else {
-					sender.sendMessage(AuthMessage.NO_PERMISSION.toString());
+					sender.sendMessage(this.lm.getNoPermission());
 				}
 			} else if(this.cm.isConsoleReset() && args.length == 2 && args[0].toLowerCase().equals("reset")) {
 				this.reset(sender, args[1]);
 			} else {
-				sender.sendMessage(ChatColor.RED + "You cannot do this from the console!");
+				sender.sendMessage(this.lm.getNoConsole());
 			}
 		}
 		return true;
@@ -385,7 +392,7 @@ public class AuthCommand implements CommandExecutor {
 								final AuthCache c = this.plugin.getAuthCache(targetId);
 								if(c != null && targetOffline.isOnline()) {
 									c.setAuthed(true);
-									AuthUtil.alertOne((Player) targetOffline, ChatColor.GREEN + "Your credentials have been reset by an administrator.");
+									AuthUtil.alertOne((Player) targetOffline, this.lm.getResetAdminSuccess());
 								}
 								msg = ChatColor.GREEN + "Authentication for user " + target + " has been reset.";
 								AuthUtil.notify("Reset authentication for user " + id + " (" + target + ")");
@@ -401,14 +408,15 @@ public class AuthCommand implements CommandExecutor {
 						})
 						.execute();
 			} else {
+				final String msg = this.lm.getAuthInProgressAdmin();
 				if(console) {
-					AuthUtil.console(AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+					AuthUtil.console(msg);
 				} else {
-					AuthUtil.alertOne((Player) sender, AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString());
+					AuthUtil.alertOne((Player) sender, msg);
 				}
 			}
 		} else {
-			sender.sendMessage(AuthMessage.NO_PERMISSION.toString());
+			sender.sendMessage(this.lm.getNoPermission());
 		}
 	}
 

@@ -4,6 +4,7 @@ import co.aikar.taskchain.TaskChain;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
@@ -22,11 +23,13 @@ public class PlayerJoin implements Listener {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
+	private final LangManager lm;
 	private final AuthDatabase db;
 
 	public PlayerJoin(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
+		this.lm = this.plugin.getLangManager();
 		this.db = this.plugin.getDatabase();
 	}
 
@@ -88,7 +91,7 @@ public class PlayerJoin implements Listener {
 									);
 									this.log(name, cache);
 									this.plugin.setAuthCache(uuid, cache);
-									AuthUtil.alertOne(player, ChatColor.RED + "The server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!");
+									AuthUtil.alertOne(player, this.lm.getEnforced());
 									final String u = uuid.toString();
 									AuthUtil.notify(
 											written

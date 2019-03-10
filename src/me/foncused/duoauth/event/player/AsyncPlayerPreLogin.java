@@ -2,8 +2,8 @@ package me.foncused.duoauth.event.player;
 
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.config.ConfigManager;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
-import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,12 +15,16 @@ import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER
 
 public class AsyncPlayerPreLogin implements Listener {
 
+	private final DuoAuth plugin;
 	private final ConfigManager cm;
+	private final LangManager lm;
 	private final AuthDatabase db;
 
 	public AsyncPlayerPreLogin(final DuoAuth plugin) {
-		this.cm = plugin.getConfigManager();
-		this.db = plugin.getDatabase();
+		this.plugin = plugin;
+		this.cm = this.plugin.getConfigManager();
+		this.lm = this.plugin.getLangManager();
+		this.db = this.plugin.getDatabase();
 	}
 
 	@EventHandler
@@ -29,7 +33,7 @@ public class AsyncPlayerPreLogin implements Listener {
 		if(this.db.contains(uuid)) {
 			final int commandAttempts = this.cm.getCommandAttempts();
 			if(commandAttempts != 0 && this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt() >= commandAttempts) {
-				event.disallow(KICK_OTHER, AuthMessage.LOCKED.toString());
+				event.disallow(KICK_OTHER, this.lm.getLocked());
 				return;
 			}
 			if(this.cm.isDeauthAddressChanges() && (!(this.db.readProperty(uuid, DatabaseProperty.IP).getAsString().equals(event.getAddress().getHostAddress())))) {

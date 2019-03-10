@@ -102,6 +102,7 @@ public class DuoAuth extends JavaPlugin {
 					this.translate(yaml.getString("prefix_notify", AuthMessage.PREFIX_NOTIFY.toString())),
 					this.translate(yaml.getString("player_not_authed", AuthMessage.PLAYER_NOT_AUTHED.toString())),
 					this.translate(yaml.getString("player_not_db", AuthMessage.PLAYER_NOT_DB.toString())),
+					this.translate(yaml.getString("no_console", AuthMessage.NO_CONSOLE.toString())),
 					this.translate(yaml.getString("must_wait", AuthMessage.MUST_WAIT.toString())),
 					this.translate(yaml.getString("no_permission", AuthMessage.NO_PERMISSION.toString())),
 					this.translate(yaml.getString("locked", AuthMessage.LOCKED.toString())),
@@ -109,7 +110,20 @@ public class DuoAuth extends JavaPlugin {
 					this.translate(yaml.getString("auth_in_progress_admin", AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString())),
 					this.translate(yaml.getString("session_expired", AuthMessage.SESSION_EXPIRED.toString())),
 					this.translate(yaml.getString("deauth_success", AuthMessage.DEAUTH_SUCCESS.toString())),
-					this.translate(yaml.getString("deauth_failed", AuthMessage.DEAUTH_FAILED.toString()))
+					this.translate(yaml.getString("deauth_failed", AuthMessage.DEAUTH_FAILED.toString())),
+					this.translate(yaml.getString("deauth_admin_success", AuthMessage.DEAUTH_ADMIN_SUCCESS.toString())),
+					this.translate(yaml.getString("reset_success", AuthMessage.RESET_SUCCESS.toString())),
+					this.translate(yaml.getString("reset_failed", AuthMessage.RESET_FAILED.toString())),
+					this.translate(yaml.getString("reset_admin_success", AuthMessage.RESET_ADMIN_SUCCESS.toString())),
+					this.translate(yaml.getString("setting_up", AuthMessage.SETTING_UP.toString())),
+					this.translate(yaml.getString("setting_up_success", AuthMessage.SETTING_UP_SUCCESS.toString())),
+					this.translate(yaml.getString("setting_up_failed", AuthMessage.SETTING_UP_FAILED.toString())),
+					this.translate(yaml.getString("authenticating", AuthMessage.AUTHENTICATING.toString())),
+					this.translate(yaml.getString("authenticating_success", AuthMessage.AUTHENTICATING_SUCCESS.toString())),
+					this.translate(yaml.getString("authenticating_failed", AuthMessage.AUTHENTICATING_FAILED.toString())),
+					this.translate(yaml.getString("enforced", AuthMessage.ENFORCED.toString())),
+					this.translate(yaml.getString("loading", AuthMessage.ENFORCED.toString()))
+
 			);
 			return;
 		} catch(final IOException e) {
@@ -124,6 +138,7 @@ public class DuoAuth extends JavaPlugin {
 				this.translate(AuthMessage.PREFIX_NOTIFY.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_AUTHED.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_DB.toString()),
+				this.translate(AuthMessage.NO_CONSOLE.toString()),
 				this.translate(AuthMessage.MUST_WAIT.toString()),
 				this.translate(AuthMessage.NO_PERMISSION.toString()),
 				this.translate(AuthMessage.LOCKED.toString()),
@@ -131,7 +146,19 @@ public class DuoAuth extends JavaPlugin {
 				this.translate(AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString()),
 				this.translate(AuthMessage.SESSION_EXPIRED.toString()),
 				this.translate(AuthMessage.DEAUTH_SUCCESS.toString()),
-				this.translate(AuthMessage.DEAUTH_FAILED.toString())
+				this.translate(AuthMessage.DEAUTH_FAILED.toString()),
+				this.translate(AuthMessage.DEAUTH_ADMIN_SUCCESS.toString()),
+				this.translate(AuthMessage.RESET_SUCCESS.toString()),
+				this.translate(AuthMessage.RESET_FAILED.toString()),
+				this.translate(AuthMessage.RESET_ADMIN_SUCCESS.toString()),
+				this.translate(AuthMessage.SETTING_UP.toString()),
+				this.translate(AuthMessage.SETTING_UP_SUCCESS.toString()),
+				this.translate(AuthMessage.SETTING_UP_FAILED.toString()),
+				this.translate(AuthMessage.AUTHENTICATING.toString()),
+				this.translate(AuthMessage.AUTHENTICATING_SUCCESS.toString()),
+				this.translate(AuthMessage.AUTHENTICATING_FAILED.toString()),
+				this.translate(AuthMessage.ENFORCED.toString()),
+				this.translate(AuthMessage.LOADING.toString())
 		);
 	}
 

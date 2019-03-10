@@ -2,7 +2,7 @@ package me.foncused.duoauth.event.auth;
 
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.cache.AuthCache;
-import me.foncused.duoauth.enumerable.AuthMessage;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,9 +18,11 @@ import org.bukkit.inventory.ItemStack;
 public class Auth implements Listener {
 
 	private final DuoAuth plugin;
+	private final LangManager lm;
 
 	public Auth(final DuoAuth plugin) {
 		this.plugin = plugin;
+		this.lm = this.plugin.getLangManager();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -95,7 +97,7 @@ public class Auth implements Listener {
 	}
 
 	private void message(final Player player) {
-		AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_AUTHED.toString());
+		AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
 	}
 
 }
