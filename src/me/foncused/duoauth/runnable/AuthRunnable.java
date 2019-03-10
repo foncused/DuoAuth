@@ -7,7 +7,6 @@ import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,7 +52,7 @@ public class AuthRunnable {
 												plugin.getAuthCache(uuid).setAuthed(false);
 												AuthUtil.alertOne(
 														(Player) player,
-														ChatColor.RED + "Your session has expired. Please use the /auth command to continue playing. Thank you!"
+														plugin.getLangManager().getSessionExpired()
 												);
 												AuthUtil.notify(notify);
 											}

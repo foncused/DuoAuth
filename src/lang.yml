@@ -1,0 +1,13 @@
+prefix_alert: "&3ALERT &8» &7"
+prefix_notify: "&cALERT &8» &7&o"
+
+player_not_authed: "&cYou need to authenticate with /auth <password> <pin> before you can chat, move, or play."
+player_not_db: "&cYou have not set up authentication. To enable authentication, please use the /auth command."
+must_wait: "&cYou must wait before doing that again."
+no_permission: "&cYou do not have permission to do this!"
+locked: "&cYour account has been locked. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance."
+auth_in_progress: "&6Authentication in progress - please be patient..."
+auth_in_progress_admin: "&cThat user is currently performing an authentication attempt. Please try again in a moment."
+session_expired: "&cYour session has expired. Please use the /auth command to continue playing. Thank you!"
+deauth_success: "&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
+deauth_failed: "&cDeauthentication failed. Please contact the server administrators if you are receiving this message."

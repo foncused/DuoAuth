@@ -4,6 +4,7 @@ import co.aikar.taskchain.TaskChain;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
@@ -29,6 +30,7 @@ public class AuthCommand implements CommandExecutor {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
+	private final LangManager lm;
 	private final AuthDatabase db;
 	private final Set<UUID> auths;
 	private final Set<UUID> cooldowns;
@@ -36,6 +38,7 @@ public class AuthCommand implements CommandExecutor {
 	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
+		this.lm = this.plugin.getLangManager();
 		this.db = this.plugin.getDatabase();
 		this.auths = new HashSet<>();
 		this.cooldowns = new HashSet<>();
@@ -77,10 +80,10 @@ public class AuthCommand implements CommandExecutor {
 																					if(player.isOnline()) {
 																						cache.setAuthed(false);
 																					}
-																					AuthUtil.alertOne(player, ChatColor.GREEN + "Your have deauthenticated successfully. To continue playing, please use the " + ChatColor.RED + "/auth " + ChatColor.GREEN + "command.");
+																					AuthUtil.alertOne(player, this.lm.getDeauthSuccess());
 																					AuthUtil.notify("Deauthenticated user " + u + " (" + name + ")");
 																				} else {
-																					AuthUtil.alertOne(player, ChatColor.RED + "Deauthentication failed. Please contact the server administrators if you are receiving this message.");
+																					AuthUtil.alertOne(player, this.lm.getDeauthFailed());
 																					AuthUtil.notify("Failed to deauthenticate user " + u + " (" + name + ")");
 																				}
 																			})
@@ -117,10 +120,10 @@ public class AuthCommand implements CommandExecutor {
 													AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_AUTHED.toString());
 												}
 											} else {
-												AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DATABASED.toString());
+												AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DB.toString());
 											}
 										} else {
-											AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DATABASED.toString());
+											AuthUtil.alertOne(player, AuthMessage.PLAYER_NOT_DB.toString());
 										}
 									})
 									.execute();

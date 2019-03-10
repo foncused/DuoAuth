@@ -1,6 +1,6 @@
 name: DuoAuth
 main: me.foncused.duoauth.DuoAuth
-version: 1.0.4
+version: 1.0.5
 author: foncused
 load: STARTUP
 api-version: 1.13

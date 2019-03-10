@@ -1,9 +1,12 @@
 package me.foncused.duoauth;
 
+import com.google.common.io.ByteStreams;
 import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.command.AuthCommand;
 import me.foncused.duoauth.config.ConfigManager;
+import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
+import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.event.auth.Auth;
 import me.foncused.duoauth.event.player.AsyncPlayerPreLogin;
 import me.foncused.duoauth.event.player.PlayerJoin;
@@ -11,11 +14,18 @@ import me.foncused.duoauth.event.player.PlayerLogin;
 import me.foncused.duoauth.event.player.PlayerQuit;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.runnable.AuthRunnable;
+import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +35,7 @@ public class DuoAuth extends JavaPlugin {
 
 	private Map<UUID, AuthCache> players;
 	private ConfigManager cm;
+	private LangManager lm;
 	private AuthDatabase db;
 
 	@Override
@@ -32,6 +43,8 @@ public class DuoAuth extends JavaPlugin {
 		this.registerPlayers();
 		this.loadDependencies();
 		this.registerConfig();
+		this.registerLang();
+		this.registerUtils();
 		this.registerDatabase();
 		this.registerCommands();
 		this.registerEvents();
@@ -69,6 +82,61 @@ public class DuoAuth extends JavaPlugin {
 				config.getBoolean("console-reset", false),
 				config.getBoolean("chat", false)
 		);
+	}
+
+	private void registerLang() {
+		final String name = "lang.yml";
+		final String path = this.getDataFolder().getPath() + "/" + name;
+		try {
+			final File lang = new File(path);
+			if(!(lang.exists())) {
+				ByteStreams.copy(
+						this.getResource(name),
+						new FileOutputStream(lang)
+				);
+			}
+			final YamlConfiguration yaml = new YamlConfiguration();
+			yaml.load(lang);
+			this.lm = new LangManager(
+					this.translate(yaml.getString("prefix_alert", AuthMessage.PREFIX_ALERT.toString())),
+					this.translate(yaml.getString("prefix_notify", AuthMessage.PREFIX_NOTIFY.toString())),
+					this.translate(yaml.getString("player_not_authed", AuthMessage.PLAYER_NOT_AUTHED.toString())),
+					this.translate(yaml.getString("player_not_db", AuthMessage.PLAYER_NOT_DB.toString())),
+					this.translate(yaml.getString("must_wait", AuthMessage.MUST_WAIT.toString())),
+					this.translate(yaml.getString("no_permission", AuthMessage.NO_PERMISSION.toString())),
+					this.translate(yaml.getString("locked", AuthMessage.LOCKED.toString())),
+					this.translate(yaml.getString("auth_in_progress", AuthMessage.AUTH_IN_PROGRESS.toString())),
+					this.translate(yaml.getString("auth_in_progress_admin", AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString())),
+					this.translate(yaml.getString("session_expired", AuthMessage.SESSION_EXPIRED.toString())),
+					this.translate(yaml.getString("deauth_success", AuthMessage.DEAUTH_SUCCESS.toString())),
+					this.translate(yaml.getString("deauth_failed", AuthMessage.DEAUTH_FAILED.toString()))
+			);
+			return;
+		} catch(final IOException e) {
+			AuthUtil.consoleSevere("Unable to create file " + path);
+			e.printStackTrace();
+		} catch(final InvalidConfigurationException e) {
+			AuthUtil.consoleWarning("Unable to parse " + path + " due to invalid YAML");
+			e.printStackTrace();
+		}
+		this.lm = new LangManager(
+				this.translate(AuthMessage.PREFIX_ALERT.toString()),
+				this.translate(AuthMessage.PREFIX_NOTIFY.toString()),
+				this.translate(AuthMessage.PLAYER_NOT_AUTHED.toString()),
+				this.translate(AuthMessage.PLAYER_NOT_DB.toString()),
+				this.translate(AuthMessage.MUST_WAIT.toString()),
+				this.translate(AuthMessage.NO_PERMISSION.toString()),
+				this.translate(AuthMessage.LOCKED.toString()),
+				this.translate(AuthMessage.AUTH_IN_PROGRESS.toString()),
+				this.translate(AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString()),
+				this.translate(AuthMessage.SESSION_EXPIRED.toString()),
+				this.translate(AuthMessage.DEAUTH_SUCCESS.toString()),
+				this.translate(AuthMessage.DEAUTH_FAILED.toString())
+		);
+	}
+
+	private void registerUtils() {
+		new AuthUtil(this);
 	}
 
 	private void registerDatabase() {
@@ -112,7 +180,15 @@ public class DuoAuth extends JavaPlugin {
 		return this.cm;
 	}
 
+	public LangManager getLangManager() {
+		return this.lm;
+	}
+
 	public AuthDatabase getDatabase() {
 		return this.db;
+	}
+
+	private String translate(final String s) {
+		return ChatColor.translateAlternateColorCodes('&', s);
 	}
 }

@@ -7,23 +7,23 @@ import me.foncused.duoauth.util.AuthUtil;
 
 public class ConfigManager {
 
-	private int costFactor;
-	private int commandCooldown;
-	private int commandAttempts;
+	private final int costFactor;
+	private final int commandCooldown;
+	private final int commandAttempts;
 	private String passwordDefault;
-	private int passwordMinLength;
-	private boolean passwordBothCases;
-	private boolean passwordNumbers;
-	private boolean passwordSpecialChars;
+	private final int passwordMinLength;
+	private final boolean passwordBothCases;
+	private final boolean passwordNumbers;
+	private final boolean passwordSpecialChars;
 	private String pinDefault;
-	private int pinMinLength;
-	private DatabaseOption databaseOption;
-	private boolean deauthAddressChanges;
-	private int deauthTimeout;
-	private boolean deauthTimeoutOnline;
-	private int deauthTimeoutCheckHeartbeat;
-	private boolean consoleReset;
-	private boolean chat;
+	private final int pinMinLength;
+	private final DatabaseOption databaseOption;
+	private final boolean deauthAddressChanges;
+	private final int deauthTimeout;
+	private final boolean deauthTimeoutOnline;
+	private final int deauthTimeoutCheckHeartbeat;
+	private final boolean consoleReset;
+	private final boolean chat;
 	private boolean loading;
 
 	public ConfigManager(
