@@ -122,7 +122,7 @@ public class DuoAuth extends JavaPlugin {
 					this.translate(yaml.getString("authenticating_success", AuthMessage.AUTHENTICATING_SUCCESS.toString())),
 					this.translate(yaml.getString("authenticating_failed", AuthMessage.AUTHENTICATING_FAILED.toString())),
 					this.translate(yaml.getString("enforced", AuthMessage.ENFORCED.toString())),
-					this.translate(yaml.getString("loading", AuthMessage.ENFORCED.toString()))
+					this.translate(yaml.getString("loading", AuthMessage.LOADING.toString()))
 
 			);
 			return;
