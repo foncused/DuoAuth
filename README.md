@@ -1,5 +1,5 @@
 # DuoAuth
-![DuoAuth](https://i.imgur.com/nnYcoeV.png)
+![DuoAuth](https://i.imgur.com/4tvxwSd.png)
 
 ### Description:
 "DuoAuth" is an adaptive authentication plugin designed to safeguard your Spigot server against impersonation by requiring a password and PIN combo before players can chat, move, interact, or play on the server.
