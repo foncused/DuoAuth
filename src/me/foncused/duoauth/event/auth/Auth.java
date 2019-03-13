@@ -2,6 +2,7 @@ package me.foncused.duoauth.event.auth;
 
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.cache.AuthCache;
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Location;
@@ -18,16 +19,18 @@ import org.bukkit.inventory.ItemStack;
 public class Auth implements Listener {
 
 	private final DuoAuth plugin;
+	private final ConfigManager cm;
 	private final LangManager lm;
 
 	public Auth(final DuoAuth plugin) {
 		this.plugin = plugin;
+		this.cm = this.plugin.getConfigManager();
 		this.lm = this.plugin.getLangManager();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-		if(!(this.plugin.getConfigManager().isChat())) {
+		if(!(this.cm.isChat())) {
 			final Player player = event.getPlayer();
 			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 			if(cache != null && (!(cache.isAuthed()))) {
@@ -90,7 +93,9 @@ public class Auth implements Listener {
 		if(cache != null && (!(cache.isAuthed()))) {
 			final Location loc1 = event.getFrom();
 			final Location loc2 = event.getTo();
-			if((loc1.getBlockX() != loc2.getBlockX()) || (loc1.getBlockY() != loc2.getBlockY()) || (loc1.getBlockZ() != loc2.getBlockZ())) {
+			if(this.cm.isRestrictMovement()) {
+				event.setTo(loc1);
+			} else if((loc1.getBlockX() != loc2.getBlockX()) || (loc1.getBlockY() != loc2.getBlockY()) || (loc1.getBlockZ() != loc2.getBlockZ())) {
 				player.teleport(loc1);
 			}
 		}

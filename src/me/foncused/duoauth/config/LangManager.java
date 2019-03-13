@@ -2,11 +2,11 @@ package me.foncused.duoauth.config;
 
 public class LangManager {
 
-	private final String authInProgress;
-	private final String authInProgressAdmin;
 	private final String authenticating;
 	private final String authenticatingFailed;
 	private final String authenticatingSuccess;
+	private final String authInProgress;
+	private final String authInProgressAdmin;
 	private final String deauthAdminSuccess;
 	private final String deauthFailed;
 	private final String deauthSuccess;
@@ -29,11 +29,11 @@ public class LangManager {
 	private final String settingUpSuccess;
 
 	public LangManager(
-		final String authInProgress,
-		final String authInProgressAdmin,
 		final String authenticating,
 		final String authenticatingFailed,
 		final String authenticatingSuccess,
+		final String authInProgress,
+		final String authInProgressAdmin,
 		final String deauthAdminSuccess,
 		final String deauthFailed,
 		final String deauthSuccess,
@@ -55,11 +55,11 @@ public class LangManager {
 		final String settingUpFailed,
 		final String settingUpSuccess
 	) {
-		this.authInProgress = authInProgress;
-		this.authInProgressAdmin = authInProgressAdmin;
 		this.authenticating = authenticating;
 		this.authenticatingFailed = authenticatingFailed;
 		this.authenticatingSuccess = authenticatingSuccess;
+		this.authInProgress = authInProgress;
+		this.authInProgressAdmin = authInProgressAdmin;
 		this.deauthAdminSuccess = deauthAdminSuccess;
 		this.deauthFailed = deauthFailed;
 		this.deauthSuccess = deauthSuccess;

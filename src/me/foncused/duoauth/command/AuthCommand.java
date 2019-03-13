@@ -291,6 +291,7 @@ public class AuthCommand implements CommandExecutor {
 																				.execute();
 																		if(cache != null && player.isOnline()) {
 																			cache.setAuthed(true);
+																			cache.setAttempts(0);
 																		}
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {

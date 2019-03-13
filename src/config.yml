@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.0.5
+# @version 1.0.6
 # @author foncused
 
 # The cost factor of the bcrypt algorithm
@@ -76,3 +76,6 @@ console-reset: false
 
 # true to allow chat before authentication, false if not
 chat: false
+
+# true to restrict yaw and pitch, false if not
+restrict-movement: false

@@ -24,6 +24,7 @@ public class ConfigManager {
 	private final int deauthTimeoutCheckHeartbeat;
 	private final boolean consoleReset;
 	private final boolean chat;
+	private final boolean restrictMovement;
 	private boolean loading;
 
 	public ConfigManager(
@@ -43,7 +44,8 @@ public class ConfigManager {
 			final boolean deauthTimeoutOnline,
 			final int deauthTimeoutCheckHeartbeat,
 			final boolean consoleReset,
-			final boolean chat
+			final boolean chat,
+			final boolean restrictMovement
 	) {
 		this.loading = true;
 		if(costFactor < 12) {
@@ -121,6 +123,8 @@ public class ConfigManager {
 		AuthUtil.console(this.consoleReset ? "Console access is enabled" : "Console access is disabled");
 		this.chat = chat;
 		AuthUtil.console(this.chat ? "Chat is enabled" : "Chat is disabled");
+		this.restrictMovement = restrictMovement;
+		AuthUtil.console(this.restrictMovement ? "Movement is restricted" : "Movement is not restricted");
 		final TaskChain chain = TaskChainManager.newChain();
 		chain
 				.sync(() -> {
@@ -212,6 +216,10 @@ public class ConfigManager {
 
 	public synchronized boolean isChat() {
 		return this.chat;
+	}
+
+	public synchronized boolean isRestrictMovement() {
+		return this.restrictMovement;
 	}
 
 	public synchronized boolean isLoading() {
