@@ -74,8 +74,8 @@ deauth:
 # true to allow console access to /auth reset <player>, false if not
 console-reset: false
 
-# true to allow chat before authentication, false if not
+# true to allow chat prior to authentication, false if not
 chat: false
 
-# true to restrict yaw and pitch, false if not
+# true to restrict yaw and pitch prior to authentication, false if not
 restrict-movement: false
