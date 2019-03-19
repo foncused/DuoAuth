@@ -42,8 +42,7 @@ public class AuthRunnable {
 					uuids.forEach(uuid -> {
 						final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
 						if(timestamp != null) {
-							final double days = cm.getDeauthTimeout() / 24.0;
-							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat(), 86400000) >= days) {
+							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (cm.getDeauthTimeout() / 24.0)) {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
@@ -69,10 +68,10 @@ public class AuthRunnable {
 		}.runTaskTimerAsynchronously(this.plugin, 0,  this.cm.getDeauthTimeoutCheckHeartbeat() * 60 * 20);
 	}
 
-	private double getTimeDifference(final String date, final String format, final double divide) {
+	private double getTimeDifference(final String date, final String format) {
 		final DateFormat formatter = new SimpleDateFormat(format);
 		try {
-			return ((formatter.parse(formatter.format(new Date())).getTime() - formatter.parse(date).getTime()) / divide);
+			return ((formatter.parse(formatter.format(new Date())).getTime() - formatter.parse(date).getTime()) / 86400000.0);
 		} catch(final ParseException e) {
 			return 0;
 		}

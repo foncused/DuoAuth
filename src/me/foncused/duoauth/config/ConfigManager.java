@@ -28,24 +28,24 @@ public class ConfigManager {
 	private boolean loading;
 
 	public ConfigManager(
-			final int costFactor,
-			final int commandCooldown,
-			final int commandAttempts,
-			final String passwordDefault,
-			final int passwordMinLength,
-			final boolean passwordBothCases,
-			final boolean passwordNumbers,
-			final boolean passwordSpecialChars,
-			final String pinDefault,
-			final int pinMinLength,
-			final String database,
-			final boolean deauthAddressChanges,
-			final int deauthTimeout,
-			final boolean deauthTimeoutOnline,
-			final int deauthTimeoutCheckHeartbeat,
-			final boolean consoleReset,
-			final boolean chat,
-			final boolean restrictMovement
+		final int costFactor,
+		final int commandCooldown,
+		final int commandAttempts,
+		final String passwordDefault,
+		final int passwordMinLength,
+		final boolean passwordBothCases,
+		final boolean passwordNumbers,
+		final boolean passwordSpecialChars,
+		final String pinDefault,
+		final int pinMinLength,
+		final String database,
+		final boolean deauthAddressChanges,
+		final int deauthTimeout,
+		final boolean deauthTimeoutOnline,
+		final int deauthTimeoutCheckHeartbeat,
+		final boolean consoleReset,
+		final boolean chat,
+		final boolean restrictMovement
 	) {
 		this.loading = true;
 		if(costFactor < 12) {
