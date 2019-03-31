@@ -575,7 +575,7 @@ public class Bcrypt {
 		byte[] hashedBytes, tryBytes;
 		try {
 			final String try_pw = hashpw(plaintext, hashed);
-			final String charset = "UTF-8";;
+			final String charset = "UTF-8";
 			hashedBytes = hashed.getBytes(charset);
 			tryBytes = try_pw.getBytes(charset);
 		} catch(final UnsupportedEncodingException uee) {
