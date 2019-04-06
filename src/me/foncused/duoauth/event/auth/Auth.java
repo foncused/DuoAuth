@@ -68,7 +68,6 @@ public class Auth implements Listener {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 		if(cache != null && (!(cache.isAuthed()))) {
-			this.message(player);
 			event.setCancelled(true);
 		}
 	}
