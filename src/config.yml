@@ -14,7 +14,7 @@ command:
   # The cooldown time in seconds for using the /auth command (bypassed by 'duoauth.bypass')
   cooldown: 20
 
-  # The maximum number of incorrect authentication attempts before the players are locked out
+  # The maximum number of incorrect authentication attempts before the players are locked out (bypassed by 'duoauth.unlimited')
   attempts: 5
 
 # Password options
