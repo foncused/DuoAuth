@@ -1,0 +1,26 @@
+name: DuoAuth
+main: me.foncused.duoauth.DuoAuth
+version: 1.0.7
+author: foncused
+load: STARTUP
+api-version: 1.14
+
+commands:
+  auth:
+    usage: /<command>
+    aliases: [2fa]
+    description: Authenticate with password and PIN combo
+
+permissions:
+  duoauth.auth:
+    default: false
+  duoauth.bypass:
+    default: false
+  duoauth.admin:
+    default: false
+  duoauth.notify:
+    default: false
+  duoauth.enforced:
+    default: false
+  duoauth.unlimited:
+    default: false

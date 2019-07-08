@@ -1,0 +1,81 @@
+# @plugin DuoAuth
+# @version 1.0.7
+# @author foncused
+
+# The cost factor of the bcrypt algorithm
+# For best security measures, it is recommended to set this value in respect to the maximum amount of
+# time you are willing to have your players wait to be authenticated (normally between 12 and 20),
+# which will be dependent on your individual system and CPU throughput
+cost-factor: 14
+
+# Command options for /auth command
+command:
+
+  # The cooldown time in seconds for using the /auth command (bypassed by 'duoauth.bypass')
+  cooldown: 20
+
+  # The maximum number of incorrect authentication attempts before the players are locked out (bypassed by 'duoauth.unlimited')
+  attempts: 5
+
+# Password options
+# For best security measures, set a min-length of at least 8, both-cases to true,
+# numbers to true, special-chars to true, and change default (Password1234#) as
+# this default config.yml is public on GitHub; be advised the default password
+# WILL NOT WORK if it does not meet the other requirements
+password:
+
+  # The default password to be used when players join with permission 'duoauth.enforced'
+  default: "Password1234#"
+
+  # The minimum length of a provided password
+  min-length: 8
+
+  # true to enforce at least one uppercase and one lowercase letter, false if not
+  both-cases: true
+
+  # true to enforce at least one number, false if not
+  numbers: true
+
+  # true to enforce at least one special character, false if not
+  special-chars: true
+
+# PIN options
+# For best security measures, change default (1234) as this config.yml is public on GitHub;
+# be advised the default PIN WILL NOT WORK if it does not meet the length requirement
+pin:
+
+  # The default PIN to be used when players join with permission 'duoauth.enforced'
+  default: "1234"
+
+  # The minimum length of a provided PIN
+  min-length: 4
+
+# Database options
+# The method used for storing the digests
+# Required (currently) to be "json"
+database: "json"
+
+# Deauthentication options
+# For best security measures, set ip-changes to true
+deauth:
+
+  # true to immediately deauthenticate players whenever their IP addresses change, false if not
+  ip-changes: true
+
+  # The time in hours to deauthenticate players after the last successful authentication
+  timeout: 72
+
+  # true to deauthenticate players even if they are online (can be annoying), false if not
+  timeout-online: false
+
+  # The heartbeat in minutes to check if players should be deauthenticated
+  timeout-check-heartbeat: 10
+
+# true to allow console access to /auth reset <player>, false if not
+console-reset: false
+
+# true to allow chat prior to authentication, false if not
+chat: false
+
+# true to restrict yaw and pitch prior to authentication, false if not
+restrict-movement: false
