@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.foncused</groupId>
-    <artifactId>DuoAuth</artifactId>
+    <artifactId>duoauth</artifactId>
     <version>1.0.7</version>
     <packaging>jar</packaging>
+    <name>DuoAuth</name>
     <url>https://github.com/foncused/DuoAuth</url>
     <build>
         <finalName>${project.name}</finalName>
@@ -28,8 +29,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.8.1</version>
                 <configuration>
+                    <fork>true</fork>
+                    <executable>C:\Program Files\AdoptOpenJDK\jdk-8.0.212.04-hotspot\bin\javac.exe</executable>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
