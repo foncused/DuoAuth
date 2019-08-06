@@ -7,7 +7,7 @@ deauth_admin_success: "&cYou have been deauthenticated by an administrator. Plea
 deauth_failed: "&cDeauthentication failed. Please contact the server administrators if you are receiving this message."
 deauth_success: "&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
 enforced: "&cThe server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!"
-loading: "&cDuoAuth is still loading. Please try again in a moment."
+loading: "&7Duo&aAuth &cis still loading. Please try again in a moment."
 locked: "&cYour account has been locked. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance."
 must_wait: "&cYou must wait before doing that again."
 no_console: "&cYou cannot do this from the console."

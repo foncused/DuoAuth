@@ -11,7 +11,7 @@ public enum AuthMessage {
 	DEAUTH_FAILED("&cDeauthentication failed. Please contact the server administrators if you are receiving this message."),
 	DEAUTH_SUCCESS("&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."),
 	ENFORCED("&cThe server administrator has required you to set up authentication. Please enter the command '/auth <password> <pin>' using the credentials given to you, and then use '/auth reset' to set your own credentials. Thank you!"),
-	LOADING("&cDuoAuth is still loading. Please try again in a moment."),
+	LOADING("&7Duo&aAuth &cis still loading. Please try again in a moment."),
 	LOCKED("&cYour account has been locked. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance."),
 	MUST_WAIT("&cYou must wait before doing that again."),
 	NO_CONSOLE("&cYou cannot do this from the console."),

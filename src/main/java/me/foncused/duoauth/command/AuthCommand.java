@@ -211,8 +211,8 @@ public class AuthCommand implements CommandExecutor {
 																				AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ")...");
 																			})
 																			.execute();
-																	final String pwhash = AuthUtil.getSecureBCryptHash(password, costFactor);
-																	final String pinhash = AuthUtil.getSecureBCryptHash(pin, costFactor);
+																	final String pwhash = AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(password), costFactor);
+																	final String pinhash = AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(pin), costFactor);
 																	final boolean written = this.db.write(uuid, pwhash, pinhash, true, 0, ip);
 																	TaskChainManager.newChain()
 																			.sync(() -> {
@@ -237,7 +237,6 @@ public class AuthCommand implements CommandExecutor {
 																				}
 																			})
 																			.execute();
-																	chain.setTaskData("result", null);
 																} else {
 																	int attempts = (chain.hasTaskData("attempts"))
 																			? (int) chain.getTaskData("attempts")
@@ -249,7 +248,6 @@ public class AuthCommand implements CommandExecutor {
 																				.delay(5, TimeUnit.SECONDS)
 																				.sync(() -> player.kickPlayer(this.lm.getLocked()))
 																				.execute();
-																		chain.setTaskData("result", "");
 																	} else {
 																		TaskChainManager.newChain()
 																				.sync(() -> {
@@ -267,20 +265,16 @@ public class AuthCommand implements CommandExecutor {
 																		);
 																		chain.setTaskData(
 																				"result",
-																				(Bcrypt.checkpw(password, pw) && Bcrypt.checkpw(pin, pi))
-																						? this.lm.getAuthenticatingSuccess()
-																						: this.lm.getAuthenticatingFailed()
+																				Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(password), pw)
+																						&& Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(pin), pi)
 																		);
 																	}
 																}
 															})
 															.sync(() -> {
-																final String result = (String) chain.getTaskData("result");
-																if(result != null) {
-																	if(!(result.isEmpty())) {
-																		AuthUtil.alertOne(player, result);
-																	}
-																	if(result.contains("successful")) {
+																if(chain.hasTaskData("result")) {
+																	if((boolean) chain.getTaskData("result")) {
+																		AuthUtil.alertOne(player, this.lm.getAuthenticatingSuccess());
 																		TaskChainManager.newChain()
 																				.async(() -> {
 																					this.db.writeProperty(uuid, DatabaseProperty.AUTHED, true);
@@ -295,6 +289,7 @@ public class AuthCommand implements CommandExecutor {
 																		}
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {
+																		AuthUtil.alertOne(player, this.lm.getAuthenticatingFailed());
 																		if(!(player.hasPermission("duoauth.unlimited"))) {
 																			TaskChainManager.newChain()
 																					.syncFirst(() -> {

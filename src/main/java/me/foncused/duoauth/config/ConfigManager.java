@@ -137,8 +137,8 @@ public class ConfigManager {
 					}
 				})
 				.async(() -> {
-					chain.setTaskData("password", AuthUtil.getSecureBCryptHash(passwordDefault, this.costFactor));
-					chain.setTaskData("pin", AuthUtil.getSecureBCryptHash((String) chain.getTaskData("pin-default"), this.costFactor));
+					chain.setTaskData("password", AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor));
+					chain.setTaskData("pin", AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash((String) chain.getTaskData("pin-default")), this.costFactor));
 				})
 				.sync(() -> {
 					this.passwordDefault = (String) chain.getTaskData("password");
