@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.0.7
+# @version 1.0.8
 # @author foncused
 
 # The cost factor of the bcrypt algorithm

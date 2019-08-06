@@ -335,7 +335,7 @@ public class AuthCommand implements CommandExecutor {
 													AuthUtil.alertOne(player, this.lm.getAuthInProgress());
 												}
 											} else {
-												player.sendMessage(this.lm.getNoPermission());
+												player.sendMessage(this.lm.getMustWait());
 											}
 										} else {
 											AuthUtil.alertOne(
