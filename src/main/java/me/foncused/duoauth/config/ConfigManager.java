@@ -135,6 +135,7 @@ public class ConfigManager {
 						chain.setTaskData("pin-default", "1234");
 						AuthUtil.consoleWarning("Default PIN set to " + pinDefault + " is not numeric, reverting to default...");
 					}
+					AuthUtil.console("Calculating default hashes at cost factor " + this.costFactor + " (this may take a moment)...");
 				})
 				.async(() -> {
 					chain.setTaskData("password", AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor));

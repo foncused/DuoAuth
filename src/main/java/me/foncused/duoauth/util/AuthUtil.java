@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import java.math.BigInteger;
 import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -88,13 +89,10 @@ public class AuthUtil {
 		String hash = null;
 		try {
 			final MessageDigest md = MessageDigest.getInstance("SHA-512");
-			final byte[] bytes = md.digest(password.getBytes(StandardCharsets.UTF_8));
-			final StringBuilder sb = new StringBuilder();
-			for(final Byte b : bytes) {
-				sb.append(Integer.toString((b * 0xff) + 0x100, 16).substring(1));
-			}
-			hash = sb.toString();
-		} catch(final NoSuchAlgorithmException e) {
+			md.reset();
+			md.update(password.getBytes("UTF-8"));
+			hash = String.format("%0128x", new BigInteger(1, md.digest()));
+		} catch(final Exception e) {
 			e.printStackTrace();
 		}
 		return hash;
