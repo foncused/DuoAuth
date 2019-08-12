@@ -44,7 +44,7 @@ public class Auth implements Listener {
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache != null && (!(cache.isAuthed())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*")))) {
+		if(cache != null && (!(cache.isAuthed())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*$")))) {
 			this.message(player);
 			event.setCancelled(true);
 		}

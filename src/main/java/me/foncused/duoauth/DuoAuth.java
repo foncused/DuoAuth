@@ -13,8 +13,11 @@ import me.foncused.duoauth.event.player.PlayerJoin;
 import me.foncused.duoauth.event.player.PlayerLogin;
 import me.foncused.duoauth.event.player.PlayerQuit;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
+import me.foncused.duoauth.lib.foncused.AuthFilter;
 import me.foncused.duoauth.runnable.AuthRunnable;
 import me.foncused.duoauth.util.AuthUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -42,6 +45,7 @@ public class DuoAuth extends JavaPlugin {
 	public void onEnable() {
 		this.registerPlayers();
 		this.loadDependencies();
+		this.registerLogFilter();
 		this.registerConfig();
 		this.registerLang();
 		this.registerUtils();
@@ -57,6 +61,10 @@ public class DuoAuth extends JavaPlugin {
 
 	private void loadDependencies() {
 		new TaskChainManager(this);
+	}
+
+	private void registerLogFilter() {
+		((Logger) LogManager.getRootLogger()).addFilter(new AuthFilter());
 	}
 
 	private void registerConfig() {
