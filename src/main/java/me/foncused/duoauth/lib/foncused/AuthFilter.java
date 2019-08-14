@@ -145,9 +145,7 @@ public class AuthFilter implements Filter {
 			if(m == null) {
 				return Result.NEUTRAL;
 			}
-			return (!(m.contains("issued server command:")))
-					? Result.NEUTRAL
-					: (!(m.matches("^.*/(auth|2fa).*$")))
+			return (!(m.matches("^.*issued server command: /(auth|2fa).*$")))
 					? Result.NEUTRAL
 					: Result.DENY;
 		} catch(final NullPointerException e) {
