@@ -7,6 +7,7 @@ import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
+import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.wstrange.GoogleAuth;
@@ -101,8 +102,8 @@ public class PlayerJoin implements Listener {
 									if(written) {
 										this.log(name, cache);
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
-										AuthUtil.alertOne(player, ChatColor.GOLD + "Secret key: " + ChatColor.GREEN + key.getKey());
-										AuthUtil.alertOne(player, ChatColor.GOLD + "QR: " + ChatColor.AQUA + this.ga.getAuthUrl("DuoAuth", name, key));
+										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
+										AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl("DuoAuth", name, key));
 									} else {
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
 									}

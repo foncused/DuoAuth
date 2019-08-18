@@ -2,6 +2,7 @@ package me.foncused.duoauth.enumerable;
 
 public enum AuthMessage {
 
+	// lang.yml
 	AUTHENTICATING("&6Authenticating..."),
 	AUTHENTICATING_FAILED("&cAuthentication failed. Please ensure your password and code are correct. Please contact the server administrators if you believe that this is in error."),
 	AUTHENTICATING_SUCCESS("&aAuthentication successful. Have fun!"),
@@ -30,7 +31,11 @@ public enum AuthMessage {
 	SESSION_EXPIRED("&cYour session has expired. Please use the /auth command to continue playing. Thank you!"),
 	SETTING_UP("&6Setting up authentication..."),
 	SETTING_UP_FAILED("&cFailed to set up authentication. Please verify your code is correct, or contact the server administrators if you are receiving this message."),
-	SETTING_UP_SUCCESS("&aYour credentials have been set!");
+	SETTING_UP_SUCCESS("&aYour credentials have been set!"),
+
+	// Other
+	SECRET_KEY("§6Secret key: §a"),
+	QR("§6QR: §b");
 
 	private final String message;
 

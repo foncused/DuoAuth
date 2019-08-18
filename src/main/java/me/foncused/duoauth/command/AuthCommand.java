@@ -7,6 +7,7 @@ import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.database.AuthDatabase;
+import me.foncused.duoauth.enumerable.AuthMessage;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
@@ -140,8 +141,8 @@ public class AuthCommand implements CommandExecutor {
 												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ")...");
 												key = this.ga.generateRFC6238Credentials(uuid);
 											}
-											AuthUtil.alertOne(player, ChatColor.GOLD + "Secret key: " + ChatColor.GREEN + key.getKey());
-											AuthUtil.alertOne(player, ChatColor.GOLD + "QR: " + ChatColor.AQUA + this.ga.getAuthUrl("DuoAuth", name, key));
+											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
+											AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl("DuoAuth", name, key));
 										} else {
 											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
@@ -274,10 +275,18 @@ public class AuthCommand implements CommandExecutor {
 																	int attempts = (chain.hasTaskData("attempts"))
 																			? (int) chain.getTaskData("attempts")
 																			: this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt();
-																	if(commandAttempts != 0 && (!(player.hasPermission("duoauth.unlimited"))) && attempts >= commandAttempts) {
-																		AuthUtil.alertOne(player, ChatColor.RED + "You have failed to authenticate " + attempts + " times in a row. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance.");
-																		AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
+																	if(commandAttempts != 0 && attempts >= commandAttempts) {
 																		TaskChainManager.newChain()
+																				.sync(() -> {
+																					if(!(player.hasPermission("duoauth.enforced"))) {
+																						AuthUtil.alertOne(
+																								player,
+																								ChatColor.RED + "You have failed to authenticate " + attempts
+																										+ " times in a row. You will need to wait for your account to be unlocked,"
+																										+ " or you may contact the server administrators for assistance.");
+																						AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
+																					}
+																				})
 																				.delay(5, TimeUnit.SECONDS)
 																				.sync(() -> player.kickPlayer(this.lm.getLocked()))
 																				.execute();
