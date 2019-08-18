@@ -77,10 +77,17 @@ public class AuthDatabase {
 		return false;
 	}
 
-	public boolean write(final UUID uuid, final String password, final String pin, final boolean authed, final int attempts, final InetAddress ip) {
+	public boolean write(
+		final UUID uuid,
+		final String password,
+		final String secret,
+		final boolean authed,
+		final int attempts,
+		final InetAddress ip
+	) {
 		final JsonObject object = new JsonObject();
 		object.addProperty(DatabaseProperty.PASSWORD.toString(), password);
-		object.addProperty(DatabaseProperty.PIN.toString(), pin);
+		object.addProperty(DatabaseProperty.SECRET.toString(), secret);
 		object.addProperty(DatabaseProperty.AUTHED.toString(), authed);
 		object.addProperty(DatabaseProperty.ATTEMPTS.toString(), attempts);
 		object.addProperty(DatabaseProperty.IP.toString(), ip.getHostAddress());

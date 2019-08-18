@@ -1,11 +1,10 @@
 # @plugin DuoAuth
-# @version 1.0.11
+# @version 1.1.0
 # @author foncused
 
 # The cost factor of the bcrypt algorithm
 # For best security measures, it is recommended to set this value in respect to the maximum amount of
-# time you are willing to have your players wait to be authenticated (normally between 12 and 20),
-# which will be dependent on your individual system and CPU throughput
+# time you are willing to have your players wait to be authenticated (normally 12-17)
 cost-factor: 14
 
 # Command options for /auth command
@@ -14,7 +13,7 @@ command:
   # The cooldown time in seconds for using the /auth command (bypassed by 'duoauth.bypass')
   cooldown: 20
 
-  # The maximum number of incorrect authentication attempts before the players are locked out (bypassed by 'duoauth.unlimited')
+  # The maximum number of incorrect authentication attempts before players are locked out (bypassed by 'duoauth.unlimited')
   attempts: 5
 
 # Password options
@@ -30,29 +29,18 @@ password:
   # The minimum length of a provided password
   min-length: 8
 
-  # true to enforce at least one uppercase and one lowercase letter, false if not
+  # true to enforce at least one uppercase (A-Z) and one lowercase letter (a-z), false if not
   both-cases: true
 
-  # true to enforce at least one number, false if not
+  # true to enforce at least one number (0-9), false if not
   numbers: true
 
-  # true to enforce at least one special character, false if not
+  # true to enforce at least one special character (@#$%^&+=), false if not
   special-chars: true
-
-# PIN options
-# For best security measures, change default (1234) as this config.yml is public on GitHub;
-# be advised the default PIN WILL NOT WORK if it does not meet the length requirement
-pin:
-
-  # The default PIN to be used when players join with permission 'duoauth.enforced'
-  default: "1234"
-
-  # The minimum length of a provided PIN
-  min-length: 4
 
 # Database options
 # The method used for storing the digests
-# Required (currently) to be "json"
+# This is not currently configurable; for now, DuoAuth will only store data in .json files in the /data directory
 database: "json"
 
 # Deauthentication options

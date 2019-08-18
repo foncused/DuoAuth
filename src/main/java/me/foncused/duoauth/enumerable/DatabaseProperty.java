@@ -3,7 +3,7 @@ package me.foncused.duoauth.enumerable;
 public enum DatabaseProperty {
 
 	PASSWORD("Password"),
-	PIN("PIN"),
+	SECRET("Secret"),
 	AUTHED("Authed"),
 	ATTEMPTS("Attempts"),
 	IP("IP"),

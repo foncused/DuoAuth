@@ -5,14 +5,14 @@ import java.net.InetAddress;
 public class AuthCache {
 
 	private String password;
-	private String pin;
+	private String secret;
 	private boolean authed;
 	private int attempts;
 	private InetAddress ip;
 
-	public AuthCache(final String password, final String pin, final boolean authed, final int attempts, final InetAddress ip) {
+	public AuthCache(final String password, final String secret, final boolean authed, final int attempts, final InetAddress ip) {
 		this.password = password;
-		this.pin = pin;
+		this.secret = secret;
 		this.authed = authed;
 		this.attempts = attempts;
 		this.ip = ip;
@@ -26,12 +26,12 @@ public class AuthCache {
 		this.password = password;
 	}
 
-	public synchronized String getPin() {
-		return this.pin;
+	public synchronized String getSecret() {
+		return this.secret;
 	}
 
-	public synchronized void setPin(final String pin) {
-		this.pin = pin;
+	public synchronized void setSecret(final String code) {
+		this.secret = code;
 	}
 
 	public synchronized boolean isAuthed() {

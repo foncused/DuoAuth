@@ -94,7 +94,9 @@ public class Auth implements Listener {
 			final Location loc2 = event.getTo();
 			if(this.cm.isRestrictMovement()) {
 				event.setTo(loc1);
-			} else if((loc1.getBlockX() != loc2.getBlockX()) || (loc1.getBlockY() != loc2.getBlockY()) || (loc1.getBlockZ() != loc2.getBlockZ())) {
+			} else if((loc1.getBlockX()!= loc2.getBlockX())
+					|| (loc1.getBlockY() != loc2.getBlockY())
+					|| (loc1.getBlockZ() != loc2.getBlockZ())) {
 				player.teleport(loc1);
 			}
 		}

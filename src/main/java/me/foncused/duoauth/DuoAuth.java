@@ -14,6 +14,7 @@ import me.foncused.duoauth.event.player.PlayerLogin;
 import me.foncused.duoauth.event.player.PlayerQuit;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.foncused.AuthFilter;
+import me.foncused.duoauth.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.runnable.AuthRunnable;
 import me.foncused.duoauth.util.AuthUtil;
 import org.apache.logging.log4j.LogManager;
@@ -29,15 +30,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class DuoAuth extends JavaPlugin {
 
 	private Map<UUID, AuthCache> players;
 	private ConfigManager cm;
+	private GoogleAuth ga;
 	private LangManager lm;
 	private AuthDatabase db;
 
@@ -47,6 +46,7 @@ public class DuoAuth extends JavaPlugin {
 		this.loadDependencies();
 		this.registerLogFilter();
 		this.registerConfig();
+		this.registerGoogleAuth();
 		this.registerLang();
 		this.registerUtils();
 		this.registerDatabase();
@@ -79,8 +79,6 @@ public class DuoAuth extends JavaPlugin {
 				config.getBoolean("password.both-cases", true),
 				config.getBoolean("password.numbers", true),
 				config.getBoolean("password.special-chars", true),
-				config.getString("pin.default"),
-				config.getInt("pin.min-length", 4),
 				//config.getString("database", "json"),
 				"json",
 				config.getBoolean("deauth.ip-changes", true),
@@ -93,6 +91,10 @@ public class DuoAuth extends JavaPlugin {
 		);
 	}
 
+	private void registerGoogleAuth() {
+		this.ga = new GoogleAuth();
+	}
+
 	private void registerLang() {
 		final String name = "lang.yml";
 		final String path = this.getDataFolder().getPath() + "/" + name;
@@ -100,7 +102,7 @@ public class DuoAuth extends JavaPlugin {
 			final File lang = new File(path);
 			if(!(lang.exists())) {
 				ByteStreams.copy(
-						this.getResource(name),
+						Objects.requireNonNull(this.getResource(name)),
 						new FileOutputStream(lang)
 				);
 			}
@@ -112,14 +114,18 @@ public class DuoAuth extends JavaPlugin {
 					this.translate(yaml.getString("authenticating_success", AuthMessage.AUTHENTICATING_SUCCESS.toString())),
 					this.translate(yaml.getString("auth_in_progress", AuthMessage.AUTH_IN_PROGRESS.toString())),
 					this.translate(yaml.getString("auth_in_progress_admin", AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString())),
+					this.translate(yaml.getString("code_invalid", AuthMessage.CODE_INVALID.toString())),
 					this.translate(yaml.getString("deauth_admin_success", AuthMessage.DEAUTH_ADMIN_SUCCESS.toString())),
 					this.translate(yaml.getString("deauth_failed", AuthMessage.DEAUTH_FAILED.toString())),
 					this.translate(yaml.getString("deauth_success", AuthMessage.DEAUTH_SUCCESS.toString())),
 					this.translate(yaml.getString("enforced", AuthMessage.ENFORCED.toString())),
+					this.translate(yaml.getString("generate", AuthMessage.GENERATE.toString())),
+					this.translate(yaml.getString("generating", AuthMessage.GENERATING.toString())),
 					this.translate(yaml.getString("loading", AuthMessage.LOADING.toString())),
 					this.translate(yaml.getString("locked", AuthMessage.LOCKED.toString())),
 					this.translate(yaml.getString("must_wait", AuthMessage.MUST_WAIT.toString())),
 					this.translate(yaml.getString("no_console", AuthMessage.NO_CONSOLE.toString())),
+					this.translate(yaml.getString("no_generate", AuthMessage.NO_GENERATE.toString())),
 					this.translate(yaml.getString("no_permission", AuthMessage.NO_PERMISSION.toString())),
 					this.translate(yaml.getString("player_not_authed", AuthMessage.PLAYER_NOT_AUTHED.toString())),
 					this.translate(yaml.getString("player_not_db", AuthMessage.PLAYER_NOT_DB.toString())),
@@ -147,14 +153,18 @@ public class DuoAuth extends JavaPlugin {
 				this.translate(AuthMessage.AUTHENTICATING_SUCCESS.toString()),
 				this.translate(AuthMessage.AUTH_IN_PROGRESS.toString()),
 				this.translate(AuthMessage.AUTH_IN_PROGRESS_ADMIN.toString()),
+				this.translate(AuthMessage.CODE_INVALID.toString()),
 				this.translate(AuthMessage.DEAUTH_ADMIN_SUCCESS.toString()),
 				this.translate(AuthMessage.DEAUTH_FAILED.toString()),
 				this.translate(AuthMessage.DEAUTH_SUCCESS.toString()),
 				this.translate(AuthMessage.ENFORCED.toString()),
+				this.translate(AuthMessage.GENERATE.toString()),
+				this.translate(AuthMessage.GENERATING.toString()),
 				this.translate(AuthMessage.LOADING.toString()),
 				this.translate(AuthMessage.LOCKED.toString()),
 				this.translate(AuthMessage.MUST_WAIT.toString()),
 				this.translate(AuthMessage.NO_CONSOLE.toString()),
+				this.translate(AuthMessage.NO_GENERATE.toString()),
 				this.translate(AuthMessage.NO_PERMISSION.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_AUTHED.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_DB.toString()),
@@ -215,6 +225,10 @@ public class DuoAuth extends JavaPlugin {
 		return this.cm;
 	}
 
+	public GoogleAuth getGoogleAuth() {
+		return this.ga;
+	}
+
 	public LangManager getLangManager() {
 		return this.lm;
 	}
@@ -226,4 +240,5 @@ public class DuoAuth extends JavaPlugin {
 	private String translate(final String s) {
 		return ChatColor.translateAlternateColorCodes('&', s);
 	}
+
 }

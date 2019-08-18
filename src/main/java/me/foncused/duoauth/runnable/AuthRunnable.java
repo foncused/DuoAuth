@@ -42,7 +42,8 @@ public class AuthRunnable {
 					uuids.forEach(uuid -> {
 						final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
 						if(timestamp != null) {
-							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean() && getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (cm.getDeauthTimeout() / 24.0)) {
+							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean()
+									&& getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (cm.getDeauthTimeout() / 24.0)) {
 								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
 								final String name = player.getName();
 								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";

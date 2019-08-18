@@ -1,6 +1,7 @@
 package me.foncused.duoauth.util;
 
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.config.ConfigManager;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
 import org.bukkit.Bukkit;
@@ -9,21 +10,21 @@ import org.bukkit.entity.Player;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AuthUtil {
 
 	private static DuoAuth plugin;
+	private static ConfigManager cm;
 	private static LangManager lm;
 	private static final String PREFIX = "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	public AuthUtil(final DuoAuth plugin) {
 		AuthUtil.plugin = plugin;
+		AuthUtil.cm = AuthUtil.plugin.getConfigManager();
 		AuthUtil.lm = AuthUtil.plugin.getLangManager();
 	}
 
@@ -43,7 +44,9 @@ public class AuthUtil {
 
 	public static void notify(final String message) {
 		final String m = getNotification(message);
-		Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("duoauth.notify")).forEach(player -> player.sendMessage(m));
+		Bukkit.getOnlinePlayers().stream()
+				.filter(player -> player.hasPermission("duoauth.notify"))
+				.forEach(player -> player.sendMessage(m));
 		console(m);
 	}
 

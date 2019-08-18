@@ -1,6 +1,7 @@
 package me.foncused.duoauth.command;
 
 import co.aikar.taskchain.TaskChain;
+import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import me.foncused.duoauth.DuoAuth;
 import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.ConfigManager;
@@ -9,6 +10,7 @@ import me.foncused.duoauth.database.AuthDatabase;
 import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
+import me.foncused.duoauth.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.util.AuthUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,6 +31,7 @@ public class AuthCommand implements CommandExecutor {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
+	private final GoogleAuth ga;
 	private final LangManager lm;
 	private final AuthDatabase db;
 	private final Set<UUID> auths;
@@ -37,6 +40,7 @@ public class AuthCommand implements CommandExecutor {
 	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
+		this.ga = this.plugin.getGoogleAuth();
 		this.lm = this.plugin.getLangManager();
 		this.db = this.plugin.getDatabase();
 		this.auths = new HashSet<>();
@@ -55,6 +59,11 @@ public class AuthCommand implements CommandExecutor {
 					final int commandCooldown = this.cm.getCommandCooldown();
 					switch(args.length) {
 						case 1:
+							final String args0 = args[0].toLowerCase();
+							if(args0.equals("help")) {
+								this.printUsage(player);
+								break;
+							}
 							TaskChainManager.newChain()
 									.asyncFirst(() -> this.db.contains(uuid))
 									.syncLast(contained -> {
@@ -70,7 +79,10 @@ public class AuthCommand implements CommandExecutor {
 																	cooldowns.remove(uuid);
 																}
 															}.runTaskLater(this.plugin, commandCooldown * 20);
-															switch(args[0].toLowerCase()) {
+															switch(args0) {
+																case "generate":
+																	AuthUtil.alertOne(player, this.lm.getNoGenerate());
+																	break;
 																case "deauth":
 																	TaskChainManager.newChain()
 																			.asyncFirst(() -> this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false))
@@ -121,6 +133,15 @@ public class AuthCommand implements CommandExecutor {
 											} else {
 												AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 											}
+										} else if(args0.equals("generate")) {
+											GoogleAuthenticatorKey key = this.ga.getCreds(uuid);
+											if(key == null) {
+												AuthUtil.alertOne(player, this.lm.getGenerating());
+												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ")...");
+												key = this.ga.generateRFC6238Credentials(uuid);
+											}
+											AuthUtil.alertOne(player, ChatColor.GOLD + "Secret key: " + ChatColor.GREEN + key.getKey());
+											AuthUtil.alertOne(player, ChatColor.GOLD + "QR: " + ChatColor.AQUA + this.ga.getAuthUrl("DuoAuth", name, key));
 										} else {
 											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
@@ -178,9 +199,8 @@ public class AuthCommand implements CommandExecutor {
 															(passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") +
 															"(?=\\S+$).*$"
 									)) {
-										final String pin = args[1];
-										final int pinMinLength = this.cm.getPinMinLength();
-										if(pin.length() >= pinMinLength && pin.matches("^[0-9]+$")) {
+										final String code = args[1];
+										if(code.length() == 6 && code.matches("^[0-9]+$")) {
 											if(player.hasPermission("duoauth.bypass") || (!(this.cooldowns.contains(uuid)))) {
 												if(!(this.auths.contains(uuid))) {
 													this.cooldowns.add(uuid);
@@ -199,44 +219,57 @@ public class AuthCommand implements CommandExecutor {
 															.sync(() -> {
 																if(cache != null && player.isOnline()) {
 																	chain.setTaskData("password", cache.getPassword());
-																	chain.setTaskData("pin", cache.getPin());
+																	chain.setTaskData("secret", cache.getSecret());
 																	chain.setTaskData("attempts", cache.getAttempts());
 																}
 															})
 															.async(() -> {
 																if(!(this.db.contains(uuid))) {
-																	TaskChainManager.newChain()
-																			.sync(() -> {
-																				AuthUtil.alertOne(player, this.lm.getSettingUp());
-																				AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ")...");
-																			})
-																			.execute();
-																	final String pwhash = AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(password), costFactor);
-																	final String pinhash = AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(pin), costFactor);
-																	final boolean written = this.db.write(uuid, pwhash, pinhash, true, 0, ip);
-																	TaskChainManager.newChain()
-																			.sync(() -> {
-																				if(written) {
-																					if(player.isOnline()) {
-																						this.plugin.setAuthCache(
-																								uuid,
-																								new AuthCache(
-																										pwhash,
-																										pinhash,
-																										true,
-																										0,
-																										ip
-																								)
-																						);
+																	final GoogleAuthenticatorKey key = this.ga.getCreds(uuid);
+																	if(key != null) {
+																		final String secret = key.getKey();
+																		if(!(this.ga.authorize(secret, Integer.parseInt(code)))) {
+																			TaskChainManager.newChain().sync(() -> AuthUtil.alertOne(player, this.lm.getSettingUpFailed())).execute();
+																			return;
+																		}
+																		TaskChainManager.newChain()
+																				.sync(() -> {
+																					AuthUtil.alertOne(player, this.lm.getSettingUp());
+																					AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ")...");
+																				})
+																				.execute();
+																		final String digest = AuthUtil.getSecureBCryptHash(
+																				AuthUtil.getSecureSHA512Hash(password),
+																				costFactor
+																		);
+																		final boolean written = this.db.write(uuid, digest, secret, true, 0, ip);
+																		TaskChainManager.newChain()
+																				.sync(() -> {
+																					if(written) {
+																						if(player.isOnline()) {
+																							this.plugin.setAuthCache(
+																									uuid,
+																									new AuthCache(
+																											digest,
+																											secret,
+																											true,
+																											0,
+																											ip
+																									)
+																							);
+																						}
+																						AuthUtil.alertOne(player, this.lm.getSettingUpSuccess());
+																						AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
+																						this.ga.removeCreds(uuid);
+																					} else {
+																						AuthUtil.alertOne(player, this.lm.getSettingUpFailed());
+																						AuthUtil.notify("User " + u + " (" + name + ") failed to set up authentication");
 																					}
-																					AuthUtil.alertOne(player, this.lm.getSettingUpSuccess());
-																					AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
-																				} else {
-																					AuthUtil.alertOne(player, this.lm.getSettingUpFailed());
-																					AuthUtil.notify("User " + u + " (" + name + ") failed to set up authentication");
-																				}
-																			})
-																			.execute();
+																				})
+																				.execute();
+																	} else {
+																		TaskChainManager.newChain().sync(() -> AuthUtil.alertOne(player, this.lm.getGenerate())).execute();
+																	}
 																} else {
 																	int attempts = (chain.hasTaskData("attempts"))
 																			? (int) chain.getTaskData("attempts")
@@ -255,18 +288,18 @@ public class AuthCommand implements CommandExecutor {
 																					AuthUtil.notify("Authenticating user " + u + " (" + name + ")...");
 																				})
 																				.execute();
-																		final String pw = (chain.hasTaskData("password")
+																		final String digest = (chain.hasTaskData("password")
 																				? (String) chain.getTaskData("password")
 																				: this.db.readProperty(uuid, DatabaseProperty.PASSWORD).getAsString()
 																		);
-																		final String pi = (chain.hasTaskData("pin")
-																				? (String) chain.getTaskData("pin")
-																				: this.db.readProperty(uuid, DatabaseProperty.PIN).getAsString()
+																		final String secret = (chain.hasTaskData("secret")
+																				? (String) chain.getTaskData("secret")
+																				: this.db.readProperty(uuid, DatabaseProperty.SECRET).getAsString()
 																		);
 																		chain.setTaskData(
 																				"result",
-																				Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(password), pw)
-																						&& Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(pin), pi)
+																				this.ga.authorize(secret, Integer.parseInt(code))
+																						&& Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(password), digest)
 																		);
 																	}
 																}
@@ -287,6 +320,7 @@ public class AuthCommand implements CommandExecutor {
 																			cache.setAuthed(true);
 																			cache.setAttempts(0);
 																		}
+																		this.ga.removeCreds(uuid);
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {
 																		AuthUtil.alertOne(player, this.lm.getAuthenticatingFailed());
@@ -333,10 +367,7 @@ public class AuthCommand implements CommandExecutor {
 												player.sendMessage(this.lm.getMustWait());
 											}
 										} else {
-											AuthUtil.alertOne(
-													player,
-													ChatColor.RED + "The PIN you entered is invalid. Your PIN must contain at least " + pinMinLength + " digits and must be numeric."
-											);
+											AuthUtil.alertOne(player, this.lm.getCodeInvalid());
 										}
 									} else {
 										AuthUtil.alertOne(
@@ -420,6 +451,7 @@ public class AuthCommand implements CommandExecutor {
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
 		player.sendMessage(ChatColor.DARK_GRAY + "    DuoAuth v" + this.plugin.getDescription().getVersion() + " by foncused");
 		player.sendMessage(ChatColor.RED + "    /auth help" + ChatColor.GRAY + " - view this message");
+		player.sendMessage(ChatColor.RED + "    /auth generate" + ChatColor.GRAY + " - generate authentication secret");
 		player.sendMessage(ChatColor.RED + "    /auth deauth" + ChatColor.GRAY + " - deauthenticate yourself");
 		final boolean admin = player.hasPermission("duoauth.admin");
 		if(admin) {
@@ -429,7 +461,7 @@ public class AuthCommand implements CommandExecutor {
 		if(admin) {
 			player.sendMessage(ChatColor.RED + "    /auth reset <player>" + ChatColor.GRAY + " - reset a player's credentials");
 		}
-		player.sendMessage(ChatColor.RED + "    /auth <password> <pin>" + ChatColor.GRAY + " - set up or attempt authentication");
+		player.sendMessage(ChatColor.RED + "    /auth <password> <code>" + ChatColor.GRAY + " - set up or attempt authentication");
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
 	}
 

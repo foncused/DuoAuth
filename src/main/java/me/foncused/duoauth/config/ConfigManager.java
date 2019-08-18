@@ -1,6 +1,5 @@
 package me.foncused.duoauth.config;
 
-import co.aikar.taskchain.TaskChain;
 import me.foncused.duoauth.enumerable.DatabaseOption;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.util.AuthUtil;
@@ -15,8 +14,6 @@ public class ConfigManager {
 	private final boolean passwordBothCases;
 	private final boolean passwordNumbers;
 	private final boolean passwordSpecialChars;
-	private String pinDefault;
-	private final int pinMinLength;
 	private final DatabaseOption databaseOption;
 	private final boolean deauthAddressChanges;
 	private final int deauthTimeout;
@@ -36,8 +33,6 @@ public class ConfigManager {
 		final boolean passwordBothCases,
 		final boolean passwordNumbers,
 		final boolean passwordSpecialChars,
-		final String pinDefault,
-		final int pinMinLength,
 		final String database,
 		final boolean deauthAddressChanges,
 		final int deauthTimeout,
@@ -85,13 +80,6 @@ public class ConfigManager {
 		AuthUtil.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
 		this.passwordSpecialChars = passwordSpecialChars;
 		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
-		if(pinMinLength <= 0) {
-			this.pinMinLength = 4;
-			AuthUtil.consoleWarning("Minimum PIN length set to " + pinMinLength + " is not safe, reverting to default...");
-		} else {
-			this.pinMinLength = pinMinLength;
-		}
-		AuthUtil.console("Minimum PIN length set to " + this.pinMinLength);
 		DatabaseOption databaseOption;
 		try {
 			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
@@ -125,27 +113,12 @@ public class ConfigManager {
 		AuthUtil.console(this.chat ? "Chat is enabled" : "Chat is disabled");
 		this.restrictMovement = restrictMovement;
 		AuthUtil.console(this.restrictMovement ? "Movement is restricted" : "Movement is not restricted");
-		final TaskChain chain = TaskChainManager.newChain();
-		chain
-				.sync(() -> {
-					if(pinDefault.matches("^[0-9]+$")) {
-						chain.setTaskData("pin-default", pinDefault);
-
-					} else {
-						chain.setTaskData("pin-default", "1234");
-						AuthUtil.consoleWarning("Default PIN set to " + pinDefault + " is not numeric, reverting to default...");
-					}
-					AuthUtil.console("Calculating default hashes at cost factor " + this.costFactor + " (this may take a moment)...");
-				})
-				.async(() -> {
-					chain.setTaskData("password", AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor));
-					chain.setTaskData("pin", AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash((String) chain.getTaskData("pin-default")), this.costFactor));
-				})
-				.sync(() -> {
-					this.passwordDefault = (String) chain.getTaskData("password");
-					AuthUtil.console("Default password hash for 'duoauth.enforced' is " + this.passwordDefault);
-					this.pinDefault = (String) chain.getTaskData("pin");
-					AuthUtil.console("Default PIN hash for 'duoauth.enforced' is " + this.pinDefault);
+		AuthUtil.console("Calculating default password digest at cost factor " + this.costFactor + " (this may take a moment)...");
+		TaskChainManager.newChain()
+				.asyncFirst(() -> AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor))
+				.syncLast(passwordDigest -> {
+					this.passwordDefault = passwordDigest;
+					AuthUtil.console("Default password digest for 'duoauth.enforced' is " + this.passwordDefault);
 					this.loading = false;
 				})
 				.execute();
@@ -181,14 +154,6 @@ public class ConfigManager {
 
 	public synchronized boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
-	}
-
-	public synchronized String getPinDefault() {
-		return this.pinDefault;
-	}
-
-	public synchronized int getPinMinLength() {
-		return this.pinMinLength;
 	}
 
 	public synchronized DatabaseOption getDatabaseOption() {

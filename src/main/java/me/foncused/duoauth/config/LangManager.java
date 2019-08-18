@@ -7,14 +7,18 @@ public class LangManager {
 	private final String authenticatingSuccess;
 	private final String authInProgress;
 	private final String authInProgressAdmin;
+	private final String codeInvalid;
 	private final String deauthAdminSuccess;
 	private final String deauthFailed;
 	private final String deauthSuccess;
 	private final String enforced;
+	private final String generate;
+	private final String generating;
 	private final String loading;
 	private final String locked;
 	private final String mustWait;
 	private final String noConsole;
+	private final String noGenerate;
 	private final String noPermission;
 	private final String playerNotAuthed;
 	private final String playerNotDb;
@@ -34,14 +38,18 @@ public class LangManager {
 		final String authenticatingSuccess,
 		final String authInProgress,
 		final String authInProgressAdmin,
+		final String codeInvalid,
 		final String deauthAdminSuccess,
 		final String deauthFailed,
 		final String deauthSuccess,
 		final String enforced,
+		final String generate,
+		final String generating,
 		final String loading,
 		final String locked,
 		final String mustWait,
 		final String noConsole,
+		final String noGenerate,
 		final String noPermission,
 		final String playerNotAuthed,
 		final String playerNotDb,
@@ -60,14 +68,18 @@ public class LangManager {
 		this.authenticatingSuccess = authenticatingSuccess;
 		this.authInProgress = authInProgress;
 		this.authInProgressAdmin = authInProgressAdmin;
+		this.codeInvalid = codeInvalid;
 		this.deauthAdminSuccess = deauthAdminSuccess;
 		this.deauthFailed = deauthFailed;
 		this.deauthSuccess = deauthSuccess;
 		this.enforced = enforced;
+		this.generate = generate;
+		this.generating = generating;
 		this.loading = loading;
 		this.locked = locked;
 		this.mustWait = mustWait;
 		this.noConsole = noConsole;
+		this.noGenerate = noGenerate;
 		this.noPermission = noPermission;
 		this.playerNotAuthed = playerNotAuthed;
 		this.playerNotDb = playerNotDb;
@@ -102,6 +114,10 @@ public class LangManager {
 		return this.authInProgressAdmin;
 	}
 
+	public synchronized String getCodeInvalid() {
+		return this.codeInvalid;
+	}
+
 	public synchronized String getDeauthAdminSuccess() {
 		return this.deauthAdminSuccess;
 	}
@@ -118,6 +134,14 @@ public class LangManager {
 		return this.enforced;
 	}
 
+	public synchronized String getGenerate() {
+		return this.generate;
+	}
+
+	public synchronized String getGenerating() {
+		return this.generating;
+	}
+
 	public synchronized String getLoading() {
 		return this.loading;
 	}
@@ -132,6 +156,10 @@ public class LangManager {
 
 	public synchronized String getNoConsole() {
 		return this.noConsole;
+	}
+
+	public synchronized String getNoGenerate() {
+		return this.noGenerate;
 	}
 
 	public synchronized String getNoPermission() {

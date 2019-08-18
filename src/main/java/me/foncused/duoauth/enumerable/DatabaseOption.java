@@ -4,6 +4,7 @@ public enum DatabaseOption {
 
 	JSON("json");
 	//SQLITE("sqlite");
+	//MYSQL("mysql");
 
 	private final String option;
 

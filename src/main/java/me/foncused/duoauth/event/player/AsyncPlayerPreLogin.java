@@ -15,16 +15,14 @@ import static org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER
 
 public class AsyncPlayerPreLogin implements Listener {
 
-	private final DuoAuth plugin;
 	private final ConfigManager cm;
 	private final LangManager lm;
 	private final AuthDatabase db;
 
 	public AsyncPlayerPreLogin(final DuoAuth plugin) {
-		this.plugin = plugin;
-		this.cm = this.plugin.getConfigManager();
-		this.lm = this.plugin.getLangManager();
-		this.db = this.plugin.getDatabase();
+		this.cm = plugin.getConfigManager();
+		this.lm = plugin.getLangManager();
+		this.db = plugin.getDatabase();
 	}
 
 	@EventHandler
@@ -36,7 +34,8 @@ public class AsyncPlayerPreLogin implements Listener {
 				event.disallow(KICK_OTHER, this.lm.getLocked());
 				return;
 			}
-			if(this.cm.isDeauthAddressChanges() && (!(this.db.readProperty(uuid, DatabaseProperty.IP).getAsString().equals(event.getAddress().getHostAddress())))) {
+			if(this.cm.isDeauthAddressChanges()
+					&& (!(this.db.readProperty(uuid, DatabaseProperty.IP).getAsString().equals(event.getAddress().getHostAddress())))) {
 				this.db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
 			}
 		}
