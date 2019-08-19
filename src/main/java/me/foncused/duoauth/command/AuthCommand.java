@@ -142,7 +142,7 @@ public class AuthCommand implements CommandExecutor {
 												key = this.ga.generateRFC6238Credentials(uuid);
 											}
 											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-											AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl("DuoAuth", name, key));
+											AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
 										} else {
 											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}

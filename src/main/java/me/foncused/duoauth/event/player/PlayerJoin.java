@@ -103,7 +103,7 @@ public class PlayerJoin implements Listener {
 										this.log(name, cache);
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
 										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-										AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl("DuoAuth", name, key));
+										AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
 									} else {
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
 									}

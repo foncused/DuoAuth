@@ -14,6 +14,7 @@ public class ConfigManager {
 	private final boolean passwordBothCases;
 	private final boolean passwordNumbers;
 	private final boolean passwordSpecialChars;
+	private final String codeIssuer;
 	private final DatabaseOption databaseOption;
 	private final boolean deauthAddressChanges;
 	private final int deauthTimeout;
@@ -33,6 +34,7 @@ public class ConfigManager {
 		final boolean passwordBothCases,
 		final boolean passwordNumbers,
 		final boolean passwordSpecialChars,
+		final String codeIssuer,
 		final String database,
 		final boolean deauthAddressChanges,
 		final int deauthTimeout,
@@ -80,6 +82,8 @@ public class ConfigManager {
 		AuthUtil.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
 		this.passwordSpecialChars = passwordSpecialChars;
 		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
+		this.codeIssuer = codeIssuer;
+		AuthUtil.console("Code issuer set to " + this.codeIssuer);
 		DatabaseOption databaseOption;
 		try {
 			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
@@ -154,6 +158,10 @@ public class ConfigManager {
 
 	public synchronized boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
+	}
+
+	public synchronized String getCodeIssuer() {
+		return this.codeIssuer;
 	}
 
 	public synchronized DatabaseOption getDatabaseOption() {

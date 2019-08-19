@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.1.0
+# @version 1.1.1
 # @author foncused
 
 # The cost factor of the bcrypt algorithm
@@ -37,6 +37,13 @@ password:
 
   # true to enforce at least one special character (@#$%^&+=), false if not
   special-chars: true
+
+# Code options
+code:
+
+  # The issuer of the OTP URL
+  # This will be the title displayed next to the 2FA code in the mobile authentication app
+  issuer: "DuoAuth"
 
 # Database options
 # The method used for storing the digests

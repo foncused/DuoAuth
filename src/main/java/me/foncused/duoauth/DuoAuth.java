@@ -79,6 +79,7 @@ public class DuoAuth extends JavaPlugin {
 				config.getBoolean("password.both-cases", true),
 				config.getBoolean("password.numbers", true),
 				config.getBoolean("password.special-chars", true),
+				config.getString("code.issuer", "DuoAuth"),
 				//config.getString("database", "json"),
 				"json",
 				config.getBoolean("deauth.ip-changes", true),
