@@ -8,7 +8,7 @@ public enum AuthMessage {
 	AUTHENTICATING_SUCCESS("&aAuthentication successful. Have fun!"),
 	AUTH_IN_PROGRESS("&7Authentication in progress - please be patient..."),
 	AUTH_IN_PROGRESS_ADMIN("&cThat user is currently performing an authentication attempt. Please try again in a moment."),
-	CODE_INVALID("&cThe code you entered is invalid. Your code must be a 6-digits and numeric."),
+	CODE_INVALID("&cThe code you entered is invalid. Your code must be a 6-digit number provided by your mobile authentication app."),
 	DEAUTH_ADMIN_SUCCESS("&cYou have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!"),
 	DEAUTH_FAILED("&cDeauthentication failed. Please contact the server administrators if you are receiving this message."),
 	DEAUTH_SUCCESS("&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."),

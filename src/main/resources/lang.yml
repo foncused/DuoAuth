@@ -3,7 +3,7 @@ authenticating_failed: "&cAuthentication failed. Please ensure your password and
 authenticating_success: "&aAuthentication successful. Have fun!"
 auth_in_progress: "&6Authentication in progress - please be patient..."
 auth_in_progress_admin: "&cThat user is currently performing an authentication attempt. Please try again in a moment."
-code_invalid: "&cThe code you entered is invalid. Your code must be a 6-digits and numeric."
+code_invalid: "&cThe code you entered is invalid. Your code must be a 6-digit number provided by your mobile authentication app."
 deauth_admin_success: "&cYou have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!"
 deauth_failed: "&cDeauthentication failed. Please contact the server administrators if you are receiving this message."
 deauth_success: "&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
