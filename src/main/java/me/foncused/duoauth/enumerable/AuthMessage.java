@@ -15,6 +15,7 @@ public enum AuthMessage {
 	ENFORCED("&cThe server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you!"),
 	GENERATE("&cYou need to enter '/auth generate' to generate an authentication secret for your code. Once generated, scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'."),
 	GENERATING("&6Generating authentication secret..."),
+	KICKED("&cSorry, default authentication setup has failed. Please contact the server administrator if you are reading this message."),
 	LOADING("&8Duo&aAuth &cis still loading. Please try again in a moment."),
 	LOCKED("&cYour account has been locked. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance."),
 	MUST_WAIT("&cYou must wait before doing that again."),

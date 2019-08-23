@@ -14,6 +14,7 @@ public class LangManager {
 	private final String enforced;
 	private final String generate;
 	private final String generating;
+	private final String kicked;
 	private final String loading;
 	private final String locked;
 	private final String mustWait;
@@ -45,6 +46,7 @@ public class LangManager {
 		final String enforced,
 		final String generate,
 		final String generating,
+		final String kicked,
 		final String loading,
 		final String locked,
 		final String mustWait,
@@ -75,6 +77,7 @@ public class LangManager {
 		this.enforced = enforced;
 		this.generate = generate;
 		this.generating = generating;
+		this.kicked = kicked;
 		this.loading = loading;
 		this.locked = locked;
 		this.mustWait = mustWait;
@@ -140,6 +143,10 @@ public class LangManager {
 
 	public synchronized String getGenerating() {
 		return this.generating;
+	}
+
+	public synchronized String getKicked() {
+		return this.kicked;
 	}
 
 	public synchronized String getLoading() {

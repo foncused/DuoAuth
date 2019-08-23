@@ -106,6 +106,7 @@ public class PlayerJoin implements Listener {
 										AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
 									} else {
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
+										player.kickPlayer(this.lm.getKicked());
 									}
 								})
 								.execute();

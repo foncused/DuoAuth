@@ -230,7 +230,7 @@ public class AuthCommand implements CommandExecutor {
 																	if(key != null) {
 																		final String secret = key.getKey();
 																		if(!(this.ga.authorize(secret, Integer.parseInt(code)))) {
-																			TaskChainManager.newChain().sync(() -> AuthUtil.alertOne(player, this.lm.getSettingUpFailed())).execute();
+																			chain.setTaskData("written", false);
 																			return;
 																		}
 																		TaskChainManager.newChain()
@@ -243,31 +243,9 @@ public class AuthCommand implements CommandExecutor {
 																				AuthUtil.getSecureSHA512Hash(password),
 																				costFactor
 																		);
-																		final boolean written = this.db.write(uuid, digest, secret, true, 0, ip);
-																		TaskChainManager.newChain()
-																				.sync(() -> {
-																					if(written) {
-																						if(player.isOnline()) {
-																							this.plugin.setAuthCache(
-																									uuid,
-																									new AuthCache(
-																											digest,
-																											secret,
-																											true,
-																											0,
-																											ip
-																									)
-																							);
-																						}
-																						AuthUtil.alertOne(player, this.lm.getSettingUpSuccess());
-																						AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
-																						this.ga.removeCreds(uuid);
-																					} else {
-																						AuthUtil.alertOne(player, this.lm.getSettingUpFailed());
-																						AuthUtil.notify("User " + u + " (" + name + ") failed to set up authentication");
-																					}
-																				})
-																				.execute();
+																		chain.setTaskData("digest", digest);
+																		chain.setTaskData("secret", secret);
+																		chain.setTaskData("written", this.db.write(uuid, digest, secret, true, 0, ip));
 																	} else {
 																		TaskChainManager.newChain().sync(() -> AuthUtil.alertOne(player, this.lm.getGenerate())).execute();
 																	}
@@ -278,16 +256,10 @@ public class AuthCommand implements CommandExecutor {
 																	if(commandAttempts != 0 && attempts >= commandAttempts) {
 																		TaskChainManager.newChain()
 																				.sync(() -> {
-																					if(!(player.hasPermission("duoauth.enforced"))) {
-																						AuthUtil.alertOne(
-																								player,
-																								ChatColor.RED + "You have failed to authenticate " + attempts
-																										+ " times in a row. You will need to wait for your account to be unlocked,"
-																										+ " or you may contact the server administrators for assistance.");
-																						AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
-																					}
+																					AuthUtil.alertOne(player, this.lm.getLocked());
+																					AuthUtil.notify("User " + u + " (" + name + ") has failed authentication " + attempts + " times");
 																				})
-																				.delay(5, TimeUnit.SECONDS)
+																				.delay(7, TimeUnit.SECONDS)
 																				.sync(() -> player.kickPlayer(this.lm.getLocked()))
 																				.execute();
 																	} else {
@@ -305,16 +277,37 @@ public class AuthCommand implements CommandExecutor {
 																				? (String) chain.getTaskData("secret")
 																				: this.db.readProperty(uuid, DatabaseProperty.SECRET).getAsString()
 																		);
-																		chain.setTaskData(
-																				"result",
-																				this.ga.authorize(secret, Integer.parseInt(code))
-																						&& Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(password), digest)
-																		);
+																		final boolean bcrypt = Bcrypt.checkpw(AuthUtil.getSecureSHA512Hash(password), digest);
+																		chain.setTaskData("bcrypt", bcrypt);
+																		final boolean rfc6238 = this.ga.authorize(secret, Integer.parseInt(code));
+																		chain.setTaskData("rfc6238", rfc6238);
+																		chain.setTaskData("result", bcrypt && rfc6238);
 																	}
 																}
 															})
 															.sync(() -> {
-																if(chain.hasTaskData("result")) {
+																if(chain.hasTaskData("written")) {
+																	if((boolean) chain.getTaskData("written")) {
+																		if(player.isOnline()) {
+																			this.plugin.setAuthCache(
+																					uuid,
+																					new AuthCache(
+																							(String) chain.getTaskData("digest"),
+																							(String) chain.getTaskData("secret"),
+																							true,
+																							0,
+																							ip
+																					)
+																			);
+																		}
+																		AuthUtil.alertOne(player, this.lm.getSettingUpSuccess());
+																		AuthUtil.notify("User " + u + " (" + name + ") successfully set up authentication");
+																		this.ga.removeCreds(uuid);
+																	} else {
+																		AuthUtil.alertOne(player, this.lm.getSettingUpFailed());
+																		AuthUtil.notify("User " + u + " (" + name + ") failed to set up authentication");
+																	}
+																} else if(chain.hasTaskData("result")) {
 																	if((boolean) chain.getTaskData("result")) {
 																		AuthUtil.alertOne(player, this.lm.getAuthenticatingSuccess());
 																		TaskChainManager.newChain()
@@ -333,6 +326,7 @@ public class AuthCommand implements CommandExecutor {
 																		AuthUtil.notify("User " + u + " (" + name + ") authenticated successfully");
 																	} else {
 																		AuthUtil.alertOne(player, this.lm.getAuthenticatingFailed());
+																		final String error = this.getError(chain);
 																		if(!(player.hasPermission("duoauth.unlimited"))) {
 																			TaskChainManager.newChain()
 																					.syncFirst(() -> {
@@ -359,10 +353,10 @@ public class AuthCommand implements CommandExecutor {
 																						}
 																						return attempts;
 																					})
-																					.syncLast(attempts -> AuthUtil.notify("User " + u + " (" + name + ") failed authentication (" + attempts + " attempts)"))
+																					.syncLast(attempts -> AuthUtil.notify("User " + u + " (" + name + ") failed authentication (" + attempts + " attempts)" + error))
 																					.execute();
 																		} else {
-																			AuthUtil.notify("User " + u + " (" + name + ") failed authentication");
+																			AuthUtil.notify("User " + u + " (" + name + ") failed authentication" + error);
 																		}
 																	}
 																}
@@ -410,6 +404,23 @@ public class AuthCommand implements CommandExecutor {
 			}
 		}
 		return true;
+	}
+
+	private String getError(final TaskChain chain) {
+		if(chain.hasTaskData("bcrypt") && chain.hasTaskData("rfc6238")) {
+			final boolean bcrypt = (boolean) chain.getTaskData("bcrypt");
+			final boolean rfc6238 = (boolean) chain.getTaskData("rfc6238");
+			if((!(bcrypt)) && (!(rfc6238))) {
+				return " (bad password and code)";
+			} else if(!(bcrypt)) {
+				return " (bad password)";
+			} else if(!(rfc6238)) {
+				return " (bad code)";
+			} else {
+				return " (?)";
+			}
+		}
+		return "";
 	}
 
 	private void reset(final CommandSender sender, final String args1) {
