@@ -71,7 +71,7 @@ public class DuoAuth extends JavaPlugin {
 		this.saveDefaultConfig();
 		final FileConfiguration config = this.getConfig();
 		this.cm = new ConfigManager(
-				config.getInt("cost-factor", 14),
+				config.getInt("cost-factor", 15),
 				config.getInt("command.cooldown", 20),
 				config.getInt("command.attempts", 5),
 				config.getString("password.default"),
@@ -80,12 +80,14 @@ public class DuoAuth extends JavaPlugin {
 				config.getBoolean("password.numbers", true),
 				config.getBoolean("password.special-chars", true),
 				config.getString("code.issuer", "DuoAuth"),
-				//config.getString("database", "json"),
-				"json",
 				config.getBoolean("deauth.ip-changes", true),
 				config.getInt("deauth.timeout", 72),
 				config.getBoolean("deauth.timeout-online", false),
 				config.getInt("deauth.timeout-check-heartbeat", 10),
+				config.getInt("unlock.timeout", 120),
+				config.getInt("unlock.timeout-check-heartbeat", 15),
+				//config.getString("database", "json"),
+				"json",
 				config.getBoolean("console-reset", false),
 				config.getBoolean("chat", false),
 				config.getBoolean("restrict-movement", false)
@@ -205,7 +207,9 @@ public class DuoAuth extends JavaPlugin {
 	}
 
 	private void registerRunnables() {
-		new AuthRunnable(this).runTimeoutTask();
+		final AuthRunnable ar = new AuthRunnable(this);
+		ar.runTimeoutTask();
+		ar.runUnlockTask();
 	}
 
 	public AuthCache getAuthCache(final UUID uuid) {

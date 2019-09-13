@@ -41,32 +41,56 @@ public class AuthRunnable {
 				if(uuids != null && (!(uuids.isEmpty()))) {
 					uuids.forEach(uuid -> {
 						final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
-						if(timestamp != null) {
-							if(db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean()
-									&& getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (cm.getDeauthTimeout() / 24.0)) {
-								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
-								final String name = player.getName();
-								final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
-								db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
-								TaskChainManager.newChain()
-										.sync(() -> {
-											AuthUtil.console(notify);
-											if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
-												plugin.getAuthCache(uuid).setAuthed(false);
-												AuthUtil.alertOne(
-														(Player) player,
-														lm.getSessionExpired()
-												);
-												AuthUtil.notify(notify);
-											}
-										})
-										.execute();
-							}
+						if(timestamp != null
+								&& getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (cm.getDeauthTimeout() / 24.0)
+								&& db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean()) {
+							final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+							final String name = player.getName();
+							db.writeProperty(uuid, DatabaseProperty.AUTHED, false);
+							TaskChainManager.newChain()
+									.sync(() -> {
+										final String notify = "Authentication for user " + uuid + " (" + name + ") has expired";
+										AuthUtil.console(notify);
+										if(cm.isDeauthTimeoutOnline() && plugin.containsPlayer(uuid) && player.isOnline()) {
+											plugin.getAuthCache(uuid).setAuthed(false);
+											AuthUtil.alertOne(
+													(Player) player,
+													lm.getSessionExpired()
+											);
+											AuthUtil.notify(notify);
+										}
+									})
+									.execute();
 						}
 					});
 				}
 			}
 		}.runTaskTimerAsynchronously(this.plugin, 0,  this.cm.getDeauthTimeoutCheckHeartbeat() * 60 * 20);
+	}
+
+	public void runUnlockTask() {
+		final int unlockTimeout = this.cm.getUnlockTimeout();
+		if(!(unlockTimeout <= 0)) {
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					final Set<UUID> uuids = db.readAll();
+					if(uuids != null && (!(uuids.isEmpty()))) {
+						uuids.forEach(uuid -> {
+							final String timestamp = db.readProperty(uuid, DatabaseProperty.TIMESTAMP).getAsString();
+							if(timestamp != null
+									&& getTimeDifference(timestamp, AuthUtil.getDateFormat()) >= (unlockTimeout / 24.0)
+									&& db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt() >= cm.getCommandAttempts()) {
+								final OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+								final String name = player.getName();
+								db.writeProperty(uuid, DatabaseProperty.ATTEMPTS, 0);
+								AuthUtil.notify("Authentication for user " + uuid + " (" + name + ") is now unlocked");
+							}
+						});
+					}
+				}
+			}.runTaskTimerAsynchronously(this.plugin, 0, this.cm.getUnlockTimeoutCheckHeartbeat() * 60 * 20);
+		}
 	}
 
 	private double getTimeDifference(final String date, final String format) {

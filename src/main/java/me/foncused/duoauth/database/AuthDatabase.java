@@ -64,14 +64,21 @@ public class AuthDatabase {
 	}
 
 	private void readError(final UUID uuid, final DatabaseProperty property) {
-		AuthUtil.consoleSevere("Unable to read property '" + property.toString() + "' from file " + this.getJsonPath(uuid));
+		AuthUtil.consoleSevere(this.getJsonFile(uuid) + ": Unable to read property '" + property.toString() + "' from file");
 	}
 
 	public synchronized <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
 		final JsonObject object = this.read(uuid);
 		if(object != null) {
-			object.add(property.toString(), new Gson().toJsonTree(data));
-			return this.write(uuid, object);
+			final String p = property.toString();
+			object.add(p, new Gson().toJsonTree(data));
+			final boolean written = this.write(uuid, object);
+			if(written) {
+				AuthUtil.console(this.getJsonFile(uuid) + ": " + p + " -> " + data);
+				return true;
+			} else {
+				this.writeError(uuid, property);
+			}
 		}
 		this.writeError(uuid, property);
 		return false;
@@ -123,7 +130,7 @@ public class AuthDatabase {
 	}
 
 	private void writeError(final UUID uuid, final DatabaseProperty property) {
-		AuthUtil.consoleSevere("Unable to write property '" + property.toString() + "' to file " + this.getJsonPath(uuid));
+		AuthUtil.consoleSevere(this.getJsonFile(uuid) + ": Unable to write property '" + property.toString() + "' to file");
 	}
 
 	public synchronized boolean contains(final UUID uuid) {
@@ -135,7 +142,11 @@ public class AuthDatabase {
 	}
 
 	private String getJsonPath(final UUID uuid) {
-		return this.getDataFolder() + uuid.toString() + ".json";
+		return this.getDataFolder() + this.getJsonFile(uuid);
+	}
+
+	private String getJsonFile(final UUID uuid) {
+		return uuid.toString() + ".json";
 	}
 
 	private String getDataFolder() {

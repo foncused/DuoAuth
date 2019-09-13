@@ -15,11 +15,13 @@ public class ConfigManager {
 	private final boolean passwordNumbers;
 	private final boolean passwordSpecialChars;
 	private final String codeIssuer;
-	private final DatabaseOption databaseOption;
 	private final boolean deauthAddressChanges;
 	private final int deauthTimeout;
 	private final boolean deauthTimeoutOnline;
 	private final int deauthTimeoutCheckHeartbeat;
+	private final int unlockTimeout;
+	private final int unlockTimeoutCheckHeartbeat;
+	private final DatabaseOption databaseOption;
 	private final boolean consoleReset;
 	private final boolean chat;
 	private final boolean restrictMovement;
@@ -35,11 +37,13 @@ public class ConfigManager {
 		final boolean passwordNumbers,
 		final boolean passwordSpecialChars,
 		final String codeIssuer,
-		final String database,
 		final boolean deauthAddressChanges,
 		final int deauthTimeout,
 		final boolean deauthTimeoutOnline,
 		final int deauthTimeoutCheckHeartbeat,
+		final int unlockTimeout,
+		final int unlockTimeoutCheckHeartbeat,
+		final String database,
 		final boolean consoleReset,
 		final boolean chat,
 		final boolean restrictMovement
@@ -84,15 +88,6 @@ public class ConfigManager {
 		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
 		this.codeIssuer = codeIssuer;
 		AuthUtil.console("Code issuer set to " + this.codeIssuer);
-		DatabaseOption databaseOption;
-		try {
-			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
-		} catch(final IllegalArgumentException e) {
-			databaseOption = DatabaseOption.JSON;
-			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting...");
-		}
-		this.databaseOption = databaseOption;
-		AuthUtil.console("Database option set to " + this.databaseOption.toString());
 		this.deauthAddressChanges = deauthAddressChanges;
 		AuthUtil.console(this.deauthAddressChanges ? "IP address check enabled" : "IP address check disabled");
 		if(deauthTimeout <= 0) {
@@ -105,12 +100,35 @@ public class ConfigManager {
 		this.deauthTimeoutOnline = deauthTimeoutOnline;
 		AuthUtil.console(this.deauthTimeoutOnline ? "Deauth timeout online mode enabled" : "Deauth timeout online mode disabled");
 		if(deauthTimeoutCheckHeartbeat <= 0) {
-			this.deauthTimeoutCheckHeartbeat = 5;
+			this.deauthTimeoutCheckHeartbeat = 10;
 			AuthUtil.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
 		} else {
 			this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
 		}
 		AuthUtil.console("Deauth timeout check heartbeat set to " + this.deauthTimeoutCheckHeartbeat + " minutes");
+		if(unlockTimeout < 0) {
+			this.unlockTimeout = 120;
+			AuthUtil.consoleWarning("Unlock timeout set to " + unlockTimeout + " hours is not safe, reverting to default...");
+		} else {
+			this.unlockTimeout = unlockTimeout;
+		}
+		AuthUtil.console("Unlock timeout set to " + this.unlockTimeout + " hours");
+		if(unlockTimeoutCheckHeartbeat <= 0) {
+			this.unlockTimeoutCheckHeartbeat = 15;
+			AuthUtil.consoleWarning("Unlock timeout check heartbeat set to " + unlockTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
+		} else {
+			this.unlockTimeoutCheckHeartbeat = unlockTimeoutCheckHeartbeat;
+		}
+		AuthUtil.console("Unlock timeout check heartbeat set to " + this.unlockTimeoutCheckHeartbeat + " minutes");
+		DatabaseOption databaseOption;
+		try {
+			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
+		} catch(final IllegalArgumentException e) {
+			databaseOption = DatabaseOption.JSON;
+			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting...");
+		}
+		this.databaseOption = databaseOption;
+		AuthUtil.console("Database option set to " + this.databaseOption.toString());
 		this.consoleReset = consoleReset;
 		AuthUtil.console(this.consoleReset ? "Console access is enabled" : "Console access is disabled");
 		this.chat = chat;
@@ -164,10 +182,6 @@ public class ConfigManager {
 		return this.codeIssuer;
 	}
 
-	public synchronized DatabaseOption getDatabaseOption() {
-		return this.databaseOption;
-	}
-
 	public synchronized boolean isDeauthAddressChanges() {
 		return this.deauthAddressChanges;
 	}
@@ -182,6 +196,18 @@ public class ConfigManager {
 
 	public synchronized int getDeauthTimeoutCheckHeartbeat() {
 		return this.deauthTimeoutCheckHeartbeat;
+	}
+
+	public synchronized int getUnlockTimeout() {
+		return this.unlockTimeout;
+	}
+
+	public synchronized int getUnlockTimeoutCheckHeartbeat() {
+		return this.unlockTimeoutCheckHeartbeat;
+	}
+
+	public synchronized DatabaseOption getDatabaseOption() {
+		return this.databaseOption;
 	}
 
 	public synchronized boolean isConsoleReset() {
