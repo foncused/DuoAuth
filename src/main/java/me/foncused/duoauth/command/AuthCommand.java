@@ -193,11 +193,12 @@ public class AuthCommand implements CommandExecutor {
 									final boolean passwordBothCases = this.cm.isPasswordBothCases();
 									final boolean passwordNumbers = this.cm.isPasswordNumbers();
 									final boolean passwordSpecialChars = this.cm.isPasswordSpecialChars();
+									final String passwordSpecialCharset = this.cm.getPasswordSpecialCharset();
 									if(password.length() >= passwordMinLength
 											&& password.matches(
 													(passwordBothCases ? "(?=.*[A-Z])(?=.*[a-z])" : "(?=.*[A-Za-z])") +
 															(passwordNumbers ? "(?=.*[0-9])" : "") +
-															(passwordSpecialChars ? "(?=.*[@#$%^&+=])" : "") +
+															(passwordSpecialChars ? "(?=.*[" + passwordSpecialCharset + "])" : "") +
 															"(?=\\S+$).*$"
 									)) {
 										final String code = args[1];
@@ -383,7 +384,7 @@ public class AuthCommand implements CommandExecutor {
 																? ", 1 number (0-9)"
 																: "") +
 														(passwordSpecialChars
-																? ", 1 special character (@#$%^&+=)."
+																? ", 1 special character (" + passwordSpecialCharset + ")."
 																: ".")
 										);
 									}

@@ -13,6 +13,8 @@ import java.net.InetAddress;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class AuthUtil {
 
@@ -99,6 +101,18 @@ public class AuthUtil {
 			e.printStackTrace();
 		}
 		return hash;
+	}
+
+	public static String removeDuplicateChars(final String s) {
+		final Set<Character> charset = new LinkedHashSet<>();
+		for(final char c : s.toCharArray()) {
+			charset.add(c);
+		}
+		final StringBuilder sb = new StringBuilder();
+		for(final Character c : charset) {
+			sb.append(c);
+		}
+		return sb.toString();
 	}
 
 }

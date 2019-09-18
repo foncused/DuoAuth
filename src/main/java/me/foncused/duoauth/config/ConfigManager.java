@@ -14,6 +14,7 @@ public class ConfigManager {
 	private final boolean passwordBothCases;
 	private final boolean passwordNumbers;
 	private final boolean passwordSpecialChars;
+	private final String passwordSpecialCharset;
 	private final String codeIssuer;
 	private final boolean deauthAddressChanges;
 	private final int deauthTimeout;
@@ -36,6 +37,7 @@ public class ConfigManager {
 		final boolean passwordBothCases,
 		final boolean passwordNumbers,
 		final boolean passwordSpecialChars,
+		final String passwordSpecialCharset,
 		final String codeIssuer,
 		final boolean deauthAddressChanges,
 		final int deauthTimeout,
@@ -86,7 +88,9 @@ public class ConfigManager {
 		AuthUtil.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
 		this.passwordSpecialChars = passwordSpecialChars;
 		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
-		this.codeIssuer = codeIssuer;
+		this.passwordSpecialCharset = (passwordSpecialCharset == null || passwordSpecialCharset.isEmpty()) ? "@#$%^&+=" : AuthUtil.removeDuplicateChars(passwordSpecialCharset);
+		AuthUtil.console("Special charset set to " + this.passwordSpecialCharset);
+		this.codeIssuer = (codeIssuer == null || codeIssuer.isEmpty()) ? "DuoAuth" : codeIssuer;
 		AuthUtil.console("Code issuer set to " + this.codeIssuer);
 		this.deauthAddressChanges = deauthAddressChanges;
 		AuthUtil.console(this.deauthAddressChanges ? "IP address check enabled" : "IP address check disabled");
@@ -176,6 +180,10 @@ public class ConfigManager {
 
 	public synchronized boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
+	}
+
+	public synchronized String getPasswordSpecialCharset() {
+		return this.passwordSpecialCharset;
 	}
 
 	public synchronized String getCodeIssuer() {
