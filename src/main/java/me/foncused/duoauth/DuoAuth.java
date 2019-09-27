@@ -30,7 +30,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DuoAuth extends JavaPlugin {
 
@@ -56,7 +59,7 @@ public class DuoAuth extends JavaPlugin {
 	}
 
 	private void registerPlayers() {
-		this.players = Collections.synchronizedMap(new HashMap<>());
+		this.players = new ConcurrentHashMap<>();
 	}
 
 	private void loadDependencies() {

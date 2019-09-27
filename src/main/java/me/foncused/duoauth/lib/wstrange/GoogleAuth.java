@@ -4,10 +4,9 @@ import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GoogleAuth {
 
@@ -16,7 +15,7 @@ public class GoogleAuth {
 
 	public GoogleAuth() {
 		this.ga = new GoogleAuthenticator();
-		this.creds = Collections.synchronizedMap(new HashMap<>());
+		this.creds = new ConcurrentHashMap<>();
 	}
 
 	public synchronized GoogleAuthenticatorKey generateRFC6238Credentials(final UUID uuid) {
