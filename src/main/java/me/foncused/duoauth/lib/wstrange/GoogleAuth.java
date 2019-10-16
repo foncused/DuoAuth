@@ -18,7 +18,7 @@ public class GoogleAuth {
 		this.creds = new ConcurrentHashMap<>();
 	}
 
-	public synchronized GoogleAuthenticatorKey generateRFC6238Credentials(final UUID uuid) {
+	public synchronized GoogleAuthenticatorKey generateRfc6238Credentials(final UUID uuid) {
 		this.creds.put(uuid, this.ga.createCredentials());
 		return this.creds.get(uuid);
 	}

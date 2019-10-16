@@ -78,7 +78,7 @@ public class PlayerJoin implements Listener {
 						final InetAddress ip = AuthUtil.getPlayerAddress(player);
 						final String digest = this.cm.getPasswordDefault();
 						AuthUtil.alertOne(player, this.lm.getGenerating());
-						final GoogleAuthenticatorKey key = this.ga.generateRFC6238Credentials(uuid);
+						final GoogleAuthenticatorKey key = this.ga.generateRfc6238Credentials(uuid);
 						final String secret = key.getKey();
 						TaskChainManager.newChain()
 								.asyncFirst(() -> this.db.write(

@@ -139,7 +139,7 @@ public class AuthCommand implements CommandExecutor {
 											if(key == null) {
 												AuthUtil.alertOne(player, this.lm.getGenerating());
 												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ")...");
-												key = this.ga.generateRFC6238Credentials(uuid);
+												key = this.ga.generateRfc6238Credentials(uuid);
 											}
 											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
 											AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
