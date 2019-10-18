@@ -11,7 +11,7 @@ public enum AuthMessage {
 	CODE_INVALID("&cThe code you entered is invalid. Your code must be a 6-digit number provided by your mobile authentication app."),
 	DEAUTH_ADMIN_SUCCESS("&cYou have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!"),
 	DEAUTH_FAILED("&cDeauthentication failed. Please contact the server administrators if you are receiving this message."),
-	DEAUTH_SUCCESS("&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."),
+	DEAUTH_SUCCESS("&aYou have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."),
 	ENFORCED("&cThe server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you!"),
 	GENERATE("&cYou need to enter '/auth generate' to generate an authentication secret for your code. Once generated, scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'."),
 	GENERATING("&6Generating authentication secret..."),

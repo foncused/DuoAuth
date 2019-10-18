@@ -6,7 +6,7 @@ auth_in_progress_admin: "&cThat user is currently performing an authentication a
 code_invalid: "&cThe code you entered is invalid. Your code must be a 6-digit number provided by your mobile authentication app."
 deauth_admin_success: "&cYou have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!"
 deauth_failed: "&cDeauthentication failed. Please contact the server administrators if you are receiving this message."
-deauth_success: "&aYour have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
+deauth_success: "&aYou have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
 enforced: "&cThe server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you!"
 generate: "&cYou need to enter '/auth generate' to generate an authentication secret for your code. Once generated, scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'."
 generating: "&6Generating authentication secret..."
