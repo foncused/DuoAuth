@@ -12,7 +12,10 @@ import me.foncused.duoauth.enumerable.DatabaseProperty;
 import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.util.AuthUtil;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -69,7 +72,7 @@ public class PlayerJoin implements Listener {
 													(int) chain.getTaskData("attempts"),
 													(InetAddress) chain.getTaskData("ip")
 									);
-									this.log(name, cache);
+									AuthUtil.logCache(name, cache);
 									this.plugin.setAuthCache(uuid, cache);
 								})
 								.execute();
@@ -100,10 +103,23 @@ public class PlayerJoin implements Listener {
 									this.plugin.setAuthCache(uuid, cache);
 									final String u = uuid.toString();
 									if(written) {
-										this.log(name, cache);
+										AuthUtil.logCache(name, cache);
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
 										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-										AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
+										final TextComponent tc = new TextComponent(AuthMessage.QR.toString() + "Click me!");
+										tc.setClickEvent(
+												new ClickEvent(
+														ClickEvent.Action.OPEN_URL,
+														this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key)
+												)
+										);
+										tc.setHoverEvent(
+												new HoverEvent(
+														HoverEvent.Action.SHOW_TEXT,
+														new ComponentBuilder(this.lm.getPleaseSaveQr()).create()
+												)
+										);
+										AuthUtil.alertOneTextComponent(player, tc);
 									} else {
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
 										player.kickPlayer(this.lm.getKicked());
@@ -113,15 +129,6 @@ public class PlayerJoin implements Listener {
 					}
 				})
 				.execute();
-	}
-
-	private void log(final String name, final AuthCache cache) {
-		AuthUtil.console(
-				ChatColor.GOLD + "Player: " + ChatColor.GRAY + name + ChatColor.GOLD + ", " +
-						"Authed: " + ChatColor.GRAY + cache.isAuthed() + ChatColor.GOLD + ", " +
-						"Attempts: " + ChatColor.GRAY + cache.getAttempts() + ChatColor.GOLD + ", " +
-						"IP: " + ChatColor.GRAY + cache.getIp().getHostAddress()
-		);
 	}
 
 }

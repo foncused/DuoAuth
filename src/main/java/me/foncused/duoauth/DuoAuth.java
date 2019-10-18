@@ -42,6 +42,7 @@ public class DuoAuth extends JavaPlugin {
 	private GoogleAuth ga;
 	private LangManager lm;
 	private AuthDatabase db;
+	public static final String PREFIX = "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
 
 	@Override
 	public void onEnable() {
@@ -137,6 +138,7 @@ public class DuoAuth extends JavaPlugin {
 					this.translate(yaml.getString("no_permission", AuthMessage.NO_PERMISSION.toString())),
 					this.translate(yaml.getString("player_not_authed", AuthMessage.PLAYER_NOT_AUTHED.toString())),
 					this.translate(yaml.getString("player_not_db", AuthMessage.PLAYER_NOT_DB.toString())),
+					this.translate(yaml.getString("please_save_qr", AuthMessage.PLEASE_SAVE_QR.toString())),
 					this.translate(yaml.getString("prefix_alert", AuthMessage.PREFIX_ALERT.toString())),
 					this.translate(yaml.getString("prefix_notify", AuthMessage.PREFIX_NOTIFY.toString())),
 					this.translate(yaml.getString("reset_admin_success", AuthMessage.RESET_ADMIN_SUCCESS.toString())),
@@ -177,6 +179,7 @@ public class DuoAuth extends JavaPlugin {
 				this.translate(AuthMessage.NO_PERMISSION.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_AUTHED.toString()),
 				this.translate(AuthMessage.PLAYER_NOT_DB.toString()),
+				this.translate(AuthMessage.PLEASE_SAVE_QR.toString()),
 				this.translate(AuthMessage.PREFIX_ALERT.toString()),
 				this.translate(AuthMessage.PREFIX_NOTIFY.toString()),
 				this.translate(AuthMessage.RESET_ADMIN_SUCCESS.toString()),

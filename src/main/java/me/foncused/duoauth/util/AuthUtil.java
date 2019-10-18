@@ -1,8 +1,10 @@
 package me.foncused.duoauth.util;
 
 import me.foncused.duoauth.DuoAuth;
+import me.foncused.duoauth.cache.AuthCache;
 import me.foncused.duoauth.config.LangManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -19,7 +21,6 @@ public class AuthUtil {
 
 	private static DuoAuth plugin;
 	private static LangManager lm;
-	private static final String PREFIX = "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
 
 	public AuthUtil(final DuoAuth plugin) {
@@ -34,6 +35,13 @@ public class AuthUtil {
 	public static void alertOne(final Player player, final String message) {
 		if(player.isOnline()) {
 			player.sendMessage(getAlert(message));
+		}
+	}
+
+	public static void alertOneTextComponent(final Player player, final TextComponent component) {
+		if(player.isOnline()) {
+			component.setText(getAlert(component.getText()));
+			player.spigot().sendMessage(component);
 		}
 	}
 
@@ -60,15 +68,24 @@ public class AuthUtil {
 	}
 
 	public static void console(final String message) {
-		Bukkit.getConsoleSender().sendMessage(PREFIX + message);
+		Bukkit.getConsoleSender().sendMessage(DuoAuth.PREFIX + message);
 	}
 
 	public static void consoleWarning(final String message) {
-		Bukkit.getConsoleSender().sendMessage(PREFIX + ChatColor.RED + "WARNING: " + message);
+		Bukkit.getConsoleSender().sendMessage(DuoAuth.PREFIX + ChatColor.RED + "WARNING: " + message);
 	}
 
 	public static void consoleSevere(final String message) {
-		Bukkit.getConsoleSender().sendMessage(PREFIX + ChatColor.DARK_RED + "SEVERE: " + message);
+		Bukkit.getConsoleSender().sendMessage(DuoAuth.PREFIX + ChatColor.DARK_RED + "SEVERE: " + message);
+	}
+
+	public static String logCache(final String name, final AuthCache cache) {
+		final String msg = ChatColor.GOLD + "Player: " + ChatColor.GRAY + name + ChatColor.GOLD + ", " +
+				"Authed: " + ChatColor.GRAY + cache.isAuthed() + ChatColor.GOLD + ", " +
+				"Attempts: " + ChatColor.GRAY + cache.getAttempts() + ChatColor.GOLD + ", " +
+				"IP: " + ChatColor.GRAY + cache.getIp().getHostAddress();
+		console(msg);
+		return msg;
 	}
 
 	public static String getDateFormat() {

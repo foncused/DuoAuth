@@ -88,7 +88,10 @@ public class ConfigManager {
 		AuthUtil.console(this.passwordNumbers ? "Numbers required" : "Numbers not required");
 		this.passwordSpecialChars = passwordSpecialChars;
 		AuthUtil.console(this.passwordSpecialChars ? "Special characters required" : "Special characters not required");
-		this.passwordSpecialCharset = (passwordSpecialCharset == null || passwordSpecialCharset.isEmpty()) ? "@#$%^&+=" : AuthUtil.removeDuplicateChars(passwordSpecialCharset);
+		this.passwordSpecialCharset =
+				(passwordSpecialCharset == null || passwordSpecialCharset.isEmpty())
+						? "@#$%^&+="
+						: AuthUtil.removeDuplicateChars(passwordSpecialCharset);
 		AuthUtil.console("Special charset set to " + this.passwordSpecialCharset);
 		this.codeIssuer = (codeIssuer == null || codeIssuer.isEmpty()) ? "DuoAuth" : codeIssuer;
 		AuthUtil.console("Code issuer set to " + this.codeIssuer);

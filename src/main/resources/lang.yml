@@ -19,6 +19,7 @@ no_generate: "&cYou are already authenticated, so there is no need to generate a
 no_permission: "&cYou do not have permission to do this!"
 player_not_authed: "&cYou need to authenticate with /auth <password> <code> before you can chat, move, or play."
 player_not_db: "&cYou have not set up authentication. To enable authentication, please use the /auth command."
+please_save_qr: "&aPlease save the QR .png image somewhere safe."
 prefix_alert: "&3ALERT &8» &7"
 prefix_notify: "&cALERT &8» &7&o"
 reset_admin_success: "&aYour credentials have been reset by an administrator."

@@ -23,6 +23,7 @@ public class LangManager {
 	private final String noPermission;
 	private final String playerNotAuthed;
 	private final String playerNotDb;
+	private final String pleaseSaveQr;
 	private final String prefixAlert;
 	private final String prefixNotify;
 	private final String resetAdminSuccess;
@@ -55,6 +56,7 @@ public class LangManager {
 		final String noPermission,
 		final String playerNotAuthed,
 		final String playerNotDb,
+		final String pleaseSaveQr,
 		final String prefixAlert,
 		final String prefixNotify,
 		final String resetAdminSuccess,
@@ -86,6 +88,7 @@ public class LangManager {
 		this.noPermission = noPermission;
 		this.playerNotAuthed = playerNotAuthed;
 		this.playerNotDb = playerNotDb;
+		this.pleaseSaveQr = pleaseSaveQr;
 		this.prefixAlert = prefixAlert;
 		this.prefixNotify = prefixNotify;
 		this.resetAdminSuccess = resetAdminSuccess;
@@ -179,6 +182,10 @@ public class LangManager {
 
 	public synchronized String getPlayerNotDb() {
 		return this.playerNotDb;
+	}
+
+	public synchronized String getPleaseSaveQr() {
+		return this.pleaseSaveQr;
 	}
 
 	public synchronized String getPrefixAlert() {

@@ -13,6 +13,10 @@ import me.foncused.duoauth.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.lib.jeremyh.Bcrypt;
 import me.foncused.duoauth.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.util.AuthUtil;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -23,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -142,7 +147,20 @@ public class AuthCommand implements CommandExecutor {
 												key = this.ga.generateRfc6238Credentials(uuid);
 											}
 											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-											AuthUtil.alertOne(player, AuthMessage.QR.toString() + this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key));
+											final TextComponent tc = new TextComponent(AuthMessage.QR.toString() + "Click me!");
+											tc.setClickEvent(
+													new ClickEvent(
+															ClickEvent.Action.OPEN_URL,
+															this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key)
+													)
+											);
+											tc.setHoverEvent(
+													new HoverEvent(
+															HoverEvent.Action.SHOW_TEXT,
+															new ComponentBuilder(this.lm.getPleaseSaveQr()).create()
+													)
+											);
+											AuthUtil.alertOneTextComponent(player, tc);
 										} else {
 											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
@@ -150,19 +168,19 @@ public class AuthCommand implements CommandExecutor {
 									.execute();
 							break;
 						case 2:
+							final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[1]);
+							final String target = targetOffline.getName();
+							final UUID targetId = targetOffline.getUniqueId();
+							final String id = targetId.toString();
 							switch(args[0].toLowerCase()) {
 								case "deauth":
 									if(player.hasPermission("duoauth.admin")) {
-										final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args[1]);
-										final String target = targetOffline.getName();
-										final UUID targetId = targetOffline.getUniqueId();
 										if(!(this.auths.contains(targetId))) {
 											TaskChainManager.newChain()
 													.asyncFirst(() -> this.db.contains(targetId)
 															&& this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean()
 															&& this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
 													.syncLast(deauthed -> {
-														final String id = targetId.toString();
 														if(deauthed) {
 															final AuthCache c = this.plugin.getAuthCache(targetId);
 															if(c != null && targetOffline.isOnline()) {
@@ -186,6 +204,58 @@ public class AuthCommand implements CommandExecutor {
 									break;
 								case "reset":
 									this.reset(player, args[1]);
+									break;
+								case "check":
+									if(player.hasPermission("duoauth.admin")) {
+										if(!(this.auths.contains(targetId))) {
+											final AuthCache c = this.plugin.getAuthCache(targetId);
+											if(c != null && targetOffline.isOnline()) {
+												AuthUtil.alertOne(player, AuthUtil.logCache(target, c));
+											} else {
+												final TaskChain chain = TaskChainManager.newChain();
+												chain
+														.async(() -> {
+															if(this.db.contains(targetId)) {
+																chain.setTaskData("password", this.db.readProperty(targetId, DatabaseProperty.PASSWORD).getAsString());
+																chain.setTaskData("secret", this.db.readProperty(targetId, DatabaseProperty.SECRET).getAsString());
+																chain.setTaskData("authed", this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean());
+																chain.setTaskData("attempts", this.db.readProperty(targetId, DatabaseProperty.ATTEMPTS).getAsInt());
+																try {
+																	chain.setTaskData("ip", InetAddress.getByName(this.db.readProperty(targetId, DatabaseProperty.IP).getAsString()));
+																} catch(final UnknownHostException e) {
+																	e.printStackTrace();
+																}
+															}
+														})
+														.sync(() -> {
+															final String password = (String) chain.getTaskData("password");
+															if(password != null && (!(password.isEmpty()))) {
+																AuthUtil.alertOne(
+																		player,
+																		AuthUtil.logCache(
+																				target,
+																				new AuthCache(
+																						password,
+																						(String) chain.getTaskData("secret"),
+																						(boolean) chain.getTaskData("authed"),
+																						(int) chain.getTaskData("attempts"),
+																						(InetAddress) chain.getTaskData("ip")
+																				)
+																		)
+																);
+															} else {
+																AuthUtil.alertOne(player, ChatColor.RED + "Failed to check user " + target + ". Has this player set up authentication?");
+																AuthUtil.notify("Failed to check user " + id + " (" + target + ")");
+															}
+														})
+														.execute();
+											}
+										} else {
+											AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+										}
+									} else {
+										player.sendMessage(this.lm.getNoPermission());
+									}
 									break;
 								default:
 									final String password = args[0];
@@ -481,6 +551,7 @@ public class AuthCommand implements CommandExecutor {
 		player.sendMessage(ChatColor.RED + "    /auth reset" + ChatColor.GRAY + " - reset your own credentials");
 		if(admin) {
 			player.sendMessage(ChatColor.RED + "    /auth reset <player>" + ChatColor.GRAY + " - reset a player's credentials");
+			player.sendMessage(ChatColor.RED + "    /auth check <player>" + ChatColor.GRAY + " - check a player's auth status");
 		}
 		player.sendMessage(ChatColor.RED + "    /auth <password> <code>" + ChatColor.GRAY + " - set up or attempt authentication");
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");

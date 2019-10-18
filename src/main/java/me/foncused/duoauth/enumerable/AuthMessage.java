@@ -24,6 +24,7 @@ public enum AuthMessage {
 	NO_PERMISSION("&cYou do not have permission to do this!"),
 	PLAYER_NOT_AUTHED("&cYou need to authenticate with /auth <password> <code> before you can chat, move, or play."),
 	PLAYER_NOT_DB("&cYou have not set up authentication. To enable authentication, please use the /auth command."),
+	PLEASE_SAVE_QR("&aPlease save the QR .png image somewhere safe."),
 	PREFIX_ALERT("&3ALERT &8» &7"),
 	PREFIX_NOTIFY("&cALERT &8» &7&o"),
 	RESET_ADMIN_SUCCESS("&aYour credentials have been reset by an administrator."),
