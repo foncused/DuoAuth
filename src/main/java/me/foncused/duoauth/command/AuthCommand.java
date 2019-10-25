@@ -540,7 +540,7 @@ public class AuthCommand implements CommandExecutor {
 
 	private void printUsage(final Player player) {
 		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
-		player.sendMessage(ChatColor.DARK_GRAY + "    DuoAuth v" + this.plugin.getDescription().getVersion() + " by foncused");
+		player.sendMessage("    " + DuoAuth.PREFIX + ChatColor.DARK_GRAY + " v" + this.plugin.getDescription().getVersion() + " by foncused");
 		player.sendMessage(ChatColor.RED + "    /auth help" + ChatColor.GRAY + " - view this message");
 		player.sendMessage(ChatColor.RED + "    /auth generate" + ChatColor.GRAY + " - generate authentication secret");
 		player.sendMessage(ChatColor.RED + "    /auth deauth" + ChatColor.GRAY + " - deauthenticate yourself");
