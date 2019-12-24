@@ -7,6 +7,7 @@ public class LangManager {
 	private final String authenticatingSuccess;
 	private final String authInProgress;
 	private final String authInProgressAdmin;
+	private final String bug;
 	private final String codeInvalid;
 	private final String deauthAdminSuccess;
 	private final String deauthFailed;
@@ -40,6 +41,7 @@ public class LangManager {
 		final String authenticatingSuccess,
 		final String authInProgress,
 		final String authInProgressAdmin,
+		final String bug,
 		final String codeInvalid,
 		final String deauthAdminSuccess,
 		final String deauthFailed,
@@ -72,6 +74,7 @@ public class LangManager {
 		this.authenticatingSuccess = authenticatingSuccess;
 		this.authInProgress = authInProgress;
 		this.authInProgressAdmin = authInProgressAdmin;
+		this.bug = bug;
 		this.codeInvalid = codeInvalid;
 		this.deauthAdminSuccess = deauthAdminSuccess;
 		this.deauthFailed = deauthFailed;
@@ -118,6 +121,10 @@ public class LangManager {
 
 	public synchronized String getAuthInProgressAdmin() {
 		return this.authInProgressAdmin;
+	}
+
+	public synchronized String getBug() {
+		return this.bug;
 	}
 
 	public synchronized String getCodeInvalid() {
