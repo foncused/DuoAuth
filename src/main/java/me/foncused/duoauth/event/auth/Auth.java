@@ -36,12 +36,12 @@ public class Auth implements Listener {
 		if(!(this.cm.isChat())) {
 			final Player player = event.getPlayer();
 			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-			if(cache == null) {
+			if(cache == null && player.hasPermission("duoauth.enforced")) {
 				player.sendMessage(AuthMessage.BUG.toString());
 				event.setCancelled(true);
 				return;
 			}
-			if(!(cache.isAuthed())) {
+			if(cache != null && (!(cache.isAuthed()))) {
 				this.message(player);
 				event.setCancelled(true);
 			}
@@ -54,12 +54,12 @@ public class Auth implements Listener {
 			final Entity damaged = event.getEntity();
 			if(damaged instanceof Player) {
 				final AuthCache cache = this.plugin.getAuthCache(damaged.getUniqueId());
-				if(cache == null) {
+				if(cache == null && damaged.hasPermission("duoauth.enforced")) {
 					damaged.sendMessage(AuthMessage.BUG.toString());
 					event.setCancelled(true);
 					return;
 				}
-				if(!(cache.isAuthed())) {
+				if(cache != null && (!(cache.isAuthed()))) {
 					event.setCancelled(true);
 				}
 			}
@@ -71,12 +71,12 @@ public class Auth implements Listener {
 		final Entity entity = event.getEntity();
 		if(entity instanceof Player) {
 			final AuthCache cache = this.plugin.getAuthCache(entity.getUniqueId());
-			if(cache == null) {
+			if(cache == null && entity.hasPermission("duoauth.enforced")) {
 				entity.sendMessage(AuthMessage.BUG.toString());
 				event.setCancelled(true);
 				return;
 			}
-			if(!(cache.isAuthed())) {
+			if(cache != null && (!(cache.isAuthed()))) {
 				event.setCancelled(true);
 			}
 		}
@@ -88,12 +88,12 @@ public class Auth implements Listener {
 		if(entity instanceof Player) {
 			final Player player = (Player) entity;
 			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-			if(cache == null) {
+			if(cache == null && player.hasPermission("duoauth.enforced")) {
 				entity.sendMessage(AuthMessage.BUG.toString());
 				event.setCancelled(true);
 				return;
 			}
-			if(!(cache.isAuthed())) {
+			if(cache != null && (!(cache.isAuthed()))) {
 				this.message(player);
 				event.setCancelled(true);
 			}
@@ -104,12 +104,12 @@ public class Auth implements Listener {
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache == null) {
+		if(cache == null && player.hasPermission("duoauth.enforced")) {
 			player.sendMessage(AuthMessage.BUG.toString());
 			event.setCancelled(true);
 			return;
 		}
-		if((!(cache.isAuthed())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*$")))) {
+		if(cache != null && (!(cache.isAuthed())) && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*$")))) {
 			this.message(player);
 			event.setCancelled(true);
 		}
@@ -119,12 +119,12 @@ public class Auth implements Listener {
 	public void onPlayerDropItem(final PlayerDropItemEvent event) {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache == null) {
+		if(cache == null && player.hasPermission("duoauth.enforced")) {
 			player.sendMessage(AuthMessage.BUG.toString());
 			event.setCancelled(true);
 			return;
 		}
-		if(!(cache.isAuthed())) {
+		if(cache != null && (!(cache.isAuthed()))) {
 			this.message(player);
 			event.setCancelled(true);
 			if(!(event.isCancelled())) {
@@ -137,12 +137,12 @@ public class Auth implements Listener {
 	public void onPlayerInteract(final PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache == null) {
+		if(cache == null && player.hasPermission("duoauth.enforced")) {
 			player.sendMessage(AuthMessage.BUG.toString());
 			event.setCancelled(true);
 			return;
 		}
-		if(!(cache.isAuthed())) {
+		if(cache != null && (!(cache.isAuthed()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -151,12 +151,12 @@ public class Auth implements Listener {
 	public void onPlayerMove(final PlayerMoveEvent event) {
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
-		if(cache == null) {
+		if(cache == null && player.hasPermission("duoauth.enforced")) {
 			player.sendMessage(AuthMessage.BUG.toString());
 			event.setCancelled(true);
 			return;
 		}
-		if(!(cache.isAuthed())) {
+		if(cache != null && (!(cache.isAuthed()))) {
 			final Location loc1 = event.getFrom();
 			try {
 				final Location loc2 = event.getTo();
