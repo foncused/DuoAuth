@@ -1,0 +1,4 @@
+name: DuoAuth
+main: me.foncused.duoauth.bungee.DuoAuth
+version: 1.0
+author: foncused

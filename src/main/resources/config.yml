@@ -1,6 +1,11 @@
 # @plugin DuoAuth
-# @version 1.1.6
+# @version 1.1.7
 # @author foncused
+
+# Are you using BungeeCord?
+# If set to true, DuoAuth.jar should also be installed as a BungeeCord plugin
+# This is only useful for blocking proxy-level commands (/server <server>, /send <player> <server>)
+bungeecord: false
 
 # The cost factor of the bcrypt algorithm
 # For best security measures, it is recommended to set this value in respect to the maximum amount of
