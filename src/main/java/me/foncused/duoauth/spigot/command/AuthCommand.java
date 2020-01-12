@@ -640,10 +640,12 @@ public class AuthCommand implements CommandExecutor {
 		player.sendMessage("    " + DuoAuth.PREFIX + ChatColor.DARK_GRAY + "v" + this.plugin.getDescription().getVersion() + " by foncused");
 		player.sendMessage(ChatColor.RED + "    /auth help" + ChatColor.GRAY + " - view this message");
 		player.sendMessage(ChatColor.RED + "    /auth generate" + ChatColor.GRAY + " - generate authentication secret");
-		player.sendMessage(ChatColor.RED + "    /auth deauth" + ChatColor.GRAY + " - deauthenticate yourself");
 		final boolean admin = player.hasPermission("duoauth.admin");
 		if(admin) {
 			player.sendMessage(ChatColor.RED + "    /auth allow <player>" + ChatColor.GRAY + " - allow a player");
+		}
+		player.sendMessage(ChatColor.RED + "    /auth deauth" + ChatColor.GRAY + " - deauthenticate yourself");
+		if(admin) {
 			player.sendMessage(ChatColor.RED + "    /auth deauth <player>" + ChatColor.GRAY + " - deauthenticate a player");
 		}
 		player.sendMessage(ChatColor.RED + "    /auth reset" + ChatColor.GRAY + " - reset your own credentials");
