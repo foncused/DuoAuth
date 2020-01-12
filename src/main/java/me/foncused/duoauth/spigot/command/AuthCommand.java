@@ -196,15 +196,16 @@ public class AuthCommand implements CommandExecutor {
 																	if(c != null && targetOffline.isOnline()) {
 																		c.setAuthed(true);
 																		c.setAttempts(0);
-																		final InetAddress ip = AuthUtil.getPlayerAddress((Player) targetOffline);
+																		final Player targetOnline = (Player) targetOffline;
+																		final InetAddress ip = AuthUtil.getPlayerAddress(targetOnline);
 																		TaskChainManager.newChain()
 																				.async(() -> this.db.writeProperty(targetId, DatabaseProperty.IP, ip))
 																				.execute();
+																		if(this.cm.isBungee()) {
+																			BungeeUtil.sendMessage(targetOnline, "Remove");
+																		}
 																	}
 																	this.ga.removeCreds(uuid);
-																	if(this.cm.isBungee()) {
-																		BungeeUtil.sendMessage(player, "Remove");
-																	}
 																	AuthUtil.alertOne(player, ChatColor.GREEN + "Allowing of user " + target + " was successful.");
 																	AuthUtil.notify("Allowing of user " + id + " (" + target + ") was successful");
 																} else {
