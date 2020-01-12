@@ -38,8 +38,8 @@ public class AuthCommand implements CommandExecutor {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
-	private final GoogleAuth ga;
 	private final LangManager lm;
+	private final GoogleAuth ga;
 	private final AuthDatabase db;
 	private final Set<UUID> auths;
 	private final Set<UUID> cooldowns;
@@ -47,8 +47,8 @@ public class AuthCommand implements CommandExecutor {
 	public AuthCommand(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
-		this.ga = this.plugin.getGoogleAuth();
 		this.lm = this.plugin.getLangManager();
+		this.ga = this.plugin.getGoogleAuth();
 		this.db = this.plugin.getDatabase();
 		this.auths = new HashSet<>();
 		this.cooldowns = new HashSet<>();
@@ -138,7 +138,7 @@ public class AuthCommand implements CommandExecutor {
 															AuthUtil.alertOne(player, this.lm.getAuthInProgress());
 														}
 													} else {
-														player.sendMessage(this.lm.getMustWait());
+														AuthUtil.alertOne(player, this.lm.getMustWait());
 													}
 												} else {
 													AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
@@ -180,92 +180,166 @@ public class AuthCommand implements CommandExecutor {
 							final UUID targetId = targetOffline.getUniqueId();
 							final String id = targetId.toString();
 							switch(args[0].toLowerCase()) {
-								case "deauth":
+								case "allow":
 									if(player.hasPermission("duoauth.admin")) {
-										if(!(this.auths.contains(targetId))) {
-											TaskChainManager.newChain()
-													.asyncFirst(() -> this.db.contains(targetId)
-															&& this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean()
-															&& this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
-													.syncLast(deauthed -> {
-														if(deauthed) {
-															final AuthCache c = this.plugin.getAuthCache(targetId);
-															if(c != null && targetOffline.isOnline()) {
-																c.setAuthed(false);
-																final Player targetOnline = (Player) targetOffline;
-																if(this.cm.isBungee()) {
-																	BungeeUtil.sendMessage(targetOnline, "Add");
+										if(cache != null) {
+											if(cache.isAuthed()) {
+												if(!(this.auths.contains(targetId))) {
+													TaskChainManager.newChain()
+															.asyncFirst(() -> this.db.contains(targetId)
+																	&& (!(this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean()))
+																	&& this.db.writeProperty(targetId, DatabaseProperty.AUTHED, true)
+																	&& this.db.writeProperty(targetId, DatabaseProperty.TIMESTAMP, AuthUtil.getFormattedTime(AuthUtil.getDateFormat())))
+															.syncLast(authed -> {
+																if(authed) {
+																	final AuthCache c = this.plugin.getAuthCache(targetId);
+																	if(c != null && targetOffline.isOnline()) {
+																		c.setAuthed(true);
+																		c.setAttempts(0);
+																		final InetAddress ip = AuthUtil.getPlayerAddress((Player) targetOffline);
+																		TaskChainManager.newChain()
+																				.async(() -> this.db.writeProperty(targetId, DatabaseProperty.IP, ip))
+																				.execute();
+																	}
+																	this.ga.removeCreds(uuid);
+																	if(this.cm.isBungee()) {
+																		BungeeUtil.sendMessage(player, "Remove");
+																	}
+																	AuthUtil.alertOne(player, ChatColor.GREEN + "Allowing of user " + target + " was successful.");
+																	AuthUtil.notify("Allowing of user " + id + " (" + target + ") was successful");
+																} else {
+																	AuthUtil.alertOne(player, ChatColor.RED + "Failed to allow user " + target + ". Has this player set up authentication? Are they already authenticated?");
+																	AuthUtil.notify("Failed to allow user " + id + " (" + target + ")");
 																}
-																AuthUtil.alertOne(targetOnline, this.lm.getDeauthAdminSuccess());
-															}
-															AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
-															AuthUtil.notify("Deauthentication of user " + id + " (" + target + ") was successful");
-														} else {
-															AuthUtil.alertOne(player, ChatColor.RED + "Failed to deauthenticate user " + target + ". Has this player set up authentication?");
-															AuthUtil.notify("Failed to deauthenticate user " + id + " (" + target + ")");
-														}
-													})
-													.execute();
+															})
+															.execute();
+												} else {
+													AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+												}
+											} else {
+												AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
+											}
 										} else {
-											AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
 									} else {
-										player.sendMessage(this.lm.getNoPermission());
+										AuthUtil.alertOne(player, this.lm.getNoPermission());
+									}
+									break;
+								case "deauth":
+									if(player.hasPermission("duoauth.admin")) {
+										if(cache != null) {
+											if(cache.isAuthed()) {
+												if(!(this.auths.contains(targetId))) {
+													TaskChainManager.newChain()
+															.asyncFirst(() -> this.db.contains(targetId)
+																	&& this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean()
+																	&& this.db.writeProperty(targetId, DatabaseProperty.AUTHED, false))
+															.syncLast(deauthed -> {
+																if(deauthed) {
+																	final AuthCache c = this.plugin.getAuthCache(targetId);
+																	if(c != null && targetOffline.isOnline()) {
+																		c.setAuthed(false);
+																		final Player targetOnline = (Player) targetOffline;
+																		if(this.cm.isBungee()) {
+																			BungeeUtil.sendMessage(targetOnline, "Add");
+																		}
+																		AuthUtil.alertOne(targetOnline, this.lm.getDeauthAdminSuccess());
+																	}
+																	AuthUtil.alertOne(player, ChatColor.GREEN + "Deauthentication of user " + target + " was successful.");
+																	AuthUtil.notify("Deauthentication of user " + id + " (" + target + ") was successful");
+																} else {
+																	AuthUtil.alertOne(player, ChatColor.RED + "Failed to deauthenticate user " + target + ". Has this player set up authentication? Are they already deauthenticated?");
+																	AuthUtil.notify("Failed to deauthenticate user " + id + " (" + target + ")");
+																}
+															})
+															.execute();
+												} else {
+													AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+												}
+											} else {
+												AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
+											}
+										} else {
+											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
+										}
+									} else {
+										AuthUtil.alertOne(player, this.lm.getNoPermission());
 									}
 									break;
 								case "reset":
-									this.reset(player, args[1]);
+									if(player.hasPermission("duoauth.admin")) {
+										if(cache != null) {
+											if(cache.isAuthed()) {
+												this.reset(player, args[1]);
+											} else {
+												AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
+											}
+										} else {
+											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
+										}
+									} else {
+										AuthUtil.alertOne(player, this.lm.getNoPermission());
+									}
 									break;
 								case "check":
 									if(player.hasPermission("duoauth.admin")) {
-										if(!(this.auths.contains(targetId))) {
-											final AuthCache c = this.plugin.getAuthCache(targetId);
-											if(c != null && targetOffline.isOnline()) {
-												AuthUtil.alertOne(player, AuthUtil.logCache(target, c));
-											} else {
-												final TaskChain chain = TaskChainManager.newChain();
-												chain
-														.async(() -> {
-															if(this.db.contains(targetId)) {
-																chain.setTaskData("password", this.db.readProperty(targetId, DatabaseProperty.PASSWORD).getAsString());
-																chain.setTaskData("secret", this.db.readProperty(targetId, DatabaseProperty.SECRET).getAsString());
-																chain.setTaskData("authed", this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean());
-																chain.setTaskData("attempts", this.db.readProperty(targetId, DatabaseProperty.ATTEMPTS).getAsInt());
-																try {
-																	chain.setTaskData("ip", InetAddress.getByName(this.db.readProperty(targetId, DatabaseProperty.IP).getAsString()));
-																} catch(final UnknownHostException e) {
-																	e.printStackTrace();
-																}
-															}
-														})
-														.sync(() -> {
-															final String password = (String) chain.getTaskData("password");
-															if(password != null && (!(password.isEmpty()))) {
-																AuthUtil.alertOne(
-																		player,
-																		AuthUtil.logCache(
-																				target,
-																				new AuthCache(
-																						password,
-																						(String) chain.getTaskData("secret"),
-																						(boolean) chain.getTaskData("authed"),
-																						(int) chain.getTaskData("attempts"),
-																						(InetAddress) chain.getTaskData("ip")
+										if(cache != null) {
+											if(cache.isAuthed()) {
+												if(!(this.auths.contains(targetId))) {
+													final AuthCache c = this.plugin.getAuthCache(targetId);
+													if(c != null && targetOffline.isOnline()) {
+														AuthUtil.alertOne(player, AuthUtil.logCache(target, c));
+													} else {
+														final TaskChain chain = TaskChainManager.newChain();
+														chain
+																.async(() -> {
+																	if(this.db.contains(targetId)) {
+																		chain.setTaskData("password", this.db.readProperty(targetId, DatabaseProperty.PASSWORD).getAsString());
+																		chain.setTaskData("secret", this.db.readProperty(targetId, DatabaseProperty.SECRET).getAsString());
+																		chain.setTaskData("authed", this.db.readProperty(targetId, DatabaseProperty.AUTHED).getAsBoolean());
+																		chain.setTaskData("attempts", this.db.readProperty(targetId, DatabaseProperty.ATTEMPTS).getAsInt());
+																		try {
+																			chain.setTaskData("ip", InetAddress.getByName(this.db.readProperty(targetId, DatabaseProperty.IP).getAsString()));
+																		} catch(final UnknownHostException e) {
+																			e.printStackTrace();
+																		}
+																	}
+																})
+																.sync(() -> {
+																	final String password = (String) chain.getTaskData("password");
+																	if(password != null && (!(password.isEmpty()))) {
+																		AuthUtil.alertOne(
+																				player,
+																				AuthUtil.logCache(
+																						target,
+																						new AuthCache(
+																								password,
+																								(String) chain.getTaskData("secret"),
+																								(boolean) chain.getTaskData("authed"),
+																								(int) chain.getTaskData("attempts"),
+																								(InetAddress) chain.getTaskData("ip")
+																						)
 																				)
-																		)
-																);
-															} else {
-																AuthUtil.alertOne(player, ChatColor.RED + "Failed to check user " + target + ". Has this player set up authentication?");
-																AuthUtil.notify("Failed to check user " + id + " (" + target + ")");
-															}
-														})
-														.execute();
+																		);
+																	} else {
+																		AuthUtil.alertOne(player, ChatColor.RED + "Failed to check user " + target + ". Has this player set up authentication?");
+																		AuthUtil.notify("Failed to check user " + id + " (" + target + ")");
+																	}
+																})
+																.execute();
+													}
+												} else {
+													AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+												}
+											} else {
+												AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
 											}
 										} else {
-											AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}
 									} else {
-										player.sendMessage(this.lm.getNoPermission());
+										AuthUtil.alertOne(player, this.lm.getNoPermission());
 									}
 									break;
 								default:
@@ -455,7 +529,7 @@ public class AuthCommand implements CommandExecutor {
 													AuthUtil.alertOne(player, this.lm.getAuthInProgress());
 												}
 											} else {
-												player.sendMessage(this.lm.getMustWait());
+												AuthUtil.alertOne(player, this.lm.getMustWait());
 											}
 										} else {
 											AuthUtil.alertOne(player, this.lm.getCodeInvalid());
@@ -508,7 +582,7 @@ public class AuthCommand implements CommandExecutor {
 				return " (?)";
 			}
 		}
-		return "";
+		return " (???)";
 	}
 
 	private void reset(final CommandSender sender, final String args1) {
@@ -567,6 +641,7 @@ public class AuthCommand implements CommandExecutor {
 		player.sendMessage(ChatColor.RED + "    /auth deauth" + ChatColor.GRAY + " - deauthenticate yourself");
 		final boolean admin = player.hasPermission("duoauth.admin");
 		if(admin) {
+			player.sendMessage(ChatColor.RED + "    /auth allow <player>" + ChatColor.GRAY + " - allow a player");
 			player.sendMessage(ChatColor.RED + "    /auth deauth <player>" + ChatColor.GRAY + " - deauthenticate a player");
 		}
 		player.sendMessage(ChatColor.RED + "    /auth reset" + ChatColor.GRAY + " - reset your own credentials");

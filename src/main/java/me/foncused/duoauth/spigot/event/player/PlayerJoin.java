@@ -30,15 +30,15 @@ public class PlayerJoin implements Listener {
 
 	private final DuoAuth plugin;
 	private final ConfigManager cm;
-	private final GoogleAuth ga;
 	private final LangManager lm;
+	private final GoogleAuth ga;
 	private final AuthDatabase db;
 
 	public PlayerJoin(final DuoAuth plugin) {
 		this.plugin = plugin;
 		this.cm = this.plugin.getConfigManager();
-		this.ga = this.plugin.getGoogleAuth();
 		this.lm = this.plugin.getLangManager();
+		this.ga = this.plugin.getGoogleAuth();
 		this.db = this.plugin.getDatabase();
 	}
 
