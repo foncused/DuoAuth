@@ -204,6 +204,7 @@ public class AuthCommand implements CommandExecutor {
 																		if(this.cm.isBungee()) {
 																			BungeeUtil.sendMessage(targetOnline, "Remove");
 																		}
+																		AuthUtil.alertOne(targetOnline, this.lm.getAllowAdminSuccess());
 																	}
 																	this.ga.removeCreds(uuid);
 																	AuthUtil.alertOne(player, ChatColor.GREEN + "Allowing of user " + target + " was successful.");

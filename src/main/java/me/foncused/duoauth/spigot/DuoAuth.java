@@ -116,6 +116,7 @@ public class DuoAuth extends JavaPlugin {
 			final YamlConfiguration yaml = new YamlConfiguration();
 			yaml.load(lang);
 			this.lm = new LangManager(
+					this.translate(yaml.getString("allow_admin_success", AuthMessage.ALLOW_ADMIN_SUCCESS.toString())),
 					this.translate(yaml.getString("authenticating", AuthMessage.AUTHENTICATING.toString())),
 					this.translate(yaml.getString("authenticating_failed", AuthMessage.AUTHENTICATING_FAILED.toString())),
 					this.translate(yaml.getString("authenticating_success", AuthMessage.AUTHENTICATING_SUCCESS.toString())),
@@ -158,6 +159,7 @@ public class DuoAuth extends JavaPlugin {
 			e.printStackTrace();
 		}
 		this.lm = new LangManager(
+				this.translate(AuthMessage.ALLOW_ADMIN_SUCCESS.toString()),
 				this.translate(AuthMessage.AUTHENTICATING.toString()),
 				this.translate(AuthMessage.AUTHENTICATING_FAILED.toString()),
 				this.translate(AuthMessage.AUTHENTICATING_SUCCESS.toString()),

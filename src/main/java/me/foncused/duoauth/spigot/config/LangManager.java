@@ -2,6 +2,7 @@ package me.foncused.duoauth.spigot.config;
 
 public class LangManager {
 
+	private final String allowAdminSuccess;
 	private final String authenticating;
 	private final String authenticatingFailed;
 	private final String authenticatingSuccess;
@@ -36,6 +37,7 @@ public class LangManager {
 	private final String settingUpSuccess;
 
 	public LangManager(
+		final String allowAdminSuccess,
 		final String authenticating,
 		final String authenticatingFailed,
 		final String authenticatingSuccess,
@@ -69,6 +71,7 @@ public class LangManager {
 		final String settingUpFailed,
 		final String settingUpSuccess
 	) {
+		this.allowAdminSuccess = allowAdminSuccess;
 		this.authenticating = authenticating;
 		this.authenticatingFailed = authenticatingFailed;
 		this.authenticatingSuccess = authenticatingSuccess;
@@ -101,6 +104,10 @@ public class LangManager {
 		this.settingUp = settingUp;
 		this.settingUpFailed = settingUpFailed;
 		this.settingUpSuccess = settingUpSuccess;
+	}
+
+	public synchronized String getAllowAdminSuccess() {
+		return this.allowAdminSuccess;
 	}
 
 	public synchronized String getAuthenticating() {

@@ -1,3 +1,4 @@
+allow_admin_success: "&aYou have been allowed by an administrator. Have fun!"
 authenticating: "&6Authenticating..."
 authenticating_failed: "&cAuthentication failed. Please ensure your password and code are correct. Please contact the server administrators if you believe that this is in error."
 authenticating_success: "&aAuthentication successful. Have fun!"

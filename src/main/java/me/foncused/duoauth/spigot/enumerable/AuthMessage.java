@@ -3,6 +3,7 @@ package me.foncused.duoauth.spigot.enumerable;
 public enum AuthMessage {
 
 	// lang.yml
+	ALLOW_ADMIN_SUCCESS("&aYou have been allowed by an administrator. Have fun!"),
 	AUTHENTICATING("&6Authenticating..."),
 	AUTHENTICATING_FAILED("&cAuthentication failed. Please ensure your password and code are correct. Please contact the server administrators if you believe that this is in error."),
 	AUTHENTICATING_SUCCESS("&aAuthentication successful. Have fun!"),
