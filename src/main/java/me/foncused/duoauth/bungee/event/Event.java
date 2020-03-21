@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Event implements Listener {
 
@@ -56,10 +57,11 @@ public class Event implements Listener {
 		final DataInputStream dis = new DataInputStream(bais);
 		try {
 			final String action = dis.readUTF();
+			final Logger logger = this.server.getLogger();
 			switch(action) {
 				case "Add": {
 					final String u = dis.readUTF();
-					this.server.getLogger().log(
+					logger.log(
 							Level.INFO,
 							this.getPrefix() + "Adding filter to " + u
 					);
@@ -68,7 +70,7 @@ public class Event implements Listener {
 				}
 				case "Remove": {
 					final String u = dis.readUTF();
-					this.server.getLogger().log(
+					logger.log(
 							Level.INFO,
 							this.getPrefix() + "Removing filter from " + u
 					);
@@ -76,7 +78,7 @@ public class Event implements Listener {
 					break;
 				}
 				default:
-					this.server.getLogger().log(
+					logger.log(
 							Level.INFO,
 							this.getPrefix() + "Proxy received plugin message " +
 									"with unknown action '" + action + "' - this will be ignored!"
