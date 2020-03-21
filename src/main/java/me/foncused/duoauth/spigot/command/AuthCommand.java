@@ -273,7 +273,33 @@ public class AuthCommand implements CommandExecutor {
 									if(player.hasPermission("duoauth.admin")) {
 										if(cache != null) {
 											if(cache.isAuthed()) {
-												this.reset(player, args[1]);
+												if(!(this.auths.contains(targetId))) {
+													TaskChainManager.newChain()
+															.asyncFirst(() -> this.db.delete(targetId))
+															.syncLast(deleted -> {
+																String msg;
+																if(deleted) {
+																	final AuthCache c = this.plugin.getAuthCache(targetId);
+																	if(c != null && targetOffline.isOnline()) {
+																		c.setAuthed(true);
+																		final Player targetOnline = (Player) targetOffline;
+																		if(this.cm.isBungee()) {
+																			BungeeUtil.sendMessage(targetOnline, "Remove");
+																		}
+																		AuthUtil.alertOne(targetOnline, this.lm.getResetAdminSuccess());
+																	}
+																	msg = ChatColor.GREEN + "Authentication for user " + target + " has been reset.";
+																	AuthUtil.notify("Reset authentication for user " + id + " (" + target + ")");
+																} else {
+																	msg = ChatColor.RED + "Failed to reset authentication for user " + target + ". Has this player set up authentication?";
+																	AuthUtil.notify("Failed to reset authentication for user " + id + " (" + target + ")");
+																}
+																AuthUtil.alertOne((Player) sender, msg);
+															})
+															.execute();
+												} else {
+													AuthUtil.alertOne(player, this.lm.getAuthInProgressAdmin());
+												}
 											} else {
 												AuthUtil.alertOne(player, this.lm.getPlayerNotAuthed());
 											}
@@ -559,10 +585,8 @@ public class AuthCommand implements CommandExecutor {
 							break;
 					}
 				} else {
-					sender.sendMessage(this.lm.getNoPermission());
+					AuthUtil.alertOne(player, this.lm.getNoPermission());
 				}
-			} else if(this.cm.isConsoleReset() && args.length == 2 && args[0].toLowerCase().equals("reset")) {
-				this.reset(sender, args[1]);
 			} else {
 				sender.sendMessage(this.lm.getNoConsole());
 			}
@@ -585,54 +609,6 @@ public class AuthCommand implements CommandExecutor {
 			}
 		}
 		return " (???)";
-	}
-
-	private void reset(final CommandSender sender, final String args1) {
-		final boolean console = (!(sender instanceof Player));
-		if(console || sender.hasPermission("duoauth.admin")) {
-			final OfflinePlayer targetOffline = Bukkit.getOfflinePlayer(args1);
-			final String target = targetOffline.getName();
-			final UUID targetId = targetOffline.getUniqueId();
-			if(!(this.auths.contains(targetId))) {
-				TaskChainManager.newChain()
-						.asyncFirst(() -> this.db.delete(targetId))
-						.syncLast(deleted -> {
-							final String id = targetId.toString();
-							String msg;
-							if(deleted) {
-								final AuthCache c = this.plugin.getAuthCache(targetId);
-								if(c != null && targetOffline.isOnline()) {
-									c.setAuthed(true);
-									final Player targetOnline = (Player) targetOffline;
-									if(this.cm.isBungee()) {
-										BungeeUtil.sendMessage(targetOnline, "Remove");
-									}
-									AuthUtil.alertOne(targetOnline, this.lm.getResetAdminSuccess());
-								}
-								msg = ChatColor.GREEN + "Authentication for user " + target + " has been reset.";
-								AuthUtil.notify("Reset authentication for user " + id + " (" + target + ")");
-							} else {
-								msg = ChatColor.RED + "Failed to reset authentication for user " + target + ". Has this player set up authentication?";
-								AuthUtil.notify("Failed to reset authentication for user " + id + " (" + target + ")");
-							}
-							if(console) {
-								AuthUtil.console(msg);
-							} else {
-								AuthUtil.alertOne((Player) sender, msg);
-							}
-						})
-						.execute();
-			} else {
-				final String msg = this.lm.getAuthInProgressAdmin();
-				if(console) {
-					AuthUtil.console(msg);
-				} else {
-					AuthUtil.alertOne((Player) sender, msg);
-				}
-			}
-		} else {
-			sender.sendMessage(this.lm.getNoPermission());
-		}
 	}
 
 	private void printUsage(final Player player) {

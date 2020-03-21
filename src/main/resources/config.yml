@@ -1,5 +1,5 @@
 # @plugin DuoAuth
-# @version 1.1.8
+# @version 1.1.9
 # @author foncused
 
 # Are you using BungeeCord?
@@ -82,9 +82,6 @@ unlock:
 # The method used for storing the digests
 # This is not currently configurable; for now, DuoAuth will only store data in .json files in the /data directory
 database: "json"
-
-# true to allow console access to /auth reset <player>, false if not
-console-reset: false
 
 # true to allow chat prior to authentication, false if not
 chat: false

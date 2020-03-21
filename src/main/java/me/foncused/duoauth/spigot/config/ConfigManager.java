@@ -24,7 +24,6 @@ public class ConfigManager {
 	private final int unlockTimeout;
 	private final int unlockTimeoutCheckHeartbeat;
 	private final DatabaseOption databaseOption;
-	private final boolean consoleReset;
 	private final boolean chat;
 	private final boolean restrictMovement;
 	private boolean loading;
@@ -48,7 +47,6 @@ public class ConfigManager {
 		final int unlockTimeout,
 		final int unlockTimeoutCheckHeartbeat,
 		final String database,
-		final boolean consoleReset,
 		final boolean chat,
 		final boolean restrictMovement
 	) {
@@ -140,8 +138,6 @@ public class ConfigManager {
 		}
 		this.databaseOption = databaseOption;
 		AuthUtil.console("Database option set to " + this.databaseOption.toString());
-		this.consoleReset = consoleReset;
-		AuthUtil.console(this.consoleReset ? "Console access is enabled" : "Console access is disabled");
 		this.chat = chat;
 		AuthUtil.console(this.chat ? "Chat is enabled" : "Chat is disabled");
 		this.restrictMovement = restrictMovement;
@@ -227,10 +223,6 @@ public class ConfigManager {
 
 	public synchronized DatabaseOption getDatabaseOption() {
 		return this.databaseOption;
-	}
-
-	public synchronized boolean isConsoleReset() {
-		return this.consoleReset;
 	}
 
 	public synchronized boolean isChat() {

@@ -96,7 +96,6 @@ public class DuoAuth extends JavaPlugin {
 				config.getInt("unlock.timeout-check-heartbeat", 15),
 				//config.getString("database", "json"),
 				"json",
-				config.getBoolean("console-reset", false),
 				config.getBoolean("chat", false),
 				config.getBoolean("restrict-movement", false)
 		);
