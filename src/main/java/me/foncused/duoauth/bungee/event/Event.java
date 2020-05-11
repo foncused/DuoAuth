@@ -58,29 +58,24 @@ public class Event implements Listener {
 		try {
 			final String action = dis.readUTF();
 			final Logger logger = this.server.getLogger();
+			final String prefix = "[DuoAuth] ";
 			switch(action) {
 				case "Add": {
 					final String u = dis.readUTF();
-					logger.log(
-							Level.INFO,
-							this.getPrefix() + "Adding filter to " + u
-					);
+					logger.log(Level.INFO, prefix + "Adding filter to " + u);
 					this.auths.add(UUID.fromString(u));
 					break;
 				}
 				case "Remove": {
 					final String u = dis.readUTF();
-					logger.log(
-							Level.INFO,
-							this.getPrefix() + "Removing filter from " + u
-					);
+					logger.log(Level.INFO, prefix + "Removing filter from " + u);
 					this.auths.remove(UUID.fromString(u));
 					break;
 				}
 				default:
 					logger.log(
 							Level.INFO,
-							this.getPrefix() + "Proxy received plugin message " +
+							prefix + "Proxy received plugin message " +
 									"with unknown action '" + action + "' - this will be ignored!"
 					);
 					break;
@@ -94,10 +89,6 @@ public class Event implements Listener {
 		} catch(final Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private String getPrefix() {
-		return me.foncused.duoauth.spigot.DuoAuth.PREFIX.replaceAll("&", "§");
 	}
 
 }
