@@ -7,5 +7,5 @@
 The plugin uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) password hashing algorithm to store credentials in 184-bit digests. As a result, the authentication process can be made **arbitrarily slow** by adjusting the cost factor parameter, permitting flexibility based on administrative preference and individual server performance. Several other configurable items, including minimum password requirements and deauthentication settings, are supported as well.
 
 ### Links:
-- Spigot: https://www.spigotmc.org/resources/duoauth.63418/
+- Spigot: https://www.spigotmc.org/resources/duoauth.80609/
 - Donate: https://paypal.me/foncused
