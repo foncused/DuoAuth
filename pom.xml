@@ -33,7 +33,6 @@
                 <version>3.8.1</version>
                 <configuration>
                     <fork>true</fork>
-                    <!--<executable>C:\Program Files\AdoptOpenJDK\jdk-8.0.232.09-hotspot\bin\javac.exe</executable>-->
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>
@@ -84,21 +83,21 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.15-SNAPSHOT</version>
+            <version>1.16-R0.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- GoogleAuth -->
         <dependency>
             <groupId>com.warrenstrange</groupId>
             <artifactId>googleauth</artifactId>
-            <version>1.4.0</version>
+            <version>1.5.0</version>
             <scope>compile</scope>
         </dependency>
         <!-- Spigot -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.15.2-R0.1-SNAPSHOT</version>
+            <version>1.16.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- TaskChain -->
