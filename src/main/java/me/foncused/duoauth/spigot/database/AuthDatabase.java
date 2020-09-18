@@ -26,7 +26,7 @@ public class AuthDatabase {
 		this.plugin = plugin;
 	}
 
-	public synchronized JsonElement readProperty(final UUID uuid, final DatabaseProperty property) {
+	public JsonElement readProperty(final UUID uuid, final DatabaseProperty property) {
 		final JsonObject object = this.read(uuid);
 		final String p = property.toString();
 		if(object != null && object.has(p)) {
@@ -36,7 +36,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	private synchronized JsonObject read(final UUID uuid) {
+	private JsonObject read(final UUID uuid) {
 		try {
 			final FileReader reader = new FileReader(new File(this.getJsonPath(uuid)));
 			final JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
@@ -48,7 +48,7 @@ public class AuthDatabase {
 		return null;
 	}
 
-	public synchronized Set<UUID> readAll() {
+	public Set<UUID> readAll() {
 		final File[] files = new File(this.getDataFolder()).listFiles();
 		if(files != null) {
 			final Set<UUID> uuids = new HashSet<>();
@@ -67,7 +67,7 @@ public class AuthDatabase {
 		AuthUtil.consoleSevere(this.getJsonFile(uuid) + ": Unable to read property '" + property.toString() + "' from file");
 	}
 
-	public synchronized <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
+	public <O> boolean writeProperty(final UUID uuid, final DatabaseProperty property, final O data) {
 		final JsonObject object = this.read(uuid);
 		if(object != null) {
 			final String p = property.toString();
@@ -102,7 +102,7 @@ public class AuthDatabase {
 		return this.write(uuid, object);
 	}
 
-	private synchronized boolean write(final UUID uuid, final JsonObject object) {
+	private boolean write(final UUID uuid, final JsonObject object) {
 		try {
 			final String dataPath = this.getDataFolder();
 			final File data = new File(dataPath);
@@ -133,11 +133,11 @@ public class AuthDatabase {
 		AuthUtil.consoleSevere(this.getJsonFile(uuid) + ": Unable to write property '" + property.toString() + "' to file");
 	}
 
-	public synchronized boolean contains(final UUID uuid) {
+	public boolean contains(final UUID uuid) {
 		return new File(this.getJsonPath(uuid)).exists();
 	}
 
-	public synchronized boolean delete(final UUID uuid) {
+	public boolean delete(final UUID uuid) {
 		return new File(this.getJsonPath(uuid)).delete();
 	}
 

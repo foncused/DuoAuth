@@ -153,87 +153,87 @@ public class ConfigManager {
 				.execute();
 	}
 
-	public synchronized boolean isBungee() {
+	public boolean isBungee() {
 		return this.bungeecord;
 	}
 
-	public synchronized int getCostFactor() {
+	public int getCostFactor() {
 		return this.costFactor;
 	}
 
-	public synchronized int getCommandCooldown() {
+	public int getCommandCooldown() {
 		return this.commandCooldown;
 	}
 
-	public synchronized int getCommandAttempts() {
+	public int getCommandAttempts() {
 		return this.commandAttempts;
 	}
 
-	public synchronized String getPasswordDefault() {
+	public String getPasswordDefault() {
 		return this.passwordDefault;
 	}
 
-	public synchronized int getPasswordMinLength() {
+	public int getPasswordMinLength() {
 		return this.passwordMinLength;
 	}
 
-	public synchronized boolean isPasswordBothCases() {
+	public boolean isPasswordBothCases() {
 		return this.passwordBothCases;
 	}
 
-	public synchronized boolean isPasswordNumbers() {
+	public boolean isPasswordNumbers() {
 		return this.passwordNumbers;
 	}
 
-	public synchronized boolean isPasswordSpecialChars() {
+	public boolean isPasswordSpecialChars() {
 		return this.passwordSpecialChars;
 	}
 
-	public synchronized String getPasswordSpecialCharset() {
+	public String getPasswordSpecialCharset() {
 		return this.passwordSpecialCharset;
 	}
 
-	public synchronized String getCodeIssuer() {
+	public String getCodeIssuer() {
 		return this.codeIssuer;
 	}
 
-	public synchronized boolean isDeauthAddressChanges() {
+	public boolean isDeauthAddressChanges() {
 		return this.deauthAddressChanges;
 	}
 
-	public synchronized int getDeauthTimeout() {
+	public int getDeauthTimeout() {
 		return this.deauthTimeout;
 	}
 
-	public synchronized boolean isDeauthTimeoutOnline() {
+	public boolean isDeauthTimeoutOnline() {
 		return this.deauthTimeoutOnline;
 	}
 
-	public synchronized int getDeauthTimeoutCheckHeartbeat() {
+	public int getDeauthTimeoutCheckHeartbeat() {
 		return this.deauthTimeoutCheckHeartbeat;
 	}
 
-	public synchronized int getUnlockTimeout() {
+	public int getUnlockTimeout() {
 		return this.unlockTimeout;
 	}
 
-	public synchronized int getUnlockTimeoutCheckHeartbeat() {
+	public int getUnlockTimeoutCheckHeartbeat() {
 		return this.unlockTimeoutCheckHeartbeat;
 	}
 
-	public synchronized DatabaseOption getDatabaseOption() {
+	DatabaseOption getDatabaseOption() {
 		return this.databaseOption;
 	}
 
-	public synchronized boolean isChat() {
+	public boolean isChat() {
 		return this.chat;
 	}
 
-	public synchronized boolean isRestrictMovement() {
+	public boolean isRestrictMovement() {
 		return this.restrictMovement;
 	}
 
-	public synchronized boolean isLoading() {
+	public boolean isLoading() {
 		return this.loading;
 	}
 

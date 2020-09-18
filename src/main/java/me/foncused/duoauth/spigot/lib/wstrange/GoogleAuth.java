@@ -18,20 +18,20 @@ public class GoogleAuth {
 		this.creds = new ConcurrentHashMap<>();
 	}
 
-	public synchronized GoogleAuthenticatorKey generateRfc6238Credentials(final UUID uuid) {
+	public GoogleAuthenticatorKey generateRfc6238Credentials(final UUID uuid) {
 		this.creds.put(uuid, this.ga.createCredentials());
 		return this.creds.get(uuid);
 	}
 
-	public synchronized GoogleAuthenticatorKey getCreds(final UUID uuid) {
+	public GoogleAuthenticatorKey getCreds(final UUID uuid) {
 		return this.creds.get(uuid);
 	}
 
-	public synchronized boolean containsCreds(final UUID uuid) {
+	public boolean containsCreds(final UUID uuid) {
 		return this.creds.containsKey(uuid);
 	}
 
-	public synchronized void removeCreds(final UUID uuid) {
+	public void removeCreds(final UUID uuid) {
 		this.creds.remove(uuid);
 	}
 

@@ -106,135 +106,135 @@ public class LangManager {
 		this.settingUpSuccess = settingUpSuccess;
 	}
 
-	public synchronized String getAllowAdminSuccess() {
+	public String getAllowAdminSuccess() {
 		return this.allowAdminSuccess;
 	}
 
-	public synchronized String getAuthenticating() {
+	public String getAuthenticating() {
 		return this.authenticating;
 	}
 
-	public synchronized String getAuthenticatingFailed() {
+	public String getAuthenticatingFailed() {
 		return this.authenticatingFailed;
 	}
 
-	public synchronized String getAuthenticatingSuccess() {
+	public String getAuthenticatingSuccess() {
 		return this.authenticatingSuccess;
 	}
 
-	public synchronized String getAuthInProgress() {
+	public String getAuthInProgress() {
 		return this.authInProgress;
 	}
 
-	public synchronized String getAuthInProgressAdmin() {
+	public String getAuthInProgressAdmin() {
 		return this.authInProgressAdmin;
 	}
 
-	public synchronized String getBug() {
+	String getBug() {
 		return this.bug;
 	}
 
-	public synchronized String getCodeInvalid() {
+	public String getCodeInvalid() {
 		return this.codeInvalid;
 	}
 
-	public synchronized String getDeauthAdminSuccess() {
+	public String getDeauthAdminSuccess() {
 		return this.deauthAdminSuccess;
 	}
 
-	public synchronized String getDeauthFailed() {
+	public String getDeauthFailed() {
 		return this.deauthFailed;
 	}
 
-	public synchronized String getDeauthSuccess() {
+	public String getDeauthSuccess() {
 		return this.deauthSuccess;
 	}
 
-	public synchronized String getEnforced() {
+	public String getEnforced() {
 		return this.enforced;
 	}
 
-	public synchronized String getGenerate() {
+	public String getGenerate() {
 		return this.generate;
 	}
 
-	public synchronized String getGenerating() {
+	public String getGenerating() {
 		return this.generating;
 	}
 
-	public synchronized String getKicked() {
+	public String getKicked() {
 		return this.kicked;
 	}
 
-	public synchronized String getLoading() {
+	public String getLoading() {
 		return this.loading;
 	}
 
-	public synchronized String getLocked() {
+	public String getLocked() {
 		return this.locked;
 	}
 
-	public synchronized String getMustWait() {
+	public String getMustWait() {
 		return this.mustWait;
 	}
 
-	public synchronized String getNoConsole() {
+	public String getNoConsole() {
 		return this.noConsole;
 	}
 
-	public synchronized String getNoGenerate() {
+	public String getNoGenerate() {
 		return this.noGenerate;
 	}
 
-	public synchronized String getNoPermission() {
+	public String getNoPermission() {
 		return this.noPermission;
 	}
 
-	public synchronized String getPlayerNotAuthed() {
+	public String getPlayerNotAuthed() {
 		return this.playerNotAuthed;
 	}
 
-	public synchronized String getPlayerNotDb() {
+	public String getPlayerNotDb() {
 		return this.playerNotDb;
 	}
 
-	public synchronized String getPleaseSaveQr() {
+	public String getPleaseSaveQr() {
 		return this.pleaseSaveQr;
 	}
 
-	public synchronized String getPrefixAlert() {
+	public String getPrefixAlert() {
 		return this.prefixAlert;
 	}
 
-	public synchronized String getPrefixNotify() {
+	public String getPrefixNotify() {
 		return this.prefixNotify;
 	}
 
-	public synchronized String getResetAdminSuccess() {
+	public String getResetAdminSuccess() {
 		return this.resetAdminSuccess;
 	}
 
-	public synchronized String getResetFailed() {
+	public String getResetFailed() {
 		return this.resetFailed;
 	}
 
-	public synchronized String getResetSuccess() {
+	public String getResetSuccess() {
 		return this.resetSuccess;
 	}
 
-	public synchronized String getSessionExpired() {
+	public String getSessionExpired() {
 		return this.sessionExpired;
 	}
 
-	public synchronized String getSettingUp() {
+	public String getSettingUp() {
 		return this.settingUp;
 	}
 
-	public synchronized String getSettingUpFailed() {
+	public String getSettingUpFailed() {
 		return this.settingUpFailed;
 	}
 
-	public synchronized String getSettingUpSuccess() {
+	public String getSettingUpSuccess() {
 		return this.settingUpSuccess;
 	}
 
