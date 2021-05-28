@@ -42,9 +42,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
-                <configuration>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-                </configuration>
+                <!--<configuration>
+                    <relocations>
+                        &lt;!&ndash; TaskChain &ndash;&gt;
+                        <relocation>
+                            <pattern>co.aikar.taskchain</pattern>
+                            <shadedPattern>me.foncused.duoauth.co.aikar.taskchain</shadedPattern>
+                        </relocation>
+                    </relocations>
+                </configuration>-->
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -83,7 +89,7 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
+            <version>1.16-R0.5-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- GoogleAuth -->
@@ -100,6 +106,13 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <!--<dependency>
+            <groupId>spigot_jar</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>M:/jars/spigot.jar</systemPath>
+        </dependency>-->
         <!-- TaskChain -->
         <dependency>
             <groupId>co.aikar</groupId>
