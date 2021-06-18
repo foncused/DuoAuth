@@ -42,15 +42,16 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.2.4</version>
-                <!--<configuration>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
                     <relocations>
-                        &lt;!&ndash; TaskChain &ndash;&gt;
+                        <!-- TaskChain -->
                         <relocation>
                             <pattern>co.aikar.taskchain</pattern>
                             <shadedPattern>me.foncused.duoauth.co.aikar.taskchain</shadedPattern>
                         </relocation>
                     </relocations>
-                </configuration>-->
+                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -85,6 +86,13 @@
         </repository>
     </repositories>
     <dependencies>
+        <!-- Apache Log4j -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.14.1</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- BungeeCord -->
         <dependency>
             <groupId>net.md-5</groupId>
@@ -106,13 +114,6 @@
             <version>1.16.5-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>spigot_jar</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>M:/jars/spigot.jar</systemPath>
-        </dependency>-->
         <!-- TaskChain -->
         <dependency>
             <groupId>co.aikar</groupId>
