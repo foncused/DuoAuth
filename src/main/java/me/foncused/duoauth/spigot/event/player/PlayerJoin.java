@@ -54,12 +54,19 @@ public class PlayerJoin implements Listener {
 						final TaskChain chain = TaskChainManager.newChain();
 						chain
 								.async(() -> {
-									chain.setTaskData("password", db.readProperty(uuid, DatabaseProperty.PASSWORD).getAsString());
-									chain.setTaskData("secret", db.readProperty(uuid, DatabaseProperty.SECRET).getAsString());
-									chain.setTaskData("authed", db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean());
-									chain.setTaskData("attempts", db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt());
 									try {
-										chain.setTaskData("ip", InetAddress.getByName(db.readProperty(uuid, DatabaseProperty.IP).getAsString()));
+										chain.setTaskData("password", this.db.readProperty(uuid, DatabaseProperty.PASSWORD).getAsString());
+									} catch(final UnsupportedOperationException e) {
+										this.db.delete(uuid);
+										TaskChainManager.newChain().sync(() -> player.kickPlayer(this.lm.getBug())).execute();
+										chain.abortChain();
+										return;
+									}
+									chain.setTaskData("secret", this.db.readProperty(uuid, DatabaseProperty.SECRET).getAsString());
+									chain.setTaskData("authed", this.db.readProperty(uuid, DatabaseProperty.AUTHED).getAsBoolean());
+									chain.setTaskData("attempts", this.db.readProperty(uuid, DatabaseProperty.ATTEMPTS).getAsInt());
+									try {
+										chain.setTaskData("ip", InetAddress.getByName(this.db.readProperty(uuid, DatabaseProperty.IP).getAsString()));
 									} catch(final UnknownHostException e) {
 										e.printStackTrace();
 									}

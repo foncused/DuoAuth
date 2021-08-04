@@ -130,7 +130,7 @@ public class LangManager {
 		return this.authInProgressAdmin;
 	}
 
-	String getBug() {
+	public String getBug() {
 		return this.bug;
 	}
 
