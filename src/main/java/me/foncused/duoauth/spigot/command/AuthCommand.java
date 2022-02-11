@@ -153,8 +153,8 @@ public class AuthCommand implements CommandExecutor {
 												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ")...");
 												key = this.ga.generateRfc6238Credentials(uuid);
 											}
-											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-											final TextComponent tc = new TextComponent(AuthMessage.QR.toString() + "Click me!");
+											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY + key.getKey());
+											final TextComponent tc = new TextComponent(AuthMessage.QR + "Click me!");
 											tc.setClickEvent(
 													new ClickEvent(
 															ClickEvent.Action.OPEN_URL,

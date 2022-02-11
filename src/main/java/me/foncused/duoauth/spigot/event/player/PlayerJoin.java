@@ -119,8 +119,8 @@ public class PlayerJoin implements Listener {
 									if(written) {
 										AuthUtil.logCache(name, cache);
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
-										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY.toString() + key.getKey());
-										final TextComponent tc = new TextComponent(AuthMessage.QR.toString() + "Click me!");
+										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY + key.getKey());
+										final TextComponent tc = new TextComponent(AuthMessage.QR + "Click me!");
 										tc.setClickEvent(
 												new ClickEvent(
 														ClickEvent.Action.OPEN_URL,

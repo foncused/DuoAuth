@@ -39,7 +39,7 @@ public class Event implements Listener {
 				final ProxiedPlayer player = (ProxiedPlayer) sender;
 				if(this.auths.contains(player.getUniqueId())) {
 					player.sendMessage(
-							(AuthMessage.PREFIX_ALERT.toString() + AuthMessage.PLAYER_NOT_AUTHED.toString())
+							(AuthMessage.PREFIX_ALERT.toString() + AuthMessage.PLAYER_NOT_AUTHED)
 									.replaceAll("&", "§")
 					);
 					event.setCancelled(true);

@@ -137,7 +137,7 @@ public class ConfigManager {
 			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting...");
 		}
 		this.databaseOption = databaseOption;
-		AuthUtil.console("Database option set to " + this.databaseOption.toString());
+		AuthUtil.console("Database option set to " + this.databaseOption);
 		this.chat = chat;
 		AuthUtil.console(this.chat ? "Chat is enabled" : "Chat is disabled");
 		this.restrictMovement = restrictMovement;
