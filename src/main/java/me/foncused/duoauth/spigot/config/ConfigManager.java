@@ -180,6 +180,8 @@ public class ConfigManager {
 		this.restrictMovement = this.config.getBoolean("restrict-movement", false);
 		AuthUtil.console(this.restrictMovement ? "Movement is restricted" : "Movement is not restricted");
 
+		// password.default
+		final String passwordDefault = this.config.getString("password.default", "Password1234#");
 		AuthUtil.console("Calculating default password digest at cost factor " + this.costFactor + " (this may take a moment)...");
 		TaskChainManager.newChain()
 				.asyncFirst(() -> AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor))
