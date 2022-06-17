@@ -48,30 +48,30 @@ The plugin uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) pass
     - special-chars - **true** to enforce at least one special character in the provided 'special-charset', **false** if not
       - Recommended: **true**
     - special-charset - the set of characters players must include (at least one) in their passwords
-    - code
-      - issuer - the issuer of the OTP URL
-    - deauth
-      - ip-changes - **true** to immediately deauthenticate players whenever their IP addresses change, **false** if not
-      Recommended: **true**
-      - timeout - the time in hours to deauthenticate players after the last successful authentication
-        - Min: **1**
-        - Recommended: **72+**
-      - timeout-online - **true** to deauthenticate players even if they are online (can be annoying), **false** if not
-        - Recommended: **false**
-      - timeout-check-heartbeat - the heartbeat in minutes to check if players should be deauthenticated
-        - Min: **1**
-        - Recommended: **10+**
-    - unlock
-      - timeout - the time in hours to automatically unlock locked players
-        - Recommended: **72+**
-        - Disable: **0**
-      - timeout-check-heartbeat - the heartbeat in minutes to check if players should be unlocked
-        - Min: **1**
-        - Recommended: **10+**
-    - database - the method used for storing the digests
-      - This is not currently configurable. For now, DuoAuth will only store data in .json files in the /data directory.
-    - chat - **true** to allow chat prior to authentication, **false** if not
-    - restrict-movement - **true** to restrict yaw and pitch prior to authentication, **false** if not
+- code
+  - issuer - the issuer of the OTP URL
+- deauth
+  - ip-changes - **true** to immediately deauthenticate players whenever their IP addresses change, **false** if not
+  Recommended: **true**
+  - timeout - the time in hours to deauthenticate players after the last successful authentication
+    - Min: **1**
+    - Recommended: **72+**
+  - timeout-online - **true** to deauthenticate players even if they are online (can be annoying), **false** if not
+    - Recommended: **false**
+  - timeout-check-heartbeat - the heartbeat in minutes to check if players should be deauthenticated
+    - Min: **1**
+    - Recommended: **10+**
+- unlock
+  - timeout - the time in hours to automatically unlock locked players
+    - Recommended: **72+**
+    - Disable: **0**
+  - timeout-check-heartbeat - the heartbeat in minutes to check if players should be unlocked
+    - Min: **1**
+    - Recommended: **10+**
+- database - the method used for storing the digests
+  - This is not currently configurable. For now, DuoAuth will only store data in .json files in the /data directory.
+- chat - **true** to allow chat prior to authentication, **false** if not
+- restrict-movement - **true** to restrict yaw and pitch prior to authentication, **false** if not
 
 https://github.com/foncused/DuoAuth/blob/master/src/main/resources/config.yml
 ```yaml
