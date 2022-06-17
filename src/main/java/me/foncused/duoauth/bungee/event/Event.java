@@ -1,11 +1,12 @@
 package me.foncused.duoauth.bungee.event;
 
 import me.foncused.duoauth.bungee.DuoAuth;
-import me.foncused.duoauth.spigot.enumerable.AuthMessage;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -32,16 +33,19 @@ public class Event implements Listener {
 	}
 
 	@EventHandler
+	public void onLogin(final LoginEvent event) {
+		final PendingConnection connection = event.getConnection();
+		final UUID uuid = event.getConnection().getUniqueId();
+		this.server.getLogger().log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + connection.getName() + " (" + uuid.toString() + ")");
+		this.auths.add(uuid);
+	}
+
+	@EventHandler
 	public void onChat(final ChatEvent event) {
 		if(event.isCommand() && (!(event.getMessage().toLowerCase().matches("^/(auth|2fa).*$")))) {
 			final Connection sender = event.getSender();
-			if(sender instanceof ProxiedPlayer) {
-				final ProxiedPlayer player = (ProxiedPlayer) sender;
+			if(sender instanceof final ProxiedPlayer player) {
 				if(this.auths.contains(player.getUniqueId())) {
-					player.sendMessage(
-							(AuthMessage.PREFIX_ALERT.toString() + AuthMessage.PLAYER_NOT_AUTHED)
-									.replaceAll("&", "§")
-					);
 					event.setCancelled(true);
 				}
 			}
@@ -58,27 +62,24 @@ public class Event implements Listener {
 		try {
 			final String action = dis.readUTF();
 			final Logger logger = this.server.getLogger();
-			final String prefix = "[DuoAuth] ";
 			switch(action) {
-				case "Add": {
+				case "Add" -> {
 					final String u = dis.readUTF();
-					logger.log(Level.INFO, prefix + "Adding filter to " + u);
-					this.auths.add(UUID.fromString(u));
-					break;
+					if(this.auths.add(UUID.fromString(u))) {
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + u);
+					}
 				}
-				case "Remove": {
+				case "Remove" -> {
 					final String u = dis.readUTF();
-					logger.log(Level.INFO, prefix + "Removing filter from " + u);
-					this.auths.remove(UUID.fromString(u));
-					break;
+					if(this.auths.remove(UUID.fromString(u))) {
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Removing filter from " + u);
+					}
 				}
-				default:
-					logger.log(
-							Level.INFO,
-							prefix + "Proxy received plugin message " +
-									"with unknown action '" + action + "' - this will be ignored!"
-					);
-					break;
+				default -> logger.log(
+						Level.INFO,
+						DuoAuth.PREFIX + "Proxy received plugin message " +
+								"with unknown action '" + action + "' - this will be ignored!"
+				);
 			}
 			dis.close();
 			try {

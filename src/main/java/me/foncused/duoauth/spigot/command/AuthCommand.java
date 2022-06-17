@@ -56,8 +56,7 @@ public class AuthCommand implements CommandExecutor {
 
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
 		if(cmd.getName().equalsIgnoreCase("auth")) {
-			if(sender instanceof Player) {
-				final Player player = (Player) sender;
+			if(sender instanceof final Player player) {
 				if(player.hasPermission("duoauth.auth")) {
 					final UUID uuid = player.getUniqueId();
 					final AuthCache cache = this.plugin.getAuthCache(uuid);

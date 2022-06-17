@@ -20,22 +20,10 @@ public class BungeeUtil {
 				bado.writeUTF(action);
 				bado.writeUTF(player.getUniqueId().toString());
 				player.sendPluginMessage(plugin, "duoauth:filter", bado.toByteArray());
-				return;
 			}
-			failed(player);
 		} catch(final Exception e) {
-			failed(player);
 			e.printStackTrace();
 		}
-	}
-
-	private static void failed(final Player player) {
-		AuthUtil.consoleWarning(
-				"Failed to send plugin message to BungeeCord. This means that certain proxy-level commands may " +
-						"not be blocked for " + player.getName() + " (" + player.getUniqueId() + ") " +
-						"if they have been granted permission to execute them in your BungeeCord config.yml file (" +
-						"e.g. /server <server>, /send <player> <server>) which may be used to bypass authentication."
-		);
 	}
 
 }

@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>me.foncused</groupId>
     <artifactId>duoauth</artifactId>
-    <version>1.1.14</version>
+    <version>1.1.15</version>
     <packaging>jar</packaging>
     <name>DuoAuth</name>
     <url>https://github.com/foncused/DuoAuth</url>
@@ -129,7 +129,7 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.18-R0.1-SNAPSHOT</version>
+            <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- GoogleAuth -->
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.19-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <!-- TaskChain -->

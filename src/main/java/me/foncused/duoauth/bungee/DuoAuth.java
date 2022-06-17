@@ -6,6 +6,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 
 public class DuoAuth extends Plugin {
 
+	public static final String PREFIX = "[DuoAuth] ";
+
 	private ProxyServer proxy;
 
 	@Override
