@@ -76,7 +76,7 @@ The plugin uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) pass
 https://github.com/foncused/DuoAuth/blob/master/src/main/resources/config.yml
 ```yaml
 # @plugin DuoAuth
-# @version 1.1.15
+# @version 1.1.16
 # @author foncused
 
 # Are you using BungeeCord?
