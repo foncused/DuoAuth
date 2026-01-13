@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -109,7 +110,7 @@ public class AuthUtil {
 		try {
 			final MessageDigest md = MessageDigest.getInstance("SHA-512");
 			md.reset();
-			md.update(password.getBytes("UTF-8"));
+			md.update(password.getBytes(StandardCharsets.UTF_8));
 			hash = String.format("%0128x", new BigInteger(1, md.digest()));
 		} catch(final Exception e) {
 			e.printStackTrace();

@@ -33,6 +33,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
+        if(!(event.isAsynchronous())) {
+            event.setCancelled(true);
+            return;
+        }
 		if(!(this.cm.isChat())) {
 			final Player player = event.getPlayer();
 			final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
@@ -50,6 +54,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		if(event.getDamage() >= 0.0) {
 			final Entity damaged = event.getEntity();
 			if(damaged instanceof Player) {
@@ -68,6 +76,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityPickupItem(final EntityPickupItemEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		final Entity entity = event.getEntity();
 		if(entity instanceof Player) {
 			final AuthCache cache = this.plugin.getAuthCache(entity.getUniqueId());
@@ -84,6 +96,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryClick(final InventoryClickEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		final Entity entity = event.getWhoClicked();
 		if(entity instanceof Player) {
 			final Player player = (Player) entity;
@@ -102,6 +118,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 		if(cache == null && player.hasPermission("duoauth.enforced")) {
@@ -117,6 +137,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerDropItem(final PlayerDropItemEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 		if(cache == null && player.hasPermission("duoauth.enforced")) {
@@ -135,6 +159,10 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerInteract(final PlayerInteractEvent event) {
+        if(event.isAsynchronous()) {
+            event.setCancelled(true);
+            return;
+        }
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 		if(cache == null && player.hasPermission("duoauth.enforced")) {
@@ -149,6 +177,12 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerMove(final PlayerMoveEvent event) {
+        final Location from = event.getFrom();
+        if(event.isAsynchronous()) {
+            event.setTo(from);
+            event.setCancelled(true);
+            return;
+        }
 		final Player player = event.getPlayer();
 		final AuthCache cache = this.plugin.getAuthCache(player.getUniqueId());
 		if(cache == null && player.hasPermission("duoauth.enforced")) {
@@ -157,18 +191,20 @@ public class Auth implements Listener {
 			return;
 		}
 		if(cache != null && (!(cache.isAuthed()))) {
-			final Location loc1 = event.getFrom();
 			try {
-				final Location loc2 = event.getTo();
+				final Location to = event.getTo();
 				if(this.cm.isRestrictMovement()) {
-					event.setTo(loc1);
-				} else if((loc1.getBlockX() != loc2.getBlockX())
-						|| (loc1.getBlockY() != loc2.getBlockY())
-						|| (loc1.getBlockZ() != loc2.getBlockZ())) {
-					player.teleport(loc1);
-				}
+					event.setTo(from);
+				} else {
+                    assert to != null;
+                    if((from.getBlockX() != to.getBlockX())
+                            || (from.getBlockY() != to.getBlockY())
+                            || (from.getBlockZ() != to.getBlockZ())) {
+                        player.teleport(from);
+                    }
+                }
 			} catch(final NullPointerException e) {
-				player.teleport(loc1);
+				player.teleport(from);
 			}
 		}
 	}

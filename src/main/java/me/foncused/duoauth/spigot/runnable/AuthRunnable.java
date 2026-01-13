@@ -67,7 +67,7 @@ public class AuthRunnable {
 					});
 				}
 			}
-		}.runTaskTimerAsynchronously(this.plugin, 0, this.cm.getDeauthTimeoutCheckHeartbeat() * 60 * 20);
+		}.runTaskTimerAsynchronously(this.plugin, 0, (long) this.cm.getDeauthTimeoutCheckHeartbeat() * 60 * 20);
 	}
 
 	public void runUnlockTask() {
@@ -91,7 +91,7 @@ public class AuthRunnable {
 						});
 					}
 				}
-			}.runTaskTimerAsynchronously(this.plugin, 0, this.cm.getUnlockTimeoutCheckHeartbeat() * 60 * 20);
+			}.runTaskTimerAsynchronously(this.plugin, 0, (long) this.cm.getUnlockTimeoutCheckHeartbeat() * 60 * 20);
 		}
 	}
 

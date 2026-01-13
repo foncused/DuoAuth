@@ -4,10 +4,10 @@ public enum AuthMessage {
 
 	// lang.yml
 	ALLOW_ADMIN_SUCCESS("&aYou have been allowed by an administrator. Have fun!"),
-	AUTHENTICATING("&6Authenticating..."),
+	AUTHENTICATING("&6Authenticating ..."),
 	AUTHENTICATING_FAILED("&cAuthentication failed. Please ensure your password and code are correct. Please contact the server administrators if you believe that this is in error."),
 	AUTHENTICATING_SUCCESS("&aAuthentication successful. Have fun!"),
-	AUTH_IN_PROGRESS("&7Authentication in progress - please be patient..."),
+	AUTH_IN_PROGRESS("&7Authentication in progress - please be patient ..."),
 	AUTH_IN_PROGRESS_ADMIN("&cThat user is currently performing an authentication attempt. Please try again in a moment."),
 	BUG("§cAn unexpected error has occurred."),
 	CODE_INVALID("&cThe code you entered is invalid. Your code must be a 6-digit number provided by your mobile authentication app."),
@@ -16,7 +16,7 @@ public enum AuthMessage {
 	DEAUTH_SUCCESS("&aYou have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."),
 	ENFORCED("&cThe server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you!"),
 	GENERATE("&cYou need to enter '/auth generate' to generate an authentication secret for your code. Once generated, scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'."),
-	GENERATING("&6Generating authentication secret..."),
+	GENERATING("&6Generating authentication secret ..."),
 	KICKED("&cSorry, default authentication setup has failed. Please contact the server administrator if you are reading this message."),
 	LOADING("&8Duo&aAuth &cis still loading. Please try again in a moment."),
 	LOCKED("&cYour account has been locked. You will need to wait for your account to be unlocked, or you may contact the server administrators for assistance."),
@@ -33,7 +33,7 @@ public enum AuthMessage {
 	RESET_FAILED("&cFailed to reset authentication. Please contact the server administrators if you are receiving this message."),
 	RESET_SUCCESS("&aYour credentials have been reset! To re-enable authentication, please use the &c/auth &acommand."),
 	SESSION_EXPIRED("&cYour session has expired. Please use the /auth command to continue playing. Thank you!"),
-	SETTING_UP("&6Setting up authentication..."),
+	SETTING_UP("&6Setting up authentication ..."),
 	SETTING_UP_FAILED("&cFailed to set up authentication. Please verify your code is correct, or contact the server administrators if you are receiving this message."),
 	SETTING_UP_SUCCESS("&aYour credentials have been set!"),
 

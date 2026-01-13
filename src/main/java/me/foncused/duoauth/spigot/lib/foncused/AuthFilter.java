@@ -30,7 +30,13 @@ public class AuthFilter implements Filter {
 	}
 
 	@Override
-	public Result filter(final Logger arg0, final Level arg1, final Marker arg2, final String msg, final Object... arg4) {
+	public Result filter(
+            final Logger arg0,
+            final Level arg1,
+            final Marker arg2,
+            final String msg,
+            final Object... arg4
+    ) {
 		try {
 			if(msg == null) {
 				return Result.NEUTRAL;
@@ -43,62 +49,179 @@ public class AuthFilter implements Filter {
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4, final Object o5) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4,
+            final Object o5
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4, final Object o5, final Object o6) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4,
+            final Object o5,
+            final Object o6
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4, final Object o5, final Object o6, final Object o7) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4,
+            final Object o5,
+            final Object o6,
+            final Object o7
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4, final Object o5, final Object o6, final Object o7, final Object o8) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4,
+            final Object o5,
+            final Object o6,
+            final Object o7,
+            final Object o8
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger logger, final Level level, final Marker marker, final String msg, final Object o, final Object o1, final Object o2, final Object o3, final Object o4, final Object o5, final Object o6, final Object o7, final Object o8, final Object o9) {
+	public Result filter(
+            final Logger logger,
+            final Level level,
+            final Marker marker,
+            final String msg,
+            final Object o,
+            final Object o1,
+            final Object o2,
+            final Object o3,
+            final Object o4,
+            final Object o5,
+            final Object o6,
+            final Object o7,
+            final Object o8,
+            final Object o9
+    ) {
 		return this.check(msg.toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger arg0, final Level arg1, final Marker arg2, final Object msg, final Throwable arg4) {
+	public Result filter(
+            final Logger arg0,
+            final Level arg1,
+            final Marker arg2,
+            final Object msg,
+            final Throwable arg4
+    ) {
 		return this.check(msg.toString().toLowerCase());
 	}
 
 	@Override
-	public Result filter(final Logger arg0, final Level arg1, final Marker arg2, final Message msg, final Throwable arg4) {
+	public Result filter(
+            final Logger arg0,
+            final Level arg1,
+            final Marker arg2,
+            final Message msg,
+            final Throwable arg4
+    ) {
 		return this.check(msg.getFormattedMessage().toLowerCase());
 	}
 

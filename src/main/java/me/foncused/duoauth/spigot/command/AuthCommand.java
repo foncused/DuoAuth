@@ -149,7 +149,7 @@ public class AuthCommand implements CommandExecutor {
 											GoogleAuthenticatorKey key = this.ga.getCreds(uuid);
 											if(key == null) {
 												AuthUtil.alertOne(player, this.lm.getGenerating());
-												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ")...");
+												AuthUtil.notify("Generating authentication secret for user " + u + " (" + name + ") ...");
 												key = this.ga.generateRfc6238Credentials(uuid);
 											}
 											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY + key.getKey());
@@ -393,7 +393,7 @@ public class AuthCommand implements CommandExecutor {
 														public void run() {
 															cooldowns.remove(uuid);
 														}
-													}.runTaskLater(this.plugin, commandCooldown * 20);
+													}.runTaskLater(this.plugin, commandCooldown * 20L);
 													this.auths.add(uuid);
 													final InetAddress ip = AuthUtil.getPlayerAddress(player);
 													final int commandAttempts = this.cm.getCommandAttempts();
@@ -419,7 +419,7 @@ public class AuthCommand implements CommandExecutor {
 																		TaskChainManager.newChain()
 																				.sync(() -> {
 																					AuthUtil.alertOne(player, this.lm.getSettingUp());
-																					AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ")...");
+																					AuthUtil.notify("Setting up authentication for user " + u + " (" + name + ") ...");
 																				})
 																				.execute();
 																		final String digest = AuthUtil.getSecureBCryptHash(
@@ -449,7 +449,7 @@ public class AuthCommand implements CommandExecutor {
 																		TaskChainManager.newChain()
 																				.sync(() -> {
 																					AuthUtil.alertOne(player, this.lm.getAuthenticating());
-																					AuthUtil.notify("Authenticating user " + u + " (" + name + ")...");
+																					AuthUtil.notify("Authenticating user " + u + " (" + name + ") ...");
 																				})
 																				.execute();
 																		final String digest = (chain.hasTaskData("password")

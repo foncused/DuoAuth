@@ -46,10 +46,10 @@ public class ConfigManager {
 		final int costFactor = this.config.getInt("cost-factor", 15);
 		if(costFactor < 12) {
 			this.costFactor = 12;
-			AuthUtil.consoleWarning("Bcrypt cost factor set to " + costFactor + " is too low, reverting to minimum...");
+			AuthUtil.consoleWarning("Bcrypt cost factor set to " + costFactor + " is too low, reverting to minimum ...");
 		} else if(costFactor > 30) {
 			this.costFactor = 30;
-			AuthUtil.consoleWarning("Bycrypt cost factor set to " + costFactor + " is too high, reverting to maximum...");
+			AuthUtil.consoleWarning("Bcrypt cost factor set to " + costFactor + " is too high, reverting to maximum ...");
 		} else {
 			this.costFactor = costFactor;
 		}
@@ -59,7 +59,7 @@ public class ConfigManager {
 		final int commandCooldown = this.config.getInt("command.cooldown", 20);
 		if(commandCooldown <= 0) {
 			this.commandCooldown = 20;
-			AuthUtil.consoleWarning("Command cooldown time set to " + commandCooldown + " seconds is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Command cooldown time set to " + commandCooldown + " seconds is not safe, reverting to default ...");
 		} else {
 			this.commandCooldown = commandCooldown;
 		}
@@ -69,7 +69,7 @@ public class ConfigManager {
 		final int commandAttempts = this.config.getInt("command.attempts", 5);
 		if(commandAttempts < 0) {
 			this.commandAttempts = 10;
-			AuthUtil.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Maximum authentication attempts set to " + commandAttempts + " is not safe, reverting to default ...");
 		} else {
 			this.commandAttempts = commandAttempts;
 		}
@@ -83,7 +83,7 @@ public class ConfigManager {
 		final int passwordMinLength = this.config.getInt("password.min-length", 8);
 		if(passwordMinLength <= 0) {
 			this.passwordMinLength = 8;
-			AuthUtil.consoleWarning("Minimum password length set to " + passwordMinLength + " is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Minimum password length set to " + passwordMinLength + " is not safe, reverting to default ...");
 		} else {
 			this.passwordMinLength = passwordMinLength;
 		}
@@ -119,7 +119,7 @@ public class ConfigManager {
 		final int deauthTimeout = this.config.getInt("deauth.timeout", 72);
 		if(deauthTimeout <= 0) {
 			this.deauthTimeout = 48;
-			AuthUtil.consoleWarning("Deauth timeout set to " + deauthTimeout + " hours is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Deauth timeout set to " + deauthTimeout + " hours is not safe, reverting to default ...");
 		} else {
 			this.deauthTimeout = deauthTimeout;
 		}
@@ -133,7 +133,7 @@ public class ConfigManager {
 		final int deauthTimeoutCheckHeartbeat = this.config.getInt("deauth.timeout-check-heartbeat", 10);
 		if(deauthTimeoutCheckHeartbeat <= 0) {
 			this.deauthTimeoutCheckHeartbeat = 10;
-			AuthUtil.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Deauth timeout check heartbeat set to " + deauthTimeoutCheckHeartbeat + " minutes is not safe, reverting to default ...");
 		} else {
 			this.deauthTimeoutCheckHeartbeat = deauthTimeoutCheckHeartbeat;
 		}
@@ -143,7 +143,7 @@ public class ConfigManager {
 		final int unlockTimeout = this.config.getInt("unlock.timeout", 120);
 		if(unlockTimeout < 0) {
 			this.unlockTimeout = 120;
-			AuthUtil.consoleWarning("Unlock timeout set to " + unlockTimeout + " hours is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Unlock timeout set to " + unlockTimeout + " hours is not safe, reverting to default ...");
 		} else {
 			this.unlockTimeout = unlockTimeout;
 		}
@@ -153,7 +153,7 @@ public class ConfigManager {
 		final int unlockTimeoutCheckHeartbeat = this.config.getInt("unlock.timeout-check-heartbeat", 15);
 		if(unlockTimeoutCheckHeartbeat <= 0) {
 			this.unlockTimeoutCheckHeartbeat = 15;
-			AuthUtil.consoleWarning("Unlock timeout check heartbeat set to " + unlockTimeoutCheckHeartbeat + " minutes is not safe, reverting to default...");
+			AuthUtil.consoleWarning("Unlock timeout check heartbeat set to " + unlockTimeoutCheckHeartbeat + " minutes is not safe, reverting to default ...");
 		} else {
 			this.unlockTimeoutCheckHeartbeat = unlockTimeoutCheckHeartbeat;
 		}
@@ -167,7 +167,7 @@ public class ConfigManager {
 			databaseOption = DatabaseOption.valueOf(database.toUpperCase());
 		} catch(final IllegalArgumentException e) {
 			databaseOption = DatabaseOption.JSON;
-			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting...");
+			AuthUtil.consoleWarning("Database option set to " + database + " is not safe, reverting ...");
 		}
 		this.databaseOption = databaseOption;
 		AuthUtil.console("Database option set to " + this.databaseOption);
@@ -182,7 +182,7 @@ public class ConfigManager {
 
 		// password.default
 		final String passwordDefault = this.config.getString("password.default", "Password1234#");
-		AuthUtil.console("Calculating default password digest at cost factor " + this.costFactor + " (this may take a moment)...");
+		AuthUtil.console("Calculating default password digest at cost factor " + this.costFactor + " (this may take a moment) ...");
 		TaskChainManager.newChain()
 				.asyncFirst(() -> AuthUtil.getSecureBCryptHash(AuthUtil.getSecureSHA512Hash(passwordDefault), this.costFactor))
 				.syncLast(passwordDigest -> {

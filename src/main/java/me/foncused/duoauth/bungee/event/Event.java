@@ -36,7 +36,10 @@ public class Event implements Listener {
 	public void onLogin(final LoginEvent event) {
 		final PendingConnection connection = event.getConnection();
 		final UUID uuid = event.getConnection().getUniqueId();
-		this.server.getLogger().log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + connection.getName() + " (" + uuid.toString() + ")");
+		this.server.getLogger().log(
+                Level.INFO,
+                DuoAuth.PREFIX + "Adding filter to " + connection.getName() + " (" + uuid.toString() + ")"
+        );
 		this.auths.add(uuid);
 	}
 
@@ -66,13 +69,13 @@ public class Event implements Listener {
 				case "Add" -> {
 					final String u = dis.readUTF();
 					if(this.auths.add(UUID.fromString(u))) {
-						logger.log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + u);
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + u + ".");
 					}
 				}
 				case "Remove" -> {
 					final String u = dis.readUTF();
 					if(this.auths.remove(UUID.fromString(u))) {
-						logger.log(Level.INFO, DuoAuth.PREFIX + "Removing filter from " + u);
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Removing filter from " + u + ".");
 					}
 				}
 				default -> logger.log(

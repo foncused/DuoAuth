@@ -44,7 +44,11 @@ public class PlayerJoin implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent event) {
-		final Player player = event.getPlayer();
+        final Player player = event.getPlayer();
+        if(event.isAsynchronous()) {
+            player.kickPlayer(this.lm.getBug());
+            return;
+        }
 		final UUID uuid = player.getUniqueId();
 		final String name = player.getName();
 		TaskChainManager.newChain()

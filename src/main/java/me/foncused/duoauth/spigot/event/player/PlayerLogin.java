@@ -3,6 +3,7 @@ package me.foncused.duoauth.spigot.event.player;
 import me.foncused.duoauth.spigot.DuoAuth;
 import me.foncused.duoauth.spigot.config.ConfigManager;
 import me.foncused.duoauth.spigot.config.LangManager;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -23,6 +24,11 @@ public class PlayerLogin implements Listener {
 
 	@EventHandler
 	public void onPlayerLogin(final PlayerLoginEvent event) {
+        final Player player = event.getPlayer();
+        if(event.isAsynchronous()) {
+            event.disallow(KICK_OTHER, this.lm.getBug());
+            return;
+        }
 		if((this.cm == null || this.cm.isLoading()) && event.getPlayer().hasPermission("duoauth.enforced")) {
 			event.disallow(KICK_OTHER, this.lm.getLoading());
 		}

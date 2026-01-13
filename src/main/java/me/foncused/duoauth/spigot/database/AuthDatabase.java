@@ -39,7 +39,7 @@ public class AuthDatabase {
 	private JsonObject read(final UUID uuid) {
 		try {
 			final FileReader reader = new FileReader(this.getJsonPath(uuid));
-			final JsonObject object = new JsonParser().parse(reader).getAsJsonObject();
+			final JsonObject object = JsonParser.parseReader(reader).getAsJsonObject();
 			reader.close();
 			return object;
 		} catch(final IOException e) {

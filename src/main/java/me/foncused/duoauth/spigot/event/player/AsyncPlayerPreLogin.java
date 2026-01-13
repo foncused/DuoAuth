@@ -4,6 +4,7 @@ import me.foncused.duoauth.spigot.DuoAuth;
 import me.foncused.duoauth.spigot.config.ConfigManager;
 import me.foncused.duoauth.spigot.config.LangManager;
 import me.foncused.duoauth.spigot.database.AuthDatabase;
+import me.foncused.duoauth.spigot.enumerable.AuthMessage;
 import me.foncused.duoauth.spigot.enumerable.DatabaseProperty;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,6 +28,10 @@ public class AsyncPlayerPreLogin implements Listener {
 
 	@EventHandler
 	public void onAsyncPlayerPreLogin(final AsyncPlayerPreLoginEvent event) {
+        if(!(event.isAsynchronous())) {
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, this.lm.getBug());
+            return;
+        }
 		final UUID uuid = event.getUniqueId();
 		if(this.db.contains(uuid)) {
 			final int commandAttempts = this.cm.getCommandAttempts();
