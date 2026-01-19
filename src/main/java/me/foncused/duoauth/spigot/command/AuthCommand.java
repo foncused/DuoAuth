@@ -14,10 +14,7 @@ import me.foncused.duoauth.spigot.lib.jeremyh.Bcrypt;
 import me.foncused.duoauth.spigot.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.spigot.util.AuthUtil;
 import me.foncused.duoauth.spigot.util.BungeeUtil;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.foncused.duoauth.spigot.util.MapUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -153,20 +150,8 @@ public class AuthCommand implements CommandExecutor {
 												key = this.ga.generateRfc6238Credentials(uuid);
 											}
 											AuthUtil.alertOne(player, AuthMessage.SECRET_KEY + key.getKey());
-											final TextComponent tc = new TextComponent(AuthMessage.QR + "Click me!");
-											tc.setClickEvent(
-													new ClickEvent(
-															ClickEvent.Action.OPEN_URL,
-															this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key)
-													)
-											);
-											tc.setHoverEvent(
-													new HoverEvent(
-															HoverEvent.Action.SHOW_TEXT,
-															new ComponentBuilder(this.lm.getPleaseSaveQr()).create()
-													)
-											);
-											AuthUtil.alertOneTextComponent(player, tc);
+											AuthUtil.alertOne(player, this.lm.getScanQr());
+											MapUtil.showQr(player);
 										} else {
 											AuthUtil.alertOne(player, this.lm.getPlayerNotDb());
 										}

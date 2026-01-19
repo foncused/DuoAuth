@@ -13,10 +13,7 @@ import me.foncused.duoauth.spigot.lib.aikar.TaskChainManager;
 import me.foncused.duoauth.spigot.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.spigot.util.AuthUtil;
 import me.foncused.duoauth.spigot.util.BungeeUtil;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
+import me.foncused.duoauth.spigot.util.MapUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -128,20 +125,8 @@ public class PlayerJoin implements Listener {
 										AuthUtil.logCache(name, cache);
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' and setup of default authentication was successful");
 										AuthUtil.alertOne(player, AuthMessage.SECRET_KEY + key.getKey());
-										final TextComponent tc = new TextComponent(AuthMessage.QR + "Click me!");
-										tc.setClickEvent(
-												new ClickEvent(
-														ClickEvent.Action.OPEN_URL,
-														this.ga.getAuthUrl(this.cm.getCodeIssuer(), name, key)
-												)
-										);
-										tc.setHoverEvent(
-												new HoverEvent(
-														HoverEvent.Action.SHOW_TEXT,
-														new ComponentBuilder(this.lm.getPleaseSaveQr()).create()
-												)
-										);
-										AuthUtil.alertOneTextComponent(player, tc);
+										AuthUtil.alertOne(player, this.lm.getScanQr());
+										MapUtil.showQr(player);
 									} else {
 										AuthUtil.notify("User " + u + " (" + name + ") has 'duoauth.enforced' but setup of default authentication has failed");
 										player.kickPlayer(this.lm.getKicked());

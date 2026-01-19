@@ -4,7 +4,6 @@ import me.foncused.duoauth.spigot.DuoAuth;
 import me.foncused.duoauth.spigot.config.ConfigManager;
 import me.foncused.duoauth.spigot.config.LangManager;
 import me.foncused.duoauth.spigot.database.AuthDatabase;
-import me.foncused.duoauth.spigot.enumerable.AuthMessage;
 import me.foncused.duoauth.spigot.enumerable.DatabaseProperty;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

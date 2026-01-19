@@ -14,19 +14,19 @@ import java.net.InetAddress;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 public class AuthUtil {
 
 	private static DuoAuth plugin;
 	private static LangManager lm;
 	private static final String DATE_FORMAT = "MM/dd/yyyy HH:mm:ss:SSS";
+	private static Map<UUID, Set<UUID>> rendered;
 
 	public AuthUtil(final DuoAuth plugin) {
 		AuthUtil.plugin = plugin;
 		AuthUtil.lm = AuthUtil.plugin.getLangManager();
+		AuthUtil.rendered = new HashMap<>();
 	}
 
 	public static void alert(final String message) {

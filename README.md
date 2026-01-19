@@ -2,22 +2,27 @@
 ![DuoAuth](https://i.imgur.com/4tvxwSd.png)
 
 ### Description:
-"DuoAuth" is an adaptive authentication plugin designed to safeguard your Spigot server against impersonation by requiring players to enter a password and 6-digit code (TOTP) combo at the command line (/auth <password\> <code\>) before they can chat, move, interact, or play on your server. The 6-digit code is provided from any [RFC6238-compliant](https://tools.ietf.org/html/rfc6238) mobile authentication app (Google Authenticator is recommended).
+"DuoAuth" is an adaptive authentication plugin designed to safeguard your Spigot server against impersonation by requiring players to enter a password and 6-digit code (TOTP) combo at the command line (/auth <password\> <code\>) before they can chat, move, interact, or play on your server.
 
-The plugin uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) password hashing algorithm to store credentials in 184-bit digests. As a result, the authentication process can be made **arbitrarily slow** by adjusting the cost factor parameter, permitting flexibility based on administrative preference and individual server performance. Several other configurable items, including minimum password requirements and deauthentication settings, are supported as well.
+Passwords are stored as 184-bit [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) digests. Since bcrypt is an adaptive password hashing algorithm, the authentication process can be made **arbitarily slow** by adjusting the cost factor parameter in DuoAuth's configuration file. This allows the plugin to keep up over time with increasing processing power (and remain suitable for less powerful systems by *lowering* the cost factor).
+
+The 6-digit code is provided from any [RFC6238-compliant](https://tools.ietf.org/html/rfc6238) mobile authentication app (Google Authenticator is recommended). When a player goes through the setup process (i.e. when setting their password), DuoAuth generates and renders a QR code on an in-game map to scan into their mobile authentication app.
+
+Several other configurable items, including minimum password requirements, deauthentication settings, and enforced setup are supported as well.
 
 ### Installation:
 1. Copy DuoAuth.jar into the /plugins directory of your fallback server
 2. If you are using BungeeCord, copy DuoAuth.jar into your BungeeCord /plugins directory
 3. Assign permissions
 4. Start your server
-5. Edit your config.yml
+5. Edit your config.yml, lang.yml
+6. Restart your server
 
 ### Permissions:
 - duoauth.auth - grants access to the /auth command
 - duoauth.bypass - bypass the cooldown time for the /auth command (see config "command.cooldown")
 - duoauth.admin - grants access to /auth deauth <player\>, /auth reset <player\> and /auth check <player\>
-- duoauth.notify - receive alerts and results when a player uses the /auth command
+- duoauth.notify - receive verbose alerts and results when a player uses the /auth command
 - duoauth.enforced - forces the player to set up authentication
 - duoauth.unlimited - bypass the maximum number of authentication attempts (see config "command.attempts")
 
@@ -76,7 +81,7 @@ The plugin uses the unbroken [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) pass
 https://github.com/foncused/DuoAuth/blob/master/src/main/resources/config.yml
 ```yaml
 # @plugin DuoAuth
-# @version 1.1.16
+# @version 1.2.0
 # @author foncused
 
 # Are you using BungeeCord?
@@ -181,7 +186,7 @@ code_invalid: "&cThe code you entered is invalid. Your code must be a 6-digit nu
 deauth_admin_success: "&cYou have been deauthenticated by an administrator. Please use the /auth command to continue playing. Thank you!"
 deauth_failed: "&cDeauthentication failed. Please contact the server administrators if you are receiving this message."
 deauth_success: "&aYou have deauthenticated successfully. To continue playing, please use the &c/auth &acommand."
-enforced: "&cThe server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you!"
+enforced: "&6The server administrator has required you to set up authentication. Please scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '&c/auth <password> <code>&6'. The default password must be given to you before you can proceed with these instructions. Once you are authenticated, you may use '/auth reset' and '/auth generate' to set your own credentials. Thank you."
 generate: "&cYou need to enter '/auth generate' to generate an authentication secret for your code. Once generated, scan the QR shown or enter the secret key into your mobile authentication app. The 6-digit code shown in the app will then be used for performing authentication with '/auth <password> <code>'."
 generating: "&6Generating authentication secret ..."
 kicked: "&cSorry, default authentication setup has failed. Please contact the server administrator if you are reading this message."
@@ -193,16 +198,17 @@ no_generate: "&cYou are already authenticated, so there is no need to generate a
 no_permission: "&cYou do not have permission to do this!"
 player_not_authed: "&cYou need to authenticate with /auth <password> <code> before you can chat, move, or play."
 player_not_db: "&cYou have not set up authentication. To enable authentication, please use the /auth command."
-please_save_qr: "&aPlease save the QR .png image somewhere safe."
 prefix_alert: "&r[&8Duo&aAuth&r] &3ALERT &8» &7"
 prefix_notify: "&r[&8Duo&aAuth&r] &cALERT &8» &7&o"
 reset_admin_success: "&aYour credentials have been reset by an administrator."
 reset_failed: "&cFailed to reset authentication. Please contact the server administrators if you are receiving this message."
 reset_success: "&aYour credentials have been reset! To re-enable authentication, please use the &c/auth &acommand."
+scan_qr: "&6Please scan the QR image in your mobile authentication app. Once scanned, set your password with &c/auth <password> <code>&6."
 session_expired: "&cYour session has expired. Please use the /auth command to continue playing. Thank you!"
 setting_up: "&6Setting up authentication ..."
 setting_up_failed: "&cFailed to set up authentication. Please verify your code is correct, or contact the server administrators if you are receiving this message."
 setting_up_success: "&aYour credentials have been set!"
+
 ```
 
 ### Commands:

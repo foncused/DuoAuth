@@ -17,6 +17,7 @@ import me.foncused.duoauth.spigot.lib.wstrange.GoogleAuth;
 import me.foncused.duoauth.spigot.runnable.AuthRunnable;
 import me.foncused.duoauth.spigot.util.AuthUtil;
 import me.foncused.duoauth.spigot.util.BungeeUtil;
+import me.foncused.duoauth.spigot.util.MapUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
@@ -36,7 +37,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DuoAuth extends JavaPlugin {
 
-	public static final String PREFIX = "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
+	public static final String PREFIX = ChatColor.RESET + "[" + ChatColor.DARK_GRAY + "Duo" + ChatColor.GREEN + "Auth" + ChatColor.RESET + "] ";
 
 	private Map<UUID, AuthCache> players;
 	private ConfigManager cm;
@@ -105,12 +106,13 @@ public class DuoAuth extends JavaPlugin {
 	}
 
 	private void registerGoogleAuth() {
-		this.ga = new GoogleAuth();
+		this.ga = new GoogleAuth(this);
 	}
 
 	private void registerUtils() {
 		new AuthUtil(this);
 		new BungeeUtil(this);
+		new MapUtil(this);
 	}
 
 	private void registerBungeeCord() {

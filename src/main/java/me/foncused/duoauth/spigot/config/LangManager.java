@@ -31,12 +31,12 @@ public class LangManager {
 	private String noPermission;
 	private String playerNotAuthed;
 	private String playerNotDb;
-	private String pleaseSaveQr;
 	private String prefixAlert;
 	private String prefixNotify;
 	private String resetAdminSuccess;
 	private String resetFailed;
 	private String resetSuccess;
+	private String scanQr;
 	private String sessionExpired;
 	private String settingUp;
 	private String settingUpFailed;
@@ -75,12 +75,12 @@ public class LangManager {
 		this.noPermission = this.plugin.translate(this.yaml.getString("no_permission", AuthMessage.NO_PERMISSION.toString()));
 		this.playerNotAuthed = this.plugin.translate(this.yaml.getString("player_not_authed", AuthMessage.PLAYER_NOT_AUTHED.toString()));
 		this.playerNotDb = this.plugin.translate(this.yaml.getString("player_not_db", AuthMessage.PLAYER_NOT_DB.toString()));
-		this.pleaseSaveQr = this.plugin.translate(this.yaml.getString("please_save_qr", AuthMessage.PLEASE_SAVE_QR.toString()));
 		this.prefixAlert = this.plugin.translate(this.yaml.getString("prefix_alert", AuthMessage.PREFIX_ALERT.toString()));
 		this.prefixNotify = this.plugin.translate(this.yaml.getString("prefix_notify", AuthMessage.PREFIX_NOTIFY.toString()));
 		this.resetAdminSuccess = this.plugin.translate(this.yaml.getString("reset_admin_success", AuthMessage.RESET_ADMIN_SUCCESS.toString()));
 		this.resetFailed = this.plugin.translate(this.yaml.getString("reset_failed", AuthMessage.RESET_FAILED.toString()));
 		this.resetSuccess = this.plugin.translate(this.yaml.getString("reset_success", AuthMessage.RESET_SUCCESS.toString()));
+		this.scanQr = this.plugin.translate(this.yaml.getString("scan_qr", AuthMessage.SCAN_QR.toString()));
 		this.sessionExpired = this.plugin.translate(this.yaml.getString("session_expired", AuthMessage.SESSION_EXPIRED.toString()));
 		this.settingUp = this.plugin.translate(this.yaml.getString("setting_up", AuthMessage.SETTING_UP.toString()));
 		this.settingUpFailed = this.plugin.translate(this.yaml.getString("setting_up_failed", AuthMessage.SETTING_UP_FAILED.toString()));
@@ -179,10 +179,6 @@ public class LangManager {
 		return this.yaml != null ? this.playerNotDb : this.plugin.translate(AuthMessage.PLAYER_NOT_DB.toString());
 	}
 
-	public String getPleaseSaveQr() {
-		return this.yaml != null ? this.pleaseSaveQr : this.plugin.translate(AuthMessage.PLEASE_SAVE_QR.toString());
-	}
-
 	public String getPrefixAlert() {
 		return this.yaml != null ? this.prefixAlert : this.plugin.translate(AuthMessage.PREFIX_ALERT.toString());
 	}
@@ -201,6 +197,10 @@ public class LangManager {
 
 	public String getResetSuccess() {
 		return this.yaml != null ? this.resetSuccess : this.plugin.translate(AuthMessage.RESET_SUCCESS.toString());
+	}
+
+	public String getScanQr() {
+		return this.yaml != null ? this.scanQr : this.plugin.translate(AuthMessage.SCAN_QR.toString());
 	}
 
 	public String getSessionExpired() {

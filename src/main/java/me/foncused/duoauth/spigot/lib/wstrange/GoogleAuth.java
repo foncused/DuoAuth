@@ -1,9 +1,18 @@
 package me.foncused.duoauth.spigot.lib.wstrange;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import com.warrenstrange.googleauth.GoogleAuthenticatorKey;
 import com.warrenstrange.googleauth.GoogleAuthenticatorQRGenerator;
+import me.foncused.duoauth.spigot.DuoAuth;
+import me.foncused.duoauth.spigot.config.ConfigManager;
+import org.bukkit.Bukkit;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,10 +50,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 public class GoogleAuth {
 
+	private final DuoAuth plugin;
+	private final ConfigManager cm;
 	private final GoogleAuthenticator ga;
 	private final Map<UUID, GoogleAuthenticatorKey> creds;
 
-	public GoogleAuth() {
+	public GoogleAuth(final DuoAuth plugin) {
+		this.plugin = plugin;
+		this.cm = this.plugin.getConfigManager();
 		this.ga = new GoogleAuthenticator();
 		this.creds = new ConcurrentHashMap<>();
 	}
@@ -52,6 +65,39 @@ public class GoogleAuth {
 	public GoogleAuthenticatorKey generateRfc6238Credentials(final UUID uuid) {
 		this.creds.put(uuid, this.ga.createCredentials());
 		return this.creds.get(uuid);
+	}
+
+	public BufferedImage generateQrImage(final UUID uuid) {
+		this.creds.putIfAbsent(uuid, this.ga.createCredentials());
+		final BufferedImage qr = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D graphic = qr.createGraphics();
+		graphic.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+		try {
+			graphic.drawImage(
+					MatrixToImageWriter.toBufferedImage(
+							new QRCodeWriter()
+									.encode(
+											this.getAuthTotpUrl(
+													this.cm.getCodeIssuer(),
+													Bukkit.getOfflinePlayer(uuid).getName(),
+													this.creds.get(uuid)
+											),
+											BarcodeFormat.QR_CODE,
+											300,
+											300
+									)
+					),
+					0,
+					0,
+					128,
+					128,
+					null
+			);
+		} catch(final WriterException e) {
+			e.printStackTrace();
+		}
+		graphic.dispose();
+		return qr;
 	}
 
 	public GoogleAuthenticatorKey getCreds(final UUID uuid) {
