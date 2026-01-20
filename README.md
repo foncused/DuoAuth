@@ -208,7 +208,6 @@ session_expired: "&cYour session has expired. Please use the /auth command to co
 setting_up: "&6Setting up authentication ..."
 setting_up_failed: "&cFailed to set up authentication. Please verify your code is correct, or contact the server administrators if you are receiving this message."
 setting_up_success: "&aYour credentials have been set!"
-
 ```
 
 ### Commands:

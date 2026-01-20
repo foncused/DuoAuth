@@ -4,7 +4,6 @@ version: 1.2.0
 author: foncused
 api-version: 1.21
 load: STARTUP
-#softdepend: [ProtocolLib]
 
 commands:
   auth:
