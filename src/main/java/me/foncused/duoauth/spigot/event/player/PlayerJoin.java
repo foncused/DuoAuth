@@ -84,11 +84,7 @@ public class PlayerJoin implements Listener {
 									AuthUtil.logCache(name, cache);
 									this.plugin.setAuthCache(uuid, cache);
 									if(this.cm.isBungee()) {
-										if(cache.isAuthed()) {
-											BungeeUtil.sendMessage(player, "Remove");
-										} else {
-											BungeeUtil.sendMessage(player, "Add");
-										}
+										BungeeUtil.sendMessage(player, cache.isAuthed() ? "Remove" : "Add");
 									}
 								})
 								.execute();
@@ -133,6 +129,8 @@ public class PlayerJoin implements Listener {
 									}
 								})
 								.execute();
+					} else if(this.cm.isBungee()) {
+						BungeeUtil.sendMessage(player, "Remove");
 					}
 				})
 				.execute();
