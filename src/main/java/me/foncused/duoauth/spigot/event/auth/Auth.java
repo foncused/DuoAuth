@@ -41,10 +41,6 @@ public class Auth implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onAsyncPlayerChat(final AsyncPlayerChatEvent event) {
-        if(!(event.isAsynchronous())) {
-            event.setCancelled(true);
-            return;
-        }
 		if(!(this.cm.isChat())) {
 			final Player player = event.getPlayer();
 			final UUID uuid = player.getUniqueId();
