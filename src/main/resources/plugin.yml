@@ -1,6 +1,6 @@
 name: DuoAuth
 main: me.foncused.duoauth.spigot.DuoAuth
-version: 1.2.2
+version: 1.2.3
 author: foncused
 api-version: 1.21
 load: STARTUP

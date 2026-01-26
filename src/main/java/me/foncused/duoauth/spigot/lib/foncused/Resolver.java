@@ -1,7 +1,5 @@
 package me.foncused.duoauth.spigot.lib.foncused;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonParser;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
