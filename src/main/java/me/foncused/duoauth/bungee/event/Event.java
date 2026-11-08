@@ -3,10 +3,8 @@ package me.foncused.duoauth.bungee.event;
 import me.foncused.duoauth.bungee.DuoAuth;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.Connection;
-import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ChatEvent;
-import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -30,17 +28,6 @@ public class Event implements Listener {
 		this.plugin = plugin;
 		this.server = this.plugin.getProxy();
 		this.auths = new HashSet<>();
-	}
-
-	@EventHandler
-	public void onLogin(final LoginEvent event) {
-		final PendingConnection connection = event.getConnection();
-		final UUID uuid = event.getConnection().getUniqueId();
-		this.server.getLogger().log(
-                Level.INFO,
-                DuoAuth.PREFIX + "Adding filter to " + connection.getName() + " (" + uuid.toString() + ")"
-        );
-		this.auths.add(uuid);
 	}
 
 	@EventHandler
@@ -69,19 +56,19 @@ public class Event implements Listener {
 				case "Add" -> {
 					final String u = dis.readUTF();
 					if(this.auths.add(UUID.fromString(u))) {
-						logger.log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + u + ".");
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Adding filter to " + u);
 					}
 				}
 				case "Remove" -> {
 					final String u = dis.readUTF();
 					if(this.auths.remove(UUID.fromString(u))) {
-						logger.log(Level.INFO, DuoAuth.PREFIX + "Removing filter from " + u + ".");
+						logger.log(Level.INFO, DuoAuth.PREFIX + "Removing filter from " + u);
 					}
 				}
 				default -> logger.log(
 						Level.INFO,
 						DuoAuth.PREFIX + "Proxy received plugin message " +
-								"with unknown action '" + action + "' - this will be ignored!"
+								"with unknown action '" + action + "' - this will be ignored"
 				);
 			}
 			dis.close();
