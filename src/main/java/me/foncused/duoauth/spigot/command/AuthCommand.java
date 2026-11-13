@@ -604,7 +604,7 @@ public class AuthCommand implements CommandExecutor {
 	}
 
 	private void printUsage(final Player player) {
-		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
+		player.sendMessage("");
 		player.sendMessage("    " + DuoAuth.PREFIX + ChatColor.DARK_GRAY + "v" + this.plugin.getDescription().getVersion() + " by foncused");
 		player.sendMessage(ChatColor.RED + "    /auth help" + ChatColor.GRAY + " - view this message");
 		player.sendMessage(ChatColor.RED + "    /auth generate" + ChatColor.GRAY + " - generate authentication secret");
@@ -622,7 +622,7 @@ public class AuthCommand implements CommandExecutor {
 			player.sendMessage(ChatColor.RED + "    /auth check <player>" + ChatColor.GRAY + " - check a player's auth status");
 		}
 		player.sendMessage(ChatColor.RED + "    /auth <password> <code>" + ChatColor.GRAY + " - set up or attempt authentication");
-		player.sendMessage(ChatColor.DARK_GRAY + "" + ChatColor.STRIKETHROUGH + "---------------------------------------------");
+		player.sendMessage("");
 	}
 
 }

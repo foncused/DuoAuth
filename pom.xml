@@ -52,6 +52,7 @@
                 <version>3.6.2</version>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <outputFile>/media/veracrypt2/Libraries/Minecraft/jars/${project.artifactId}.jar</outputFile>
                     <relocations>
                         <!-- TaskChain -->
                         <relocation>
